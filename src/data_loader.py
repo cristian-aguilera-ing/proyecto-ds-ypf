@@ -1,110 +1,50 @@
 """
-data_loader.py
-Ingesta y validación inicial de datos crudos.
-No transforma datos: solo lee, valida columnas/tipos mínimos, y devuelve.
+data_loader.py (version simple)
+Este archivo solo sirve para CARGAR el dataset y mostrar un
+resumen basico de como esta. No cambia ni corrige nada todavia.
 """
 
-from pathlib import Path
 import pandas as pd
 
-RAW_DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
-
-# Columnas que el resto del pipeline (EDA, feature engineering, modelado)
-# va a asumir que existen. Si el CSV no las tiene, mejor fallar acá
-# y no 10 pasos después con un KeyError confuso.
-COLUMNAS_ESPERADAS = [
-    "idempresa", "anio", "mes", "idpozo",
-    "prod_pet", "prod_gas", "prod_agua",
-    "tef", "tipoestado", "tipopozo",
-    "formacion", "profundidad", "cuenca", "provincia",
-    "coordenadax", "coordenaday",
-    "tipo_de_recurso", "sub_tipo_recurso",
-]
+# Nombre del archivo que descargamos de datos.gob.ar
+NOMBRE_ARCHIVO = "produccin-de-pozos-de-gas-y-petrleo-no-convencional.csv"
+RUTA_ARCHIVO = "data/raw/" + NOMBRE_ARCHIVO
 
 
-def cargar_produccion_no_convencional(
-    nombre_archivo: str = "produccin-de-pozos-de-gas-y-petrleo-no-convencional.csv",
-) -> pd.DataFrame:
+def cargar_datos():
     """
-    Lee el CSV crudo de producción de pozos no convencionales.
-    Valida que las columnas mínimas esperadas estén presentes.
-    No imputa, no filtra, no transforma: eso es responsabilidad
-    de preprocessor.py.
+    Lee el archivo CSV y lo devuelve como un DataFrame de pandas.
     """
-    ruta = RAW_DATA_DIR / nombre_archivo
-
-    if not ruta.exists():
-        raise FileNotFoundError(
-            f"No encontré el archivo en {ruta}. "
-            f"Revisá que esté en data/raw/ con ese nombre exacto."
-        )
-
-    df = pd.read_csv(ruta)
-
-    faltantes = set(COLUMNAS_ESPERADAS) - set(df.columns)
-    if faltantes:
-        raise ValueError(
-            f"Al CSV le faltan columnas esperadas: {faltantes}. "
-            f"¿Cambió el formato del dataset en datos.gob.ar?"
-        )
-
+    df = pd.read_csv(RUTA_ARCHIVO)
     return df
 
-def validar_calidad(df: pd.DataFrame) -> dict:
-    """
-    Inspecciona la calidad de los datos crudos sin modificarlos.
-    Devuelve un diccionario con hallazgos para revisar en el EDA.
-    No imputa ni corrige nada — solo diagnostica.
-    """
-    reporte = {}
 
-    # Duplicados: no debería haber más de un registro por pozo-año-mes
-    duplicados = df.duplicated(subset=["idpozo", "anio", "mes"]).sum()
-    reporte["duplicados_pozo_anio_mes"] = int(duplicados)
+def mostrar_resumen(df):
+    """
+    Imprime en pantalla algunos datos basicos para chequear
+    que todo se cargo bien y ver si hay problemas de calidad.
+    """
+    print("Cantidad de filas y columnas:", df.shape)
 
-    # Nulos por columna (solo las que tienen al menos 1)
+    print("\nColumnas con valores nulos (vacios):")
     nulos = df.isnull().sum()
-    reporte["columnas_con_nulos"] = nulos[nulos > 0].to_dict()
+    print(nulos[nulos > 0])
 
-    # Rango de profundidad: valores físicamente imposibles (pozos no llegan a 300km)
-    reporte["profundidad_max"] = float(df["profundidad"].max())
-    reporte["profundidad_min"] = float(df["profundidad"].min())
-    reporte["pozos_profundidad_sospechosa"] = int((df["profundidad"] > 10000).sum())
+    print("\nCuantos pozos repetidos hay (mismo pozo, mismo mes, mismo anio):")
+    duplicados = df.duplicated(subset=["idpozo", "anio", "mes"]).sum()
+    print(duplicados)
 
-    # Producción negativa no tiene sentido físico
-    reporte["prod_pet_negativa"] = int((df["prod_pet"] < 0).sum())
-    reporte["prod_gas_negativa"] = int((df["prod_gas"] < 0).sum())
+    print("\nValor maximo y minimo de profundidad:")
+    print("Maximo:", df["profundidad"].max())
+    print("Minimo:", df["profundidad"].min())
 
-    # Rango temporal cubierto
-    reporte["anio_min"] = int(df["anio"].min())
-    reporte["anio_max"] = int(df["anio"].max())
+    print("\nCuantos pozos tienen produccion negativa (no deberia pasar):")
+    print("Petroleo:", (df["prod_pet"] < 0).sum())
+    print("Gas:", (df["prod_gas"] < 0).sum())
 
-    return reporte
 
-def cargar_capitulo_iv_pozos(
-    nombre_archivo: str = "capitulo-iv-pozos.csv",
-) -> pd.DataFrame:
-    """
-    Lee el CSV de metadatos de pozos (Capítulo IV).
-    Complementario al de producción; útil solo si necesitás
-    cruzar variables que no vengan ya en el dataset principal.
-    """
-    ruta = RAW_DATA_DIR / nombre_archivo
-
-    if not ruta.exists():
-        raise FileNotFoundError(
-            f"No encontré el archivo en {ruta}. "
-            f"Revisá que esté en data/raw/ con ese nombre exacto."
-        )
-
-    return pd.read_csv(ruta)
-
+# Esto se ejecuta solo si corremos este archivo directamente,
+# para probar rapido que la funcion de carga funciona bien.
 if __name__ == "__main__":
-    df = cargar_produccion_no_convencional()
-    print(df.shape)
-    print(df.head())
-
-    print("\n--- Reporte de calidad ---")
-    reporte = validar_calidad(df)
-    for clave, valor in reporte.items():
-        print(f"{clave}: {valor}")
+    datos = cargar_datos()
+    mostrar_resumen(datos)
