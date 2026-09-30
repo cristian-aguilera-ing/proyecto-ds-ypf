@@ -1,8 +1,8 @@
 # Informe de Avance — Proyecto Final Data Science (YPF / Vaca Muerta)
 
 **Proyecto:** Predicción y Optimización de la Producción de Hidrocarburos No Convencionales (Vaca Muerta / YPF)
-**Fecha:** 3 al 12 de septiembre de 2026
-**Etapa actual:** Pre-Entrega 3 (Modelado Supervisado) — CERRADA. Próximo paso: Modelado No Supervisado (clustering).
+**Fecha:** 3 al 14 de septiembre de 2026
+**Etapa actual:** Pre-Entrega 3 (Modelado Supervisado) — CERRADA, incluyendo comparación XGBoost vs. LightGBM. Próximo paso: Modelado No Supervisado (clustering).
 
 ---
 
@@ -192,23 +192,38 @@ En vez de agregar otra variable, se probó entrenar el modelo sobre `log(1 + pro
 
 **Resultado:** MAE 163.09 — RMSE 501.67 — R² 0.854. El RMSE empeoró notablemente y el error en picos altos subió a 6.028 (peor que las versiones anteriores). El gráfico de real vs. predicho reveló el motivo: al revertir el logaritmo (`expm1`), pequeños errores en escala logarítmica se amplifican exponencialmente, generando **sobreestimaciones extremas** (predicciones de hasta 35.000 para pozos que producían realmente 7.000-10.000). **Descartada** por introducir un problema nuevo y más grave que el que buscaba resolver.
 
-### 10.7 Modelo final
+### 10.7 Iteración 6 — Comparación XGBoost vs. LightGBM (consigna original)
 
-Tras 4 iteraciones sobre el modelo base, la combinación ganadora es la del **Paso 10.4** (8 features, entrenamiento directo sobre `prod_pet`, sin log-transform ni variable de máximo histórico) — la mejor relación entre métricas y simplicidad del modelo.
+La Pre-Entrega 1 especificaba entrenar y **comparar** modelos de regresión (XGBoost / LightGBM), no quedarse con uno solo. Se entrenó LightGBM con las mismas 8 features, el mismo split temporal (train <2024, test 2024-2025) y parámetros equivalentes, para una comparación justa.
 
-### 10.8 Tabla comparativa completa
+| Métrica | XGBoost | LightGBM |
+|---|---|---|
+| MAE | 163.33 | 163.86 |
+| RMSE | 445.42 | **439.34** |
+| R² | 0.885 | **0.888** |
+| Error en picos altos (>10.000) | 5.153.7 | **4.998.2** |
 
-| Métrica | Base (7 features) | Con fuga (descartado) | + máxima histórica (descartado) | Log-transform (descartado) | **Modelo FINAL (8 features)** |
-|---|---|---|---|---|---|
-| MAE | 195.11 | 38.86 | 165.63 | 163.09 | **163.33** |
-| RMSE | 520.31 | 204.07 | 444.47 | 501.67 | **445.42** |
-| R² | 0.853 | 0.978 | 0.885 | 0.854 | **0.885** |
+**Resultado:** empate técnico, con una ventaja marginal pero consistente de LightGBM en 3 de las 4 métricas. Se adopta **LightGBM como modelo principal** (`models/modelo_produccion_pet.joblib`), conservando ambos modelos por separado (`..._xgboost.joblib` y `..._lightgbm.joblib`) para trazabilidad.
 
-### 10.9 Limitación conocida (aceptada)
+**Nota metodológica sobre el gráfico de importancia de variables:** los gráficos de importancia de XGBoost (escala 0-1, basada en `gain`) y LightGBM (escala 0-1000, basada en `split` por defecto) usan métricas distintas y no son directamente comparables entre sí — la diferencia de escala no implica que un modelo haya "entendido mejor" los datos que el otro. Ambos coinciden en que `prod_pet_mes_anterior` es la variable dominante.
 
-En todas las versiones válidas, el modelo **subestima los pozos con picos de producción muy altos** (posibles eventos de reestimulación/refractura). Se probaron dos enfoques distintos para resolverlo (una variable nueva y un cambio de objetivo de entrenamiento) y ninguno mejoró el resultado — uno de ellos incluso lo empeoró de forma más grave. Esto sugiere que el problema no es de ingeniería sobre los datos disponibles, sino de **ausencia de una variable que el dataset no incluye** (por ejemplo, si se programó una intervención en el pozo). Se documenta como limitación conocida y se avanza con evidencia en mano, en vez de continuar iterando sin garantía de mejora.
+### 10.8 Modelo final
 
-El modelo final se guardó en `models/modelo_produccion_pet.joblib`.
+Tras 5 iteraciones sobre el modelo base, la combinación ganadora es **LightGBM con las 8 features de la Iteración 3** (`declinacion_pet_anterior` incluida, sin log-transform ni `prod_pet_maxima_anterior`) — la mejor combinación de métricas entre todas las versiones probadas.
+
+### 10.9 Tabla comparativa completa
+
+| Métrica | Base (7 features) | Con fuga (descartado) | + máxima histórica (descartado) | Log-transform (descartado) | XGBoost (8 features) | **LightGBM FINAL (8 features)** |
+|---|---|---|---|---|---|---|
+| MAE | 195.11 | 38.86 | 165.63 | 163.09 | 163.33 | **163.86** |
+| RMSE | 520.31 | 204.07 | 444.47 | 501.67 | 445.42 | **439.34** |
+| R² | 0.853 | 0.978 | 0.885 | 0.854 | 0.885 | **0.888** |
+
+### 10.10 Limitación conocida (aceptada)
+
+En todas las versiones válidas (XGBoost y LightGBM por igual), el modelo **subestima los pozos con picos de producción muy altos** (posibles eventos de reestimulación/refractura). Se probaron tres enfoques distintos para resolverlo (una variable nueva, un cambio de objetivo de entrenamiento, y un segundo algoritmo) y ninguno lo resolvió de fondo — uno incluso lo empeoró de forma más grave. Esto sugiere que el problema no es de ingeniería sobre los datos disponibles ni de elección de algoritmo, sino de **ausencia de una variable que el dataset no incluye** (por ejemplo, si se programó una intervención en el pozo). Se documenta como limitación conocida y se avanza con evidencia en mano, en vez de continuar iterando sin garantía de mejora.
+
+El modelo final (LightGBM) se guardó en `models/modelo_produccion_pet.joblib`.
 
 ---
 
