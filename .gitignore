@@ -1,5 +1,9 @@
 venv/
-data/
-data/
+# Datasets (no se versionan: son pesados y vienen de una fuente externa)
+data/raw/*.csv
+data/processed/*.csv
+# pero sí versionamos la estructura de carpetas
+!data/raw/.gitkeep
+!data/processed/.gitkeep
 .DS_Store
 .vscode/
