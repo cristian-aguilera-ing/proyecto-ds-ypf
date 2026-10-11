@@ -14,9 +14,11 @@ Proyecto final de la carrera Data Science (Ingenias+), cuyo objetivo es **predec
 ✅ Pre-Entrega 2 (EDA + limpieza, `notebooks/01_eda_limpieza.ipynb`) — cerrada
 ✅ Pre-Entrega 3 (Modelado supervisado, `notebooks/03_modelado_supervisado.ipynb`) — cerrada, con comparación XGBoost vs. LightGBM
 ✅ Pre-Entrega 4 (Modelado no supervisado, `notebooks/04_modelado_no_supervisado_dl.ipynb`) — cerrada, K-Means con k = 4
+✅ Explicabilidad con SHAP (`notebooks/05_explicabilidad_shap_dl.ipynb`) — hecha sobre el modelo anterior; se repetirá sobre el modelo final
+🔜 Optimización de hiperparámetros (Optuna) — pendiente
 🔜 Entrega final (API + Dockerfile) — pendiente
 
-**Modelo supervisado actual:** LightGBM, 8 variables, RMSE 439.34, R² 0.888.
+**Modelo supervisado actual:** LightGBM que predice la variación mensual de producción, 8 variables, RMSE 411.24, R² 0.901 (baseline de repetir el mes anterior: RMSE 458.11, R² 0.877).
 
 **Clustering actual:** K-Means con k = 4 sobre 4.295 pozos (silhouette 0.473).
 
@@ -54,7 +56,7 @@ El diagnóstico inicial detectó anomalías reales de calidad de datos: la profu
 
 ## 3. Modelos ajustados
 
-**Supervisado (regresión):** se predice `prod_pet` con LightGBM y 8 variables (antigüedad del pozo, producción de gas y de petróleo del mes anterior, declinación del mes previo, ratio gas/petróleo, profundidad, formación y cuenca), con un split temporal (entrenamiento hasta 2023, prueba 2024-2025). Se compararon XGBoost y LightGBM (empate técnico, con ligera ventaja de LightGBM: RMSE 439.34, R² 0.888). En el camino se detectó y descartó una fuga de datos (R² de 0.978, imposible de usar en producción). El modelo subestima los pozos con picos muy altos (más de 10.000), una limitación aceptada.
+**Supervisado (regresión):** se predice `prod_pet` con LightGBM y 8 variables (antigüedad del pozo, producción de gas y de petróleo del mes anterior, declinación y ratio gas/petróleo del mes previo, profundidad, formación y cuenca), con un split temporal (entrenamiento hasta 2023, prueba 2024-2025). Se compararon XGBoost y LightGBM (empate técnico) y se detectaron y corrigieron dos fugas de datos: `declinacion_pet` (R² de 0.978, imposible de usar en producción) y `ratio_gas_petroleo`, que usaba la producción del mismo mes que se quiere predecir. Se agregó un baseline simple (repetir el mes anterior, R² 0.877) para medir el aporte real del modelo. El modelo final no predice el nivel de producción sino su **variación respecto del mes anterior**, y la predicción se obtiene sumando esa variación al mes anterior (con piso en 0): así mejora todas las métricas (RMSE 411.24, R² 0.901). Subestima los pozos con picos muy altos (más de 10.000), una limitación aceptada.
 
 **No supervisado (clustering):** se resumió cada pozo en 4 variables (pico de producción, declinación típica, antigüedad y ratio gas/petróleo) y se agruparon con K-Means. La primera versión, con promedios, dejó dos clusters de un solo pozo por valores extremos, por lo que se corrigió usando medianas, filtrando pozos sin producción real, recortando la declinación y aplicando logaritmo. Con k = 4 (elegido por codo, silhouette e interpretabilidad) se obtuvieron cuatro grupos: pozos modernos de alta producción, pozos viejos de producción media, pozos viejos con mucho gas y casi nada de petróleo, y pozos recién puestos en producción. Los 94 pozos con pico mayor a 10.000 caen casi todos en el grupo de pozos modernos.
 
@@ -118,9 +120,10 @@ pip install -r requirements.txt
 |---|---|
 | `01_eda_limpieza.ipynb` | Análisis exploratorio, detección de nulos y valores anómalos, limpieza del dataset |
 | `02_feature_engineering.ipynb` | Creación de variables derivadas (producción del mes anterior, declinación, antigüedad del pozo, etc.) |
-| `03_modelado_supervisado.ipynb` | Entrenamiento y comparación de modelos (XGBoost vs. LightGBM) para predecir `prod_pet` |
+| `03_modelado_supervisado.ipynb` | Entrenamiento y comparación de modelos (XGBoost vs. LightGBM), corrección de fugas de datos, baseline y modelo de variación para predecir `prod_pet` |
 | `04_modelado_no_supervisado_dl.ipynb` | Clustering K-Means de pozos (4 variables por pozo, k = 4), con la corrección de la primera versión y el cruce con los pozos de pico alto |
+| `05_explicabilidad_shap_dl.ipynb` | Explicabilidad con SHAP: importancia y dirección del efecto de cada variable, y análisis de los picos subestimados |
 
 ## 8. Limitación conocida
 
-El modelo actual subestima sistemáticamente los pozos con picos de producción muy altos (posibles eventos de reestimulación/refractura). Se probaron tres enfoques distintos sin resolverlo de fondo, lo que sugiere que falta en el dataset una variable que capture ese tipo de intervención. Se documenta como limitación aceptada.
+El modelo subestima los pozos con picos de producción muy altos (más de 10.000 barriles por mes). Se probaron varios enfoques sin resolverlo de fondo. La explicación más probable combina dos causas: el modelo casi no vio producciones tan altas al entrenar (el máximo hasta 2023 fue 15.943, contra 26.593 en el período de prueba) y los modelos de árboles no extrapolan, y es posible que además falte una variable que capture intervenciones en el pozo (reestimulaciones). En esos meses extremos, repetir el valor del mes anterior sigue siendo mejor que el modelo. Se documenta como limitación aceptada.
