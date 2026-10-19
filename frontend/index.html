@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Producción de petróleo del mes próximo - Pozos de Vaca Muerta</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+  <div class="estratos" aria-hidden="true"></div>
+
+  <header class="cabecera">
+    <h1>Producción de petróleo del mes próximo</h1>
+    <p class="bajada">
+      Probador del modelo para pozos no convencionales de la cuenca Neuquina.
+      Cargá el historial reciente de un pozo y el modelo estima cuánto va a producir el mes siguiente.
+    </p>
+    <p id="estado-api" class="estado" role="status">Conectando con la API...</p>
+  </header>
+
+  <main class="tablero">
+
+    <section class="panel" aria-labelledby="titulo-datos">
+      <h2 id="titulo-datos">Datos del pozo</h2>
+
+      <div class="ejemplos">
+        <p class="ayuda">Ejemplos reales del período de prueba (2024-2025):</p>
+        <div id="ejemplos" class="botonera"></div>
+      </div>
+
+      <form id="formulario" novalidate>
+        <div class="fila">
+          <div class="campo">
+            <label for="formacion">Formación</label>
+            <select id="formacion" name="formacion" required></select>
+          </div>
+          <div class="campo">
+            <label for="cuenca">Cuenca</label>
+            <select id="cuenca" name="cuenca" required></select>
+          </div>
+        </div>
+
+        <div class="fila">
+          <div class="campo">
+            <label for="antiguedad_meses">Antigüedad del pozo (meses)</label>
+            <input id="antiguedad_meses" name="antiguedad_meses" type="number" min="3" max="600" step="1" required>
+            <span class="pista">Meses de calendario desde el primer mes del pozo hasta el que querés predecir. Mínimo 3.</span>
+          </div>
+          <div class="campo">
+            <label for="profundidad">Profundidad (m)</label>
+            <input id="profundidad" name="profundidad" type="number" min="1" max="15000" step="any" required>
+          </div>
+        </div>
+
+        <div class="fila">
+          <div class="campo">
+            <label for="prod_pet_mes_anterior">Petróleo del mes anterior (<span class="u-pet">m3</span>)</label>
+            <input id="prod_pet_mes_anterior" name="prod_pet_mes_anterior" type="number" min="0" step="any" required>
+            <span class="pista">Debe ser mayor a 0.</span>
+          </div>
+          <div class="campo">
+            <label for="prod_pet_hace_2_meses">Petróleo de hace 2 meses (<span class="u-pet">m3</span>)</label>
+            <input id="prod_pet_hace_2_meses" name="prod_pet_hace_2_meses" type="number" min="0" step="any" required>
+            <span class="pista">Debe ser mayor a 0.</span>
+          </div>
+        </div>
+
+        <div class="fila">
+          <div class="campo">
+            <label for="prod_gas_mes_anterior">Gas del mes anterior (<span class="u-gas">Mm3</span>)</label>
+            <input id="prod_gas_mes_anterior" name="prod_gas_mes_anterior" type="number" min="0" step="any" required>
+          </div>
+        </div>
+
+        <button type="submit" id="boton-estimar">Estimar producción</button>
+      </form>
+    </section>
+
+    <section class="panel panel-resultado" aria-labelledby="titulo-resultado" aria-live="polite">
+      <h2 id="titulo-resultado">Estimación</h2>
+
+      <p id="vacio" class="ayuda">
+        Elegí un ejemplo o cargá los datos de un pozo y la estimación aparece acá.
+      </p>
+
+      <div id="resultado" hidden>
+        <p class="cifra"><span id="cifra">0</span> <span id="unidad" class="unidad">m3</span></p>
+        <p id="variacion" class="variacion"></p>
+
+        <div class="barras" id="barras">
+          <div class="barra" data-barra="anterior">
+            <span class="barra-nombre">Mes anterior</span>
+            <span class="barra-pista"><span class="barra-relleno"></span></span>
+            <span class="barra-valor"></span>
+          </div>
+          <div class="barra" data-barra="modelo">
+            <span class="barra-nombre">Estimación del modelo</span>
+            <span class="barra-pista"><span class="barra-relleno"></span></span>
+            <span class="barra-valor"></span>
+          </div>
+          <div class="barra" data-barra="real" hidden>
+            <span class="barra-nombre">Valor real</span>
+            <span class="barra-pista"><span class="barra-relleno"></span></span>
+            <span class="barra-valor"></span>
+          </div>
+        </div>
+
+        <ul id="avisos" class="avisos"></ul>
+
+        <details class="crudo">
+          <summary>Ver la respuesta completa de la API</summary>
+          <pre id="json"></pre>
+        </details>
+      </div>
+
+      <p id="error" class="error" role="alert" hidden></p>
+    </section>
+
+  </main>
+
+  <section class="historial" aria-labelledby="titulo-historial">
+    <div class="historial-cabecera">
+      <h2 id="titulo-historial">Estimaciones de esta sesión</h2>
+      <button type="button" id="limpiar" class="secundario">Limpiar</button>
+    </div>
+    <div class="tabla-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Formación</th>
+            <th class="num">Antigüedad</th>
+            <th class="num">Mes anterior</th>
+            <th class="num">Estimación</th>
+            <th class="num">Valor real</th>
+          </tr>
+        </thead>
+        <tbody id="historial-filas">
+          <tr class="vacio"><td colspan="5">Todavía no hiciste ninguna estimación.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="modelo" aria-labelledby="titulo-modelo">
+    <h2 id="titulo-modelo">Qué tan confiable es el modelo</h2>
+    <div id="modelo-contenido">
+      <p class="ayuda">Cargando datos del modelo...</p>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <p>Proyecto final de Data Science. Datos: Secretaría de Energía de la Nación (Capítulo IV, pozos no convencionales).</p>
+    <p>Documentación de la API: <a id="enlace-docs" href="http://localhost:8000/docs">puerto 8000, ruta /docs</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

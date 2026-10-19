@@ -1,0 +1,52 @@
+# Proyecto final Data Science - Prediccion de produccion de petroleo (Vaca Muerta)
+#
+# Levantar todo:            docker compose up --build
+# Entrenar el modelo:       docker compose --profile train run --rm entrenar
+# Apagar:                   docker compose down
+#
+# Frontend:  http://localhost:8080
+# API:       http://localhost:8000   (documentacion en /docs)
+
+name: ypf-pozos
+
+services:
+  api:
+    build: .
+    image: ypf-pozos-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # El modelo vive fuera de la imagen: se entrena una vez y la API lo lee
+      - ./models:/app/models:ro
+    environment:
+      MODELS_DIR: /app/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    image: ypf-pozos-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Entrenamiento: solo corre cuando se pide con --profile train
+  entrenar:
+    build: .
+    image: ypf-pozos-api
+    profiles: ["train"]
+    command: ["python", "-m", "src.train"]
+    environment:
+      MODELS_DIR: /app/models
+      DATA_PATH: /app/data/processed/produccion_con_features.csv
+    volumes:
+      - ./data/processed:/app/data/processed:ro
+      - ./models:/app/models

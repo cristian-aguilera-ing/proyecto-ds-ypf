@@ -1,0 +1,268 @@
+{
+  "version_modelo": "2026-10-19 12:10",
+  "descripcion": "LightGBM que predice la variacion de produccion de petroleo respecto del mes anterior",
+  "parametros_tipo": "optuna",
+  "parametros": {
+    "n_estimators": 424,
+    "learning_rate": 0.016464782596837396,
+    "max_depth": 6,
+    "num_leaves": 111,
+    "min_child_samples": 160,
+    "subsample": 0.9705327254976989,
+    "colsample_bytree": 0.860991827461598,
+    "reg_lambda": 1.0608979394576599,
+    "subsample_freq": 1
+  },
+  "features": [
+    "antiguedad_meses",
+    "prod_pet_mes_anterior",
+    "prod_gas_mes_anterior",
+    "declinacion_pet_anterior",
+    "ratio_gas_petroleo_anterior",
+    "profundidad",
+    "formacion_cod",
+    "cuenca_cod"
+  ],
+  "anio_corte": 2024,
+  "filas_entrenamiento": 170927,
+  "filas_prueba": 65574,
+  "metricas_test": {
+    "mae": 154.614,
+    "rmse": 399.682,
+    "r2": 0.9068,
+    "error_medio_picos": 2619.1
+  },
+  "metricas_baseline": {
+    "mae": 170.924,
+    "rmse": 456.917,
+    "r2": 0.8782,
+    "error_medio_picos": 1996.5
+  },
+  "rango_entrenamiento": {
+    "prod_pet_mes_anterior_max": 16513.3,
+    "prod_pet_max": 15942.5,
+    "profundidad_min": 350.0,
+    "profundidad_max": 7784.0,
+    "antiguedad_max": 216
+  },
+  "unidades": {
+    "petroleo": "m3",
+    "gas": "Mm3"
+  },
+  "formaciones": [
+    {
+      "nombre": "vaca muerta",
+      "codigo": 27,
+      "pozos": 3382
+    },
+    {
+      "nombre": "lajas",
+      "codigo": 10,
+      "pozos": 589
+    },
+    {
+      "nombre": "mulichinco",
+      "codigo": 16,
+      "pozos": 259
+    },
+    {
+      "nombre": "los molles",
+      "codigo": 12,
+      "pozos": 216
+    },
+    {
+      "nombre": "magallanes",
+      "codigo": 14,
+      "pozos": 201
+    },
+    {
+      "nombre": "punta rosada",
+      "codigo": 20,
+      "pozos": 112
+    },
+    {
+      "nombre": "quintuco",
+      "codigo": 21,
+      "pozos": 86
+    },
+    {
+      "nombre": "precuyo",
+      "codigo": 19,
+      "pozos": 81
+    },
+    {
+      "nombre": "agrio",
+      "codigo": 1,
+      "pozos": 78
+    },
+    {
+      "nombre": "basamento",
+      "codigo": 3,
+      "pozos": 16
+    },
+    {
+      "nombre": "pozo d-129",
+      "codigo": 18,
+      "pozos": 11
+    },
+    {
+      "nombre": "centenario",
+      "codigo": 5,
+      "pozos": 10
+    },
+    {
+      "nombre": "lotena",
+      "codigo": 13,
+      "pozos": 10
+    },
+    {
+      "nombre": "formación improductiva",
+      "codigo": 7,
+      "pozos": 7
+    },
+    {
+      "nombre": "chachao",
+      "codigo": 6,
+      "pozos": 5
+    },
+    {
+      "nombre": "tordillo",
+      "codigo": 26,
+      "pozos": 4
+    },
+    {
+      "nombre": "ANITA",
+      "codigo": 0,
+      "pozos": 4
+    },
+    {
+      "nombre": "rayoso",
+      "codigo": 22,
+      "pozos": 3
+    },
+    {
+      "nombre": "yacoraite",
+      "codigo": 28,
+      "pozos": 3
+    },
+    {
+      "nombre": "palermo aike",
+      "codigo": 17,
+      "pozos": 2
+    },
+    {
+      "nombre": "sierras blancas",
+      "codigo": 23,
+      "pozos": 2
+    },
+    {
+      "nombre": "mina el carmen",
+      "codigo": 15,
+      "pozos": 1
+    },
+    {
+      "nombre": "loma montosa",
+      "codigo": 11,
+      "pozos": 1
+    },
+    {
+      "nombre": "grupo neuquén",
+      "codigo": 9,
+      "pozos": 1
+    },
+    {
+      "nombre": "grupo chubut",
+      "codigo": 8,
+      "pozos": 1
+    },
+    {
+      "nombre": "springhill",
+      "codigo": 24,
+      "pozos": 1
+    },
+    {
+      "nombre": "tobífera",
+      "codigo": 25,
+      "pozos": 1
+    },
+    {
+      "nombre": "cañadon seco",
+      "codigo": 4,
+      "pozos": 1
+    },
+    {
+      "nombre": "bajo barreal",
+      "codigo": 2,
+      "pozos": 1
+    }
+  ],
+  "cuencas": [
+    {
+      "nombre": "NEUQUINA",
+      "codigo": 2,
+      "pozos": 4862
+    },
+    {
+      "nombre": "AUSTRAL",
+      "codigo": 0,
+      "pozos": 209
+    },
+    {
+      "nombre": "GOLFO SAN JORGE",
+      "codigo": 1,
+      "pozos": 15
+    },
+    {
+      "nombre": "NOROESTE",
+      "codigo": 3,
+      "pozos": 3
+    }
+  ],
+  "ejemplos": [
+    {
+      "titulo": "Pozo joven de Vaca Muerta",
+      "descripcion": "Alrededor de un anio de vida, produccion tipica del grupo.",
+      "idpozo": 164550,
+      "entrada": {
+        "antiguedad_meses": 11,
+        "prod_pet_mes_anterior": 2009.22,
+        "prod_pet_hace_2_meses": 3622.81,
+        "prod_gas_mes_anterior": 131.48,
+        "profundidad": 5462.0,
+        "formacion": "vaca muerta",
+        "cuenca": "NEUQUINA"
+      },
+      "valor_real": 4016.66
+    },
+    {
+      "titulo": "Pozo maduro",
+      "descripcion": "Mas de 100 meses de historia, produccion baja y estable.",
+      "idpozo": 147617,
+      "entrada": {
+        "antiguedad_meses": 126,
+        "prod_pet_mes_anterior": 10.54,
+        "prod_pet_hace_2_meses": 9.91,
+        "prod_gas_mes_anterior": 26.99,
+        "profundidad": 3065.0,
+        "formacion": "vaca muerta",
+        "cuenca": "NEUQUINA"
+      },
+      "valor_real": 10.76
+    },
+    {
+      "titulo": "Pico extremo",
+      "descripcion": "El mes de mayor produccion del periodo de prueba, fuera de lo visto al entrenar.",
+      "idpozo": 164941,
+      "entrada": {
+        "antiguedad_meses": 13,
+        "prod_pet_mes_anterior": 24539.22,
+        "prod_pet_hace_2_meses": 12513.56,
+        "prod_gas_mes_anterior": 1690.61,
+        "profundidad": 6303.0,
+        "formacion": "vaca muerta",
+        "cuenca": "NEUQUINA"
+      },
+      "valor_real": 26593.26
+    }
+  ]
+}
