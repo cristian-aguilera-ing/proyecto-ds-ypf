@@ -36,7 +36,11 @@ Para pasar a unidades de campo: 1 m³ de petróleo ≈ 6,29 barriles; 1 Mm³ de 
 
 ### 3.1 Formulario
 
-- **Buscar pozo:** escribí parte de la sigla (por ejemplo `LCa-30`) o el `idpozo`. Cada sugerencia muestra el idpozo, la formación, el yacimiento, si es un pozo de **petróleo** o de **gas** y la **fecha de su último dato**. Elegí uno de la lista.
+- **Buscar pozo:** escribí parte de la sigla (`LCa-30`), el `idpozo`, o varias palabras que combinen sigla, yacimiento u operadora (`ypf loma campana`). Cada sugerencia muestra:
+  - una etiqueta **activo** (verde) si el pozo produjo en el último mes del dataset, o **sin producción desde AAAA-MM** (gris) si está parado;
+  - el idpozo, la formación, el yacimiento, la operadora y si es un pozo de **petróleo** o de **gas**.
+
+  Los resultados aparecen ordenados: primero el idpozo exacto, después las siglas que empiezan con lo que escribiste, luego los pozos activos y, entre ellos, los de mayor producción reciente. **Solo los pozos activos tienen pronóstico**, porque el modelo parte del último mes producido.
 - **Horizonte (meses):** cuántos meses pronosticar, de 1 a 12.
 
 ### 3.2 Encabezado del resultado
@@ -195,7 +199,8 @@ En pozos nuevos el grupo se calcula a partir de la curva predicha. Si dice *"Sin
 |---|---|
 | *El último dato del pozo es AAAA-MM (N meses antes del fin del dataset)* | El pozo dejó de informar: el pronóstico parte de una fecha vieja y puede no reflejar su estado actual. |
 | *El pozo ya producía antes de 2006* | Su edad real es mayor que la registrada; "Meses en producción" está subestimado. |
-| *Sin producción de X en el último mes* | Ese fluido no se pronostica. |
+| *El pozo no produjo en su último mes informado (última producción: AAAA-MM)* | El pozo está parado: no hay pronóstico. Elegí un pozo marcado como **activo**. |
+| *Sin producción de X en el último mes* | El pozo produce solo uno de los dos fluidos: el otro no se pronostica. |
 | *X está fuera del rango de entrenamiento* | El dato ingresado es más extremo que todos los pozos conocidos: el modelo extrapola y el resultado es poco confiable. |
 | *Pozos futuros: el modelo asume la tecnología del último año conocido* | Para años posteriores a los datos, el modelo no puede anticipar mejoras tecnológicas. |
 | *Se usaron valores típicos del área para …* | Faltaban datos opcionales y se completaron con la mediana del área. |

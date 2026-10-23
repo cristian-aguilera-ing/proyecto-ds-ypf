@@ -33,6 +33,11 @@ button[disabled] { opacity: .6; cursor: wait; }
 .sugerencias li { padding: 8px; cursor: pointer; color: var(--texto); font-size: .85rem; }
 .sugerencias li:hover { background: var(--fondo); }
 .sugerencias small { color: var(--suave); }
+.sugerencias li.inactivo { opacity: .6; }
+.sugerencias li.vacio { cursor: default; color: var(--suave); }
+.estado { display: inline-block; font-size: .7rem; padding: 1px 6px; border-radius: 10px; margin-right: 6px; vertical-align: middle; }
+.estado.on { background: var(--petroleo); color: #fff; }
+.estado.off { background: var(--borde); color: var(--suave); }
 .error { background: var(--error); padding: 12px; border-radius: 6px; margin-top: 16px; }
 #resultado { margin-top: 20px; }
 .encabezado { margin-bottom: 12px; }

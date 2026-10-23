@@ -7,6 +7,7 @@ let opciones = null;
 
 const $ = (s, r = document) => r.querySelector(s);
 const fmt = (v, d = 1) => v == null ? "—" : Number(v).toLocaleString("es-AR", { maximumFractionDigits: d, minimumFractionDigits: 0 });
+const escapar = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const pct = v => v == null ? "—" : `${fmt(v * 100, 1)} %`;
 
 async function pedir(ruta, cuerpo) {
@@ -77,12 +78,15 @@ $("#buscar").addEventListener("input", e => {
   if (q.length < 2) { $("#sugerencias").innerHTML = ""; return; }
   temporizador = setTimeout(async () => {
     const res = await pedir(`/pozos?q=${encodeURIComponent(q)}`).catch(() => []);
-    $("#sugerencias").innerHTML = res.map(p =>
-      `<li data-id="${p.idpozo}" data-sigla="${p.sigla}">${p.sigla} <small>· ${p.idpozo} · ${p.formacion} · ${p.areayacimiento} · ${p.fluido} · último dato ${p.fecha_ultima}</small></li>`).join("");
+    $("#sugerencias").innerHTML = res.length ? res.map(p =>
+      `<li data-id="${p.idpozo}" data-sigla="${p.sigla}" class="${p.activo ? "" : "inactivo"}">
+        <span class="estado ${p.activo ? "on" : "off"}">${p.activo ? "activo" : "sin producción" + (p.ultima_produccion ? " desde " + p.ultima_produccion : "")}</span>
+        ${p.sigla} <small>· ${p.idpozo} · ${p.formacion} · ${p.areayacimiento} · ${p.empresa} · ${p.fluido}</small></li>`).join("")
+      : `<li class="vacio">Sin resultados para "${escapar(q)}"</li>`;
   }, 250);
 });
 $("#sugerencias").addEventListener("click", e => {
-  const li = e.target.closest("li"); if (!li) return;
+  const li = e.target.closest("li"); if (!li || !li.dataset.id) return;
   $("#idpozo").value = li.dataset.id;
   $("#buscar").value = li.dataset.sigla;
   $("#sugerencias").innerHTML = "";
@@ -232,6 +236,7 @@ function renderInfo(cluster, filas, avisos) {
 
 function renderTabla(pron, eje, titulo) {
   const pe = pron.petroleo, ga = pron.gas;
+  if (!eje) { $("#tabla-mensual").innerHTML = `<p class="sin-dato">Sin pronóstico: el pozo no produjo en el último mes informado.</p>`; return; }
   const fila = (i) => `<tr><td>${typeof eje[i] === "string" ? eje[i].slice(0, 7) : eje[i]}</td>
     ${pe ? `<td class="num">${fmt(pe.p10[i])}</td><td class="num">${fmt(pe.p50[i])}</td><td class="num">${fmt(pe.p90[i])}</td>` : "<td></td><td></td><td></td>"}
     ${ga ? `<td class="num">${fmt(ga.p10[i])}</td><td class="num">${fmt(ga.p50[i])}</td><td class="num">${fmt(ga.p90[i])}</td>` : "<td></td><td></td><td></td>"}</tr>`;

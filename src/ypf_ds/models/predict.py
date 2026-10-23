@@ -59,6 +59,7 @@ class Predictor:
         self.panel = pl.read_parquet(panel)
         self.pozos = pl.read_parquet(pozos)
         self.fecha_max = self.panel["fecha"].max()
+        self.indice = self._indice_busqueda()
 
     # ---------------------------------------------------------------- utilidades
     def _matriz(self, art: dict, df: pl.DataFrame) -> pd.DataFrame:
@@ -98,12 +99,41 @@ class Predictor:
             return None
         return next(p for p in self.cluster["perfiles"] if p["cluster"] == k)
 
+    def _indice_busqueda(self) -> pl.DataFrame:
+        """Tabla para el buscador: estado de cada pozo (activo si produjo en el último mes del dataset)
+        y su producción reciente, para ordenar los resultados por relevancia."""
+        con_prod = self.panel.filter((pl.col("prod_pet") > 0) | (pl.col("prod_gas") > 0))
+        ultima = con_prod.group_by("idpozo").agg(ultima_produccion=pl.col("fecha").max())
+        reciente = (self.panel.filter(pl.col("fecha") == self.fecha_max)
+                    .select("idpozo", prod_reciente=pl.col("prod_pet") + pl.col("prod_gas")))
+        return (self.pozos.join(ultima, on="idpozo", how="left").join(reciente, on="idpozo", how="left")
+                .with_columns(
+                    activo=pl.col("ultima_produccion") == self.fecha_max,
+                    prod_reciente=pl.col("prod_reciente").fill_null(0),
+                    texto=pl.concat_str(["sigla", "areayacimiento", "empresa", pl.col("idpozo").cast(pl.String)],
+                                        separator=" ").str.to_uppercase()))
+
     def buscar_pozos(self, q: str, limite: int = 15) -> list[dict]:
-        q = q.strip().upper()
-        sub = self.pozos.filter(pl.col("sigla").str.to_uppercase().str.contains(q, literal=True)
-                                | pl.col("idpozo").cast(pl.String).str.starts_with(q))
-        return sub.select("idpozo", "sigla", "empresa", "formacion", "areayacimiento", "fluido",
-                          pl.col("fecha_ultima").cast(pl.String)).head(limite).to_dicts()
+        """Busca por sigla, yacimiento, operadora o idpozo. Admite varias palabras ("ypf loma campana"):
+        todas tienen que aparecer. Ordena: idpozo exacto, sigla que empieza con la búsqueda, pozos activos
+        y mayor producción reciente."""
+        palabras = q.strip().upper().split()
+        if not palabras:
+            return []
+        filtro = pl.all_horizontal([pl.col("texto").str.contains(p, literal=True) for p in palabras])
+        q_junto = " ".join(palabras)
+        res = (self.indice.filter(filtro)
+               .with_columns(
+                   exacto=pl.col("idpozo").cast(pl.String) == q_junto,
+                   empieza=pl.col("sigla").str.to_uppercase().str.starts_with(q_junto)
+                   | pl.col("sigla").str.to_uppercase().str.contains("." + q_junto, literal=True))
+               .sort(["exacto", "empieza", "activo", "prod_reciente"], descending=True)
+               .head(limite))
+        return res.select(
+            "idpozo", "sigla", "empresa", "formacion", "areayacimiento", "fluido", "activo",
+            pl.col("fecha_ultima").cast(pl.String),
+            pl.col("ultima_produccion").dt.strftime("%Y-%m").alias("ultima_produccion"),
+        ).to_dicts()
 
     # ---------------------------------------------------------------- Modo A
     def existente(self, idpozo: int, horizonte: int = 12) -> dict:
@@ -123,6 +153,12 @@ class Predictor:
         if meses_sin_reporte > 0:
             avisos.append(f"El último dato del pozo es {ultimo['fecha']} ({meses_sin_reporte} meses antes del fin "
                           "del dataset): el pronóstico parte de ese mes.")
+        if ultimo["prod_pet"] <= 0 and ultimo["prod_gas"] <= 0:
+            fila = self.indice.filter(pl.col("idpozo") == idpozo).row(0, named=True)
+            desde = fila["ultima_produccion"].strftime("%Y-%m") if fila["ultima_produccion"] else "—"
+            avisos.append(f"El pozo no produjo en su último mes informado (última producción: {desde}). "
+                          "El modelo pronostica a partir del último mes, así que no hay pronóstico; "
+                          "elegí un pozo marcado como activo en el buscador.")
         if info["censurado_izq"]:
             avisos.append("El pozo ya producía antes de 2006: su antigüedad real es mayor a la registrada.")
 
@@ -132,7 +168,9 @@ class Predictor:
             base = float(ultimo[col])
             if base <= 0:
                 resultado[fluido] = None
-                avisos.append(f"Sin producción de {fluido} en el último mes: no se pronostica ese fluido.")
+                # Si el pozo no produjo nada, ya hay un aviso general; solo se avisa por fluido si el otro sí produjo
+                if ultimo["prod_pet"] > 0 or ultimo["prod_gas"] > 0:
+                    avisos.append(f"Sin producción de {fluido} en el último mes: no se pronostica ese fluido.")
                 continue
             X = self._matriz(art, filas)
             pred = predecir_a(art["modelos"], X, np.full(len(X), base))

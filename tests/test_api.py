@@ -29,6 +29,32 @@ def test_buscar(cliente):
     assert res and all("idpozo" in p for p in res)
 
 
+def test_buscar_activos_primero(cliente):
+    res = cliente.get("/pozos", params={"q": "ypf"}).json()
+    assert len(res) == 15 and res[0]["activo"]
+    activos = [p["activo"] for p in res]
+    assert activos == sorted(activos, reverse=True)  # primero todos los activos
+
+
+def test_buscar_varias_palabras(cliente):
+    res = cliente.get("/pozos", params={"q": "ypf loma campana"}).json()
+    assert res and all("LOMA CAMPANA" in p["areayacimiento"] and "YPF" in p["sigla"].upper() for p in res)
+
+
+def test_buscar_idpozo_exacto_primero(cliente):
+    pozo = cliente.get("/pozos", params={"q": "LCa"}).json()[0]["idpozo"]
+    assert cliente.get("/pozos", params={"q": str(pozo)}).json()[0]["idpozo"] == pozo
+
+
+def test_existente_sin_produccion(cliente):
+    panel = pl.read_parquet(config.PANEL)
+    parado = panel.filter((pl.col("fecha") == panel["fecha"].max()) & (pl.col("prod_pet") == 0)
+                          & (pl.col("prod_gas") == 0))["idpozo"][0]
+    j = cliente.post("/predict/existente", json={"idpozo": int(parado)}).json()
+    assert j["pronostico"]["petroleo"] is None and j["pronostico"]["gas"] is None
+    assert any("no produjo en su último mes" in a for a in j["avisos"])
+
+
 def test_existente(cliente):
     panel = pl.read_parquet(config.PANEL)
     activo = panel.filter((pl.col("fecha") == panel["fecha"].max()) & (pl.col("prod_pet") > 0)
