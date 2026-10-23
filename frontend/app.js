@@ -1,9 +1,31 @@
 // Frontend del pronóstico: consume la API FastAPI (detrás de nginx en /api).
 const API = location.protocol === "file:" || location.port === "5500" ? "http://localhost:8000" : "/api";
-const COLORES = { petroleo: getComputedStyle(document.documentElement).getPropertyValue("--petroleo").trim(),
-                  gas: getComputedStyle(document.documentElement).getPropertyValue("--gas").trim() };
+const COLORES = {};
 const graficos = {};
 let opciones = null;
+let ultimoResultado = null;  // { r, render } para redibujar los gráficos al cambiar de tema
+
+// ---------------------------------------------------------------- tema claro / oscuro
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function leerColores() {
+  COLORES.petroleo = css("--petroleo"); COLORES.gas = css("--gas");
+  Chart.defaults.color = css("--suave"); Chart.defaults.borderColor = css("--borde");
+}
+function actualizarBotonTema() {
+  const claro = document.documentElement.dataset.theme === "light";
+  const b = document.querySelector("#tema");
+  b.querySelector("[aria-hidden]").textContent = claro ? "☾" : "☀";
+  b.querySelector(".tema-texto").textContent = claro ? "Oscuro" : "Claro";
+  b.setAttribute("aria-label", claro ? "Cambiar a modo oscuro" : "Cambiar a modo claro");
+}
+document.querySelector("#tema").addEventListener("click", () => {
+  const claro = document.documentElement.dataset.theme !== "light";
+  if (claro) document.documentElement.dataset.theme = "light"; else delete document.documentElement.dataset.theme;
+  try { localStorage.setItem("tema", claro ? "light" : "dark"); } catch (e) {}
+  leerColores(); actualizarBotonTema();
+  if (ultimoResultado && !document.querySelector("#resultado").classList.contains("oculto")) ultimoResultado.render(ultimoResultado.r);
+});
+leerColores(); actualizarBotonTema();
 
 const $ = (s, r = document) => r.querySelector(s);
 const fmt = (v, d = 1) => v == null ? "—" : Number(v).toLocaleString("es-AR", { maximumFractionDigits: d, minimumFractionDigits: 0 });
@@ -126,7 +148,7 @@ $("#form-nuevo").addEventListener("submit", async e => {
 
 async function ejecutar(boton, llamada, render) {
   boton.disabled = true; $("#error").classList.add("oculto");
-  try { render(await llamada()); }
+  try { const r = await llamada(); ultimoResultado = { r, render }; render(r); }
   catch (err) { mostrarError(err.message); }
   finally { boton.disabled = false; }
 }
@@ -195,10 +217,10 @@ function renderFluido(fl, c, hist, kpis) {
   if (!c) {
     art.querySelector(".kpis").innerHTML = `<p class="sin-dato">Sin producción de este fluido en el último mes informado.</p>`;
     art.querySelector(".shap").innerHTML = "";
-    art.querySelector("canvas").classList.add("oculto");
+    art.querySelector(".grafico").classList.add("oculto");
     return;
   }
-  art.querySelector("canvas").classList.remove("oculto");
+  art.querySelector(".grafico").classList.remove("oculto");
   art.querySelector(".kpis").innerHTML = kpis.map(([l, v]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
   const ejeF = c.eje.map(x => typeof x === "string" ? x.slice(0, 7) : `M${x}`);
   const etiquetas = hist ? [...hist.x, ...ejeF] : ejeF;
@@ -217,7 +239,7 @@ function renderFluido(fl, c, hist, kpis) {
   }
   graficos[fl] = new Chart(art.querySelector("canvas"), {
     type: "line", data: { labels: etiquetas, datasets: series },
-    options: { responsive: true, interaction: { mode: "index", intersect: false }, animation: false,
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false }, animation: false,
                plugins: { legend: { labels: { filter: it => it.text !== "P10" } },
                           tooltip: { callbacks: { label: x => x.raw == null ? null : `${x.dataset.label}: ${fmt(x.raw)}` } } },
                scales: { y: { beginAtZero: true, title: { display: true, text: c.unidad + "/mes" } } } },

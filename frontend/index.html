@@ -4,13 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pronóstico Neuquina</title>
+  <!-- Aplica el tema guardado antes de pintar la página (evita un parpadeo); por defecto, oscuro -->
+  <script>try { if (localStorage.getItem("tema") === "light") document.documentElement.dataset.theme = "light"; } catch (e) {}</script>
   <link rel="stylesheet" href="estilos.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 <header>
-  <h1>Producción No Convencional · Cuenca Neuquina</h1>
+  <div class="titulo">
+    <h1>Producción No Convencional · Cuenca Neuquina</h1>
+    <button type="button" id="tema" class="tema" aria-label="Cambiar a modo claro"><span aria-hidden="true">☀</span> <span class="tema-texto">Claro</span></button>
+  </div>
   <p class="sub">Pronóstico de petróleo y gas con LightGBM (bandas P10–P90) · <span id="estado-api">conectando…</span></p>
+  <p class="descripcion">
+    Se estima mes a mes la producción de petróleo y gas de pozos no convencionales (shale y tight) de la Cuenca Neuquina,
+    de dos formas: el pronóstico de los próximos 1 a 12 meses de un pozo en producción y la curva esperada de los
+    primeros 24 meses de un pozo nuevo, antes de perforarlo.<br>
+    El objetivo es anticipar la declinación de los pozos para apoyar la planificación de perforación, instalaciones y
+    reservas, con un rango de incertidumbre y la explicación de cada predicción.
+  </p>
 </header>
 
 <main>
@@ -67,13 +79,13 @@
       <article class="fluido" id="res-petroleo">
         <h2>Petróleo <span class="unidad">m³/mes</span></h2>
         <div class="kpis"></div>
-        <canvas></canvas>
+        <div class="grafico"><canvas></canvas></div>
         <details><summary>Qué explica la predicción (SHAP)</summary><table class="shap"></table></details>
       </article>
       <article class="fluido" id="res-gas">
         <h2>Gas <span class="unidad">Mm³/mes</span></h2>
         <div class="kpis"></div>
-        <canvas></canvas>
+        <div class="grafico"><canvas></canvas></div>
         <details><summary>Qué explica la predicción (SHAP)</summary><table class="shap"></table></details>
       </article>
     </div>
