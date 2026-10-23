@@ -26,6 +26,10 @@ header h1 { font-size: 1.5rem; margin: 24px 0 4px; }
 input, select { padding: 8px; border: 1px solid var(--borde); border-radius: 6px; background: var(--fondo); color: var(--texto); font-size: .95rem; width: 100%; }
 button[type=submit] { padding: 10px 16px; background: var(--acento); color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
 button[disabled] { opacity: .6; cursor: wait; }
+.acciones { display: flex; gap: 8px; }
+.acciones button[type=submit] { flex: 2; }
+button.secundario { flex: 1; padding: 10px 12px; background: transparent; color: var(--texto); border: 1px solid var(--borde); border-radius: 6px; font-size: 1rem; cursor: pointer; }
+button.secundario:hover { background: var(--fondo); border-color: var(--suave); }
 .opcionales { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; border: 1px dashed var(--borde); border-radius: 6px; padding: 12px; margin: 0; }
 .opcionales legend { font-size: .8rem; color: var(--suave); padding: 0 4px; }
 .sugerencias { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; list-style: none; margin: 2px 0 0; padding: 0; background: var(--superficie); border: 1px solid var(--borde); border-radius: 6px; max-height: 260px; overflow-y: auto; }

@@ -92,6 +92,17 @@ $("#sugerencias").addEventListener("click", e => {
   $("#sugerencias").innerHTML = "";
 });
 
+// Limpiar: borra la búsqueda, las sugerencias, el resultado y los mensajes de error
+$("#limpiar").addEventListener("click", () => {
+  clearTimeout(temporizador);
+  $("#buscar").value = ""; $("#idpozo").value = ""; $("#horizonte").value = 12;
+  $("#sugerencias").innerHTML = "";
+  $("#error").classList.add("oculto");
+  $("#resultado").classList.add("oculto");
+  for (const k in graficos) { graficos[k].destroy(); delete graficos[k]; }
+  $("#buscar").focus();
+});
+
 // ---------------------------------------------------------------- envíos
 $("#form-existente").addEventListener("submit", async e => {
   e.preventDefault();
