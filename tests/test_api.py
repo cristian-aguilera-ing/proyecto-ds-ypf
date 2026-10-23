@@ -41,6 +41,11 @@ def test_buscar_varias_palabras(cliente):
     assert res and all("LOMA CAMPANA" in p["areayacimiento"] and "YPF" in p["sigla"].upper() for p in res)
 
 
+def test_buscar_por_formacion(cliente):
+    res = cliente.get("/pozos", params={"q": "lajas"}).json()
+    assert res and all(p["formacion"] == "lajas" for p in res)
+
+
 def test_buscar_idpozo_exacto_primero(cliente):
     pozo = cliente.get("/pozos", params={"q": "LCa"}).json()[0]["idpozo"]
     assert cliente.get("/pozos", params={"q": str(pozo)}).json()[0]["idpozo"] == pozo

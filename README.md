@@ -18,9 +18,9 @@ Proyecto final del programa **Data Science — Energía Digital 2026 (Fundación
 | [docs/Pre_Entrega_4_YPF](docs/Pre_Entrega_4_YPF.pdf) | Clustering y SVD |
 | [docs/Informe_Avance_Proyecto_YPF](docs/Informe_Avance_Proyecto_YPF.pdf) | Estado del proyecto y cambios de la versión 1 a la 2 |
 | [docs/guia_del_proyecto](docs/guia_del_proyecto.pdf) | Instalación, ejecución y flujo de trabajo con Git |
-| [docs/guia_frontend.md](docs/guia_frontend.md) | Cómo leer el frontend |
+| [docs/guia_frontend](docs/guia_frontend.pdf) | Cómo leer el frontend (también en [Markdown](docs/guia_frontend.md)) |
 
-Cada documento está en `.docx` (editable) y `.pdf`.
+Cada documento está en `.docx` (editable) y `.pdf`, salvo la guía del frontend, que está en `.md` y `.pdf`.
 
 Predice la producción mensual de **petróleo (m³)** y **gas (Mm³ = miles de m³)** de pozos no convencionales (shale / tight) de la **Cuenca Neuquina**, en dos modos:
 

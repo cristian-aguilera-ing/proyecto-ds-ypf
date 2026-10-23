@@ -1,5 +1,8 @@
 # Guía para leer el frontend
 
+**Proyecto Data Science — Fundación YPF 2026 · Grupo 10 · Comisión 3**  
+Cristian Alejandro Aguilera · Abigail Roxana Vicentelo · Ian Lionel Tapias Díaz
+
 Esta guía explica qué muestra cada parte de la aplicación web y cómo interpretarla. La aplicación se abre en **http://localhost:8080** después de `docker compose up --build -d`.
 
 > **En una frase:** la aplicación estima cuánto petróleo y cuánto gas va a producir un pozo de la Cuenca Neuquina mes a mes, con un rango de incertidumbre, y explica qué datos empujaron esa estimación.
@@ -17,7 +20,7 @@ Esta guía explica qué muestra cada parte de la aplicación web y cómo interpr
 
 ![Encabezado y pestañas](img/01_inicio.jpg)
 
-En el encabezado figuran la versión de los modelos y hasta qué mes llegan los datos (`datos hasta 2026-07-01`). Si dice **"API no disponible"**, el contenedor de la API no está corriendo.
+En el encabezado figuran la versión de los modelos y hasta qué mes llegan los datos (`datos hasta 2026-07-01`). Si dice **"API no disponible"**, el contenedor de la API no está corriendo. Al pie de la página figuran la fuente de los datos y los integrantes del grupo.
 
 ---
 
@@ -36,18 +39,21 @@ Para pasar a unidades de campo: 1 m³ de petróleo ≈ 6,29 barriles; 1 Mm³ de 
 
 ### 3.1 Formulario
 
-- **Buscar pozo:** escribí parte de la sigla (`LCa-30`), el `idpozo`, o varias palabras que combinen sigla, yacimiento u operadora (`ypf loma campana`). Cada sugerencia muestra:
+- **Buscar pozo:** escribí parte de la sigla (`LCa-30`), el `idpozo`, o varias palabras que combinen sigla, yacimiento, operadora o formación (`ypf loma campana`, `ypf lajas`). Cada sugerencia muestra:
   - una etiqueta **activo** (verde) si el pozo produjo en el último mes del dataset, o **sin producción desde AAAA-MM** (gris) si está parado;
   - el idpozo, la formación, el yacimiento, la operadora y si es un pozo de **petróleo** o de **gas**.
 
   Los resultados aparecen ordenados: primero el idpozo exacto, después las siglas que empiezan con lo que escribiste, luego los pozos activos y, entre ellos, los de mayor producción reciente. **Solo los pozos activos tienen pronóstico**, porque el modelo parte del último mes producido.
+
 - **Horizonte (meses):** cuántos meses pronosticar, de 1 a 12.
+
+![Sugerencias del buscador con pozos activos y sin producción](img/05_busqueda.png)
 
 ### 3.2 Encabezado del resultado
 
 Muestra la operadora, la formación (shale o tight), el yacimiento, la provincia, el fluido dominante y **desde qué mes se pronostica** (el último mes informado del pozo).
 
-![Resultado de pozo existente](img/02_existente.jpg)
+![Resultado de pozo existente](img/02_existente.png)
 
 ### 3.3 Tarjetas de indicadores (una para petróleo, otra para gas)
 
@@ -106,7 +112,7 @@ Al pasar el mouse sobre el gráfico se ven los valores de cada mes. Hay que fija
 
 ### 4.2 Resultado
 
-![Resultado de pozo nuevo](img/04_nuevo_resultado.jpg)
+![Resultado de pozo nuevo](img/04_nuevo_resultado.png)
 
 | Indicador | Significado |
 |---|---|

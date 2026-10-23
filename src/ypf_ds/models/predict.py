@@ -110,11 +110,11 @@ class Predictor:
                 .with_columns(
                     activo=pl.col("ultima_produccion") == self.fecha_max,
                     prod_reciente=pl.col("prod_reciente").fill_null(0),
-                    texto=pl.concat_str(["sigla", "areayacimiento", "empresa", pl.col("idpozo").cast(pl.String)],
+                    texto=pl.concat_str(["sigla", "areayacimiento", "empresa", "formacion", pl.col("idpozo").cast(pl.String)],
                                         separator=" ").str.to_uppercase()))
 
     def buscar_pozos(self, q: str, limite: int = 15) -> list[dict]:
-        """Busca por sigla, yacimiento, operadora o idpozo. Admite varias palabras ("ypf loma campana"):
+        """Busca por sigla, yacimiento, operadora, formación o idpozo. Admite varias palabras ("ypf loma campana"):
         todas tienen que aparecer. Ordena: idpozo exacto, sigla que empieza con la búsqueda, pozos activos
         y mayor producción reciente."""
         palabras = q.strip().upper().split()

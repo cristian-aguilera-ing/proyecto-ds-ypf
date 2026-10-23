@@ -61,6 +61,8 @@ details summary { cursor: pointer; color: var(--acento); margin: 8px 0; }
 .tarjeta h3 { margin: 0 0 8px; font-size: 1rem; }
 .sin-dato { color: var(--suave); font-style: italic; }
 footer { color: var(--suave); font-size: .8rem; padding: 24px 16px; }
+footer p { margin: 0 0 4px; }
+footer strong { color: var(--texto); }
 @media (max-width: 640px) {
   .grilla-fluidos, .grilla-info { grid-template-columns: 1fr; }
   .formulario .ancho { grid-column: span 1; }
