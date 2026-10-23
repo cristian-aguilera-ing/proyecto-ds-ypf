@@ -1,0 +1,13 @@
+.venv
+.git
+data/raw
+data/interim
+notebooks
+curso
+reports
+mlruns
+mlflow.db
+tests
+**/__pycache__
+**/.DS_Store
+**/.ipynb_checkpoints

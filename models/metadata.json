@@ -1,0 +1,2146 @@
+{
+  "version": "2026-10-23 07:45",
+  "datos_hasta": "2026-07-01",
+  "unidades": {
+    "petroleo": "m3/mes",
+    "gas": "Mm3/mes (miles de m3)"
+  },
+  "cortes": {
+    "train": "<= 2022-12-01",
+    "valid": "2023",
+    "test": "2024-2025"
+  },
+  "modelos": {
+    "petroleo_existente": {
+      "parametros": {
+        "objective": "regression",
+        "learning_rate": 0.024355803455019455,
+        "num_leaves": 45,
+        "min_child_samples": 244,
+        "subsample": 0.6584091150536278,
+        "colsample_bytree": 0.6465362330754242,
+        "reg_lambda": 0.9773503414401795,
+        "subsample_freq": 1,
+        "n_estimators": 553,
+        "rmse_valid": 0.27396129871500463
+      },
+      "metricas_test": {
+        "modelo": {
+          "mae": 215.1275,
+          "rmse": 537.4118,
+          "r2": 0.7303,
+          "wape": 0.3694,
+          "n": 713822
+        },
+        "persistencia": {
+          "mae": 364.0117,
+          "rmse": 898.485,
+          "r2": 0.246,
+          "wape": 0.625,
+          "n": 713822
+        },
+        "cobertura_p10_p90": 0.8075,
+        "por_horizonte": {
+          "1": {
+            "modelo": {
+              "mae": 178.6839,
+              "rmse": 462.4017,
+              "r2": 0.8892,
+              "wape": 0.2233,
+              "n": 63516
+            },
+            "persistencia": {
+              "mae": 214.1609,
+              "rmse": 594.1166,
+              "r2": 0.817,
+              "wape": 0.2676,
+              "n": 63516
+            }
+          },
+          "2": {
+            "modelo": {
+              "mae": 226.7766,
+              "rmse": 590.6201,
+              "r2": 0.8031,
+              "wape": 0.2991,
+              "n": 62742
+            },
+            "persistencia": {
+              "mae": 299.4394,
+              "rmse": 798.6959,
+              "r2": 0.6398,
+              "wape": 0.3949,
+              "n": 62742
+            }
+          },
+          "3": {
+            "modelo": {
+              "mae": 241.8355,
+              "rmse": 620.4972,
+              "r2": 0.7454,
+              "wape": 0.344,
+              "n": 61981
+            },
+            "persistencia": {
+              "mae": 339.5125,
+              "rmse": 867.2561,
+              "r2": 0.5026,
+              "wape": 0.4829,
+              "n": 61981
+            }
+          },
+          "4": {
+            "modelo": {
+              "mae": 240.4826,
+              "rmse": 602.9505,
+              "r2": 0.712,
+              "wape": 0.3703,
+              "n": 61247
+            },
+            "persistencia": {
+              "mae": 360.5505,
+              "rmse": 893.8333,
+              "r2": 0.3671,
+              "wape": 0.5552,
+              "n": 61247
+            }
+          },
+          "5": {
+            "modelo": {
+              "mae": 234.9311,
+              "rmse": 584.7156,
+              "r2": 0.6801,
+              "wape": 0.3893,
+              "n": 60510
+            },
+            "persistencia": {
+              "mae": 374.0953,
+              "rmse": 909.9066,
+              "r2": 0.2254,
+              "wape": 0.6199,
+              "n": 60510
+            }
+          },
+          "6": {
+            "modelo": {
+              "mae": 228.4036,
+              "rmse": 562.3051,
+              "r2": 0.6579,
+              "wape": 0.4049,
+              "n": 59768
+            },
+            "persistencia": {
+              "mae": 381.9835,
+              "rmse": 919.8625,
+              "r2": 0.0846,
+              "wape": 0.6772,
+              "n": 59768
+            }
+          },
+          "7": {
+            "modelo": {
+              "mae": 222.1113,
+              "rmse": 545.0395,
+              "r2": 0.6394,
+              "wape": 0.4173,
+              "n": 59009
+            },
+            "persistencia": {
+              "mae": 389.305,
+              "rmse": 932.8111,
+              "r2": -0.0562,
+              "wape": 0.7314,
+              "n": 59009
+            }
+          },
+          "8": {
+            "modelo": {
+              "mae": 214.9743,
+              "rmse": 526.0461,
+              "r2": 0.629,
+              "wape": 0.4258,
+              "n": 58336
+            },
+            "persistencia": {
+              "mae": 394.8039,
+              "rmse": 943.051,
+              "r2": -0.1922,
+              "wape": 0.7819,
+              "n": 58336
+            }
+          },
+          "9": {
+            "modelo": {
+              "mae": 207.1902,
+              "rmse": 505.195,
+              "r2": 0.6247,
+              "wape": 0.4302,
+              "n": 57639
+            },
+            "persistencia": {
+              "mae": 401.0638,
+              "rmse": 954.3199,
+              "r2": -0.3393,
+              "wape": 0.8327,
+              "n": 57639
+            }
+          },
+          "10": {
+            "modelo": {
+              "mae": 200.3638,
+              "rmse": 487.6309,
+              "r2": 0.6215,
+              "wape": 0.4339,
+              "n": 56996
+            },
+            "persistencia": {
+              "mae": 407.0116,
+              "rmse": 968.1954,
+              "r2": -0.4923,
+              "wape": 0.8814,
+              "n": 56996
+            }
+          },
+          "11": {
+            "modelo": {
+              "mae": 193.4724,
+              "rmse": 464.139,
+              "r2": 0.6268,
+              "wape": 0.4361,
+              "n": 56349
+            },
+            "persistencia": {
+              "mae": 413.0075,
+              "rmse": 980.4191,
+              "r2": -0.6653,
+              "wape": 0.931,
+              "n": 56349
+            }
+          },
+          "12": {
+            "modelo": {
+              "mae": 188.2082,
+              "rmse": 442.2937,
+              "r2": 0.6304,
+              "wape": 0.4409,
+              "n": 55729
+            },
+            "persistencia": {
+              "mae": 417.4733,
+              "rmse": 986.8592,
+              "r2": -0.8401,
+              "wape": 0.9779,
+              "n": 55729
+            }
+          }
+        },
+        "alcance_proyecto_anterior": {
+          "modelo": {
+            "mae": 162.6635,
+            "rmse": 411.0912,
+            "r2": 0.906,
+            "wape": 0.2106,
+            "n": 61259
+          },
+          "persistencia": {
+            "mae": 182.5932,
+            "rmse": 472.6899,
+            "r2": 0.8758,
+            "wape": 0.2364,
+            "n": 61259
+          }
+        },
+        "backtest_origen_2023_12": {
+          "pozos": 2291,
+          "modelo": {
+            "mae": 193.8028,
+            "rmse": 476.0045,
+            "r2": 0.7567,
+            "wape": 0.3572,
+            "n": 27384
+          },
+          "arps": {
+            "mae": 316.0847,
+            "rmse": 829.2912,
+            "r2": 0.2615,
+            "wape": 0.5826,
+            "n": 27384
+          },
+          "persistencia": {
+            "mae": 360.8755,
+            "rmse": 886.9776,
+            "r2": 0.1551,
+            "wape": 0.6652,
+            "n": 27384
+          }
+        }
+      },
+      "filas": {
+        "train": 1587854,
+        "valid": 290501,
+        "test": 713822
+      }
+    },
+    "gas_existente": {
+      "parametros": {
+        "objective": "regression",
+        "learning_rate": 0.02733006610742874,
+        "num_leaves": 98,
+        "min_child_samples": 344,
+        "subsample": 0.7859750898562702,
+        "colsample_bytree": 0.4501460276487598,
+        "reg_lambda": 2.612213965999367,
+        "subsample_freq": 1,
+        "n_estimators": 281,
+        "rmse_valid": 0.3246072736481453
+      },
+      "metricas_test": {
+        "modelo": {
+          "mae": 262.7894,
+          "rmse": 822.7714,
+          "r2": 0.7786,
+          "wape": 0.3749,
+          "n": 850222
+        },
+        "persistencia": {
+          "mae": 377.4979,
+          "rmse": 1191.287,
+          "r2": 0.5358,
+          "wape": 0.5386,
+          "n": 850222
+        },
+        "cobertura_p10_p90": 0.7897,
+        "por_horizonte": {
+          "1": {
+            "modelo": {
+              "mae": 207.5297,
+              "rmse": 691.149,
+              "r2": 0.8821,
+              "wape": 0.2533,
+              "n": 74965
+            },
+            "persistencia": {
+              "mae": 232.881,
+              "rmse": 814.0427,
+              "r2": 0.8364,
+              "wape": 0.2842,
+              "n": 74965
+            }
+          },
+          "2": {
+            "modelo": {
+              "mae": 251.895,
+              "rmse": 824.9775,
+              "r2": 0.8241,
+              "wape": 0.3174,
+              "n": 74229
+            },
+            "persistencia": {
+              "mae": 310.0784,
+              "rmse": 1062.8928,
+              "r2": 0.7081,
+              "wape": 0.3907,
+              "n": 74229
+            }
+          },
+          "3": {
+            "modelo": {
+              "mae": 271.4311,
+              "rmse": 866.4712,
+              "r2": 0.7927,
+              "wape": 0.3545,
+              "n": 73482
+            },
+            "persistencia": {
+              "mae": 354.6085,
+              "rmse": 1181.658,
+              "r2": 0.6144,
+              "wape": 0.4631,
+              "n": 73482
+            }
+          },
+          "4": {
+            "modelo": {
+              "mae": 275.0494,
+              "rmse": 861.4849,
+              "r2": 0.7791,
+              "wape": 0.3726,
+              "n": 72696
+            },
+            "persistencia": {
+              "mae": 374.0707,
+              "rmse": 1237.6252,
+              "r2": 0.544,
+              "wape": 0.5067,
+              "n": 72696
+            }
+          },
+          "5": {
+            "modelo": {
+              "mae": 274.4379,
+              "rmse": 849.0585,
+              "r2": 0.77,
+              "wape": 0.3841,
+              "n": 71909
+            },
+            "persistencia": {
+              "mae": 386.7847,
+              "rmse": 1255.4022,
+              "r2": 0.4972,
+              "wape": 0.5413,
+              "n": 71909
+            }
+          },
+          "6": {
+            "modelo": {
+              "mae": 274.5049,
+              "rmse": 850.914,
+              "r2": 0.7551,
+              "wape": 0.3955,
+              "n": 71108
+            },
+            "persistencia": {
+              "mae": 397.6062,
+              "rmse": 1266.1506,
+              "r2": 0.4577,
+              "wape": 0.5728,
+              "n": 71108
+            }
+          },
+          "7": {
+            "modelo": {
+              "mae": 273.6235,
+              "rmse": 840.5702,
+              "r2": 0.7472,
+              "wape": 0.4046,
+              "n": 70341
+            },
+            "persistencia": {
+              "mae": 408.5166,
+              "rmse": 1260.5516,
+              "r2": 0.4314,
+              "wape": 0.604,
+              "n": 70341
+            }
+          },
+          "8": {
+            "modelo": {
+              "mae": 270.6031,
+              "rmse": 823.7257,
+              "r2": 0.748,
+              "wape": 0.4091,
+              "n": 69661
+            },
+            "persistencia": {
+              "mae": 414.0042,
+              "rmse": 1252.6195,
+              "r2": 0.4172,
+              "wape": 0.6259,
+              "n": 69661
+            }
+          },
+          "9": {
+            "modelo": {
+              "mae": 268.1802,
+              "rmse": 817.1295,
+              "r2": 0.7445,
+              "wape": 0.413,
+              "n": 68938
+            },
+            "persistencia": {
+              "mae": 413.0818,
+              "rmse": 1232.0113,
+              "r2": 0.4192,
+              "wape": 0.6361,
+              "n": 68938
+            }
+          },
+          "10": {
+            "modelo": {
+              "mae": 265.6663,
+              "rmse": 812.5897,
+              "r2": 0.7377,
+              "wape": 0.418,
+              "n": 68276
+            },
+            "persistencia": {
+              "mae": 414.0457,
+              "rmse": 1220.3885,
+              "r2": 0.4084,
+              "wape": 0.6515,
+              "n": 68276
+            }
+          },
+          "11": {
+            "modelo": {
+              "mae": 263.6441,
+              "rmse": 813.5987,
+              "r2": 0.7286,
+              "wape": 0.423,
+              "n": 67621
+            },
+            "persistencia": {
+              "mae": 416.9267,
+              "rmse": 1218.3119,
+              "r2": 0.3915,
+              "wape": 0.6689,
+              "n": 67621
+            }
+          },
+          "12": {
+            "modelo": {
+              "mae": 260.1326,
+              "rmse": 809.8984,
+              "r2": 0.7214,
+              "wape": 0.4255,
+              "n": 66996
+            },
+            "persistencia": {
+              "mae": 427.3449,
+              "rmse": 1246.0569,
+              "r2": 0.3406,
+              "wape": 0.699,
+              "n": 66996
+            }
+          }
+        },
+        "alcance_proyecto_anterior": {
+          "modelo": {
+            "mae": 197.8987,
+            "rmse": 659.0773,
+            "r2": 0.89,
+            "wape": 0.2446,
+            "n": 72301
+          },
+          "persistencia": {
+            "mae": 215.8134,
+            "rmse": 742.8865,
+            "r2": 0.8602,
+            "wape": 0.2668,
+            "n": 72301
+          }
+        },
+        "backtest_origen_2023_12": {
+          "pozos": 2724,
+          "modelo": {
+            "mae": 270.7382,
+            "rmse": 842.3641,
+            "r2": 0.7678,
+            "wape": 0.385,
+            "n": 32580
+          },
+          "arps": {
+            "mae": 333.4558,
+            "rmse": 1052.3192,
+            "r2": 0.6376,
+            "wape": 0.4742,
+            "n": 32580
+          },
+          "persistencia": {
+            "mae": 363.9805,
+            "rmse": 1080.4444,
+            "r2": 0.6179,
+            "wape": 0.5176,
+            "n": 32580
+          }
+        }
+      },
+      "filas": {
+        "train": 2035250,
+        "valid": 363032,
+        "test": 850222
+      }
+    },
+    "petroleo_nuevo": {
+      "parametros": {
+        "objective": "regression",
+        "learning_rate": 0.05590596835165037,
+        "num_leaves": 31,
+        "min_child_samples": 98,
+        "subsample": 0.7936606433593179,
+        "colsample_bytree": 0.46667719406732167,
+        "reg_lambda": 0.09431481949646227,
+        "subsample_freq": 1,
+        "n_estimators": 111,
+        "rmse_valid": 1072.81849167639
+      },
+      "metricas_test": {
+        "mensual": {
+          "modelo": {
+            "mae": 1031.6235,
+            "rmse": 1565.2471,
+            "r2": 0.4618,
+            "wape": 0.4398,
+            "n": 16203
+          },
+          "curva_mediana": {
+            "mae": 1364.6062,
+            "rmse": 2058.6437,
+            "r2": 0.069,
+            "wape": 0.5817,
+            "n": 16203
+          }
+        },
+        "acum_12m": {
+          "pozos": 729,
+          "modelo": {
+            "mae": 9940.4706,
+            "rmse": 14415.8941,
+            "r2": 0.4484,
+            "wape": 0.309,
+            "n": 729
+          },
+          "curva_mediana": {
+            "mae": 16253.3422,
+            "rmse": 21978.917,
+            "r2": -0.2823,
+            "wape": 0.5053,
+            "n": 729
+          }
+        },
+        "cobertura_p10_p90": 0.7418,
+        "seleccion_variables": {
+          "elegido": "base",
+          "rmse_valid": {
+            "base": 1072.818,
+            "base+capitulo_iv": 1079.189
+          }
+        }
+      },
+      "filas": {
+        "train": 73107,
+        "valid": 8345,
+        "test": 16203
+      }
+    },
+    "gas_nuevo": {
+      "parametros": {
+        "objective": "tweedie",
+        "learning_rate": 0.16203494631085777,
+        "num_leaves": 65,
+        "min_child_samples": 72,
+        "subsample": 0.5529864728785082,
+        "colsample_bytree": 0.6321844524819245,
+        "reg_lambda": 0.019389293252476236,
+        "subsample_freq": 1,
+        "n_estimators": 25,
+        "rmse_valid": 1961.4807826387605
+      },
+      "metricas_test": {
+        "mensual": {
+          "modelo": {
+            "mae": 721.6457,
+            "rmse": 1687.3692,
+            "r2": 0.7155,
+            "wape": 0.4528,
+            "n": 16203
+          },
+          "curva_mediana": {
+            "mae": 902.91,
+            "rmse": 2015.5442,
+            "r2": 0.5941,
+            "wape": 0.5666,
+            "n": 16203
+          }
+        },
+        "acum_12m": {
+          "pozos": 729,
+          "modelo": {
+            "mae": 6507.9249,
+            "rmse": 14293.4587,
+            "r2": 0.8601,
+            "wape": 0.2819,
+            "n": 729
+          },
+          "curva_mediana": {
+            "mae": 9499.4095,
+            "rmse": 20075.7791,
+            "r2": 0.724,
+            "wape": 0.4115,
+            "n": 729
+          }
+        },
+        "cobertura_p10_p90": 0.7324,
+        "seleccion_variables": {
+          "elegido": "base",
+          "rmse_valid": {
+            "base": 1961.481,
+            "base+capitulo_iv": 1963.039
+          }
+        }
+      },
+      "filas": {
+        "train": 73107,
+        "valid": 8345,
+        "test": 16203
+      }
+    }
+  },
+  "clustering": {
+    "k": 4,
+    "pozos": 4144,
+    "evaluacion": {
+      "3": {
+        "silhouette": 0.2142,
+        "davies_bouldin": 1.5282
+      },
+      "4": {
+        "silhouette": 0.2205,
+        "davies_bouldin": 1.4261
+      },
+      "5": {
+        "silhouette": 0.1982,
+        "davies_bouldin": 1.4711
+      },
+      "6": {
+        "silhouette": 0.199,
+        "davies_bouldin": 1.3953
+      },
+      "7": {
+        "silhouette": 0.2007,
+        "davies_bouldin": 1.3657
+      },
+      "8": {
+        "silhouette": 0.1871,
+        "davies_bouldin": 1.3868
+      }
+    },
+    "perfiles": [
+      {
+        "cluster": 0,
+        "pozos": 1621,
+        "fluido": "Petróleo",
+        "pico_pet_mediano_m3": 3240.7,
+        "pico_gas_mediano_Mm3": 692.5,
+        "gor_mediano": 174.0,
+        "retencion_mes12": 0.295,
+        "nombre": "Petróleo · pico alto · declinación fuerte"
+      },
+      {
+        "cluster": 1,
+        "pozos": 1300,
+        "fluido": "Petróleo",
+        "pico_pet_mediano_m3": 2130.4,
+        "pico_gas_mediano_Mm3": 1127.4,
+        "gor_mediano": 441.0,
+        "retencion_mes12": 0.545,
+        "nombre": "Petróleo · pico medio · declinación suave"
+      },
+      {
+        "cluster": 2,
+        "pozos": 529,
+        "fluido": "Petróleo",
+        "pico_pet_mediano_m3": 154.7,
+        "pico_gas_mediano_Mm3": 463.1,
+        "gor_mediano": 1447.0,
+        "retencion_mes12": 0.144,
+        "nombre": "Petróleo · pico bajo · declinación fuerte"
+      },
+      {
+        "cluster": 3,
+        "pozos": 694,
+        "fluido": "Gas",
+        "pico_pet_mediano_m3": 0.0,
+        "pico_gas_mediano_Mm3": 4724.2,
+        "gor_mediano": null,
+        "retencion_mes12": 0.487,
+        "nombre": "Gas · declinación suave"
+      }
+    ]
+  },
+  "opciones": {
+    "formacion": [
+      "vaca muerta",
+      "lajas",
+      "mulichinco",
+      "los molles",
+      "punta rosada",
+      "quintuco",
+      "precuyo",
+      "agrio",
+      "basamento",
+      "lotena",
+      "tordillo",
+      "sierras blancas",
+      "chachao",
+      "rayoso",
+      "formación improductiva"
+    ],
+    "sub_tipo_recurso": [
+      "SHALE",
+      "TIGHT"
+    ],
+    "tipopozo": [
+      "Gasífero",
+      "Otro tipo",
+      "Petrolífero"
+    ],
+    "empresa": [
+      "YPF S.A.",
+      "PAN AMERICAN ENERGY SL",
+      "VISTA ENERGY ARGENTINA SAU",
+      "TECPETROL S.A.",
+      "PAMPA ENERGIA S.A.",
+      "QUINTANA E&P ARGENTINA S.R.L.",
+      "SHELL ARGENTINA S.A.",
+      "CAPEX S.A.",
+      "TOTAL AUSTRAL S.A.",
+      "FLXS OGE S.A ",
+      "OTRAS",
+      "PLUSPETROL S.A.",
+      "PHOENIX GLOBAL RESOURCES S.A.",
+      "PLUSPETROL CUENCA NEUQUINA S.R.L.",
+      "BENTIA ENERGY S.A.",
+      "OILSTONE ENERGIA S.A."
+    ],
+    "areas": [
+      {
+        "areayacimiento": "AGUA DE AFUERA",
+        "lat": -37.47407685,
+        "lon": -69.204793,
+        "profundidad": 4480.5,
+        "dias_perf": 80.5,
+        "dias_term": 59.5,
+        "horizontal": true,
+        "n": 4
+      },
+      {
+        "areayacimiento": "AGUA DEL CAJON",
+        "lat": -38.84850333333,
+        "lon": -68.44762638889,
+        "profundidad": 5615.0,
+        "dias_perf": 91.0,
+        "dias_term": 43.0,
+        "horizontal": true,
+        "n": 21
+      },
+      {
+        "areayacimiento": "AGUADA CÁNEPA",
+        "lat": -38.072245,
+        "lon": -68.469545,
+        "profundidad": 3843.5,
+        "dias_perf": 68.0,
+        "dias_term": 32.0,
+        "horizontal": true,
+        "n": 12
+      },
+      {
+        "areayacimiento": "AGUADA DE CASTRO",
+        "lat": -38.260916,
+        "lon": -69.58172400000001,
+        "profundidad": 4234.0,
+        "dias_perf": 88.0,
+        "dias_term": 59.0,
+        "horizontal": true,
+        "n": 10
+      },
+      {
+        "areayacimiento": "AGUADA DE LA ARENA",
+        "lat": -38.20826067,
+        "lon": -69.15907415,
+        "profundidad": 5112.5,
+        "dias_perf": 51.5,
+        "dias_term": 64.0,
+        "horizontal": true,
+        "n": 41
+      },
+      {
+        "areayacimiento": "AGUADA DEL CHIVATO",
+        "lat": -37.47855,
+        "lon": -69.00986900000001,
+        "profundidad": 3397.25,
+        "dias_perf": 37.5,
+        "dias_term": 33.5,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "AGUADA DEL PONCHO",
+        "lat": -38.15165,
+        "lon": -68.65566,
+        "profundidad": 2946.0,
+        "dias_perf": 24.0,
+        "dias_term": 32.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "AGUADA FEDERAL",
+        "lat": -38.09551342,
+        "lon": -68.71850083999999,
+        "profundidad": 5857.0,
+        "dias_perf": 67.0,
+        "dias_term": 21.0,
+        "horizontal": true,
+        "n": 30
+      },
+      {
+        "areayacimiento": "AGUADA LOS LOROS",
+        "lat": -37.71108,
+        "lon": -69.2828,
+        "profundidad": 3324.0,
+        "dias_perf": 128.0,
+        "dias_term": 44.0,
+        "horizontal": true,
+        "n": 7
+      },
+      {
+        "areayacimiento": "AGUADA PICHANA ESTE MULICHINCO",
+        "lat": -38.2571704,
+        "lon": -69.2363853,
+        "profundidad": 2923.02,
+        "dias_perf": 19.0,
+        "dias_term": 5.0,
+        "horizontal": true,
+        "n": 37
+      },
+      {
+        "areayacimiento": "AGUADA PICHANA ESTE VACA MUERTA",
+        "lat": -38.37835249,
+        "lon": -69.1739815,
+        "profundidad": 6029.0,
+        "dias_perf": 87.5,
+        "dias_term": 34.0,
+        "horizontal": true,
+        "n": 100
+      },
+      {
+        "areayacimiento": "AGUADA PICHANA OESTE",
+        "lat": -38.507775,
+        "lon": -69.3692,
+        "profundidad": 5902.0,
+        "dias_perf": 82.0,
+        "dias_term": 43.0,
+        "horizontal": true,
+        "n": 57
+      },
+      {
+        "areayacimiento": "AGUADA SAN ROQUE",
+        "lat": -37.9971039,
+        "lon": -68.8807631,
+        "profundidad": 4166.32,
+        "dias_perf": 31.0,
+        "dias_term": 12.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "AGUADA VILLANUEVA NORTE",
+        "lat": -38.772445385,
+        "lon": -69.28381005,
+        "profundidad": 4812.5,
+        "dias_perf": 93.5,
+        "dias_term": null,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "AGUILA MORA",
+        "lat": -37.68837255,
+        "lon": -69.083233,
+        "profundidad": 5925.0,
+        "dias_perf": 147.0,
+        "dias_term": 50.0,
+        "horizontal": true,
+        "n": 5
+      },
+      {
+        "areayacimiento": "ANGOSTURA",
+        "lat": -38.32923346,
+        "lon": -67.59329858,
+        "profundidad": 1551.0,
+        "dias_perf": 9.0,
+        "dias_term": 11.0,
+        "horizontal": false,
+        "n": 5
+      },
+      {
+        "areayacimiento": "ANTICLINAL CAMPAMENTO",
+        "lat": -38.992469345,
+        "lon": -69.71900959000001,
+        "profundidad": 3470.0,
+        "dias_perf": 49.5,
+        "dias_term": 30.0,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "ANTICLINAL CAMPAMENTO OESTE",
+        "lat": -38.96278364,
+        "lon": -69.79352366,
+        "profundidad": 3578.0,
+        "dias_perf": 49.0,
+        "dias_term": 48.0,
+        "horizontal": false,
+        "n": 11
+      },
+      {
+        "areayacimiento": "ANTICLINAL CAMPAMENTO SUR",
+        "lat": -39.02295642,
+        "lon": -69.71556462,
+        "profundidad": 3222.0,
+        "dias_perf": 32.0,
+        "dias_term": 28.0,
+        "horizontal": false,
+        "n": 9
+      },
+      {
+        "areayacimiento": "BAJADA DE AÑELO",
+        "lat": -38.1983479,
+        "lon": -69.0032988,
+        "profundidad": 5615.0,
+        "dias_perf": 83.0,
+        "dias_term": 136.0,
+        "horizontal": true,
+        "n": 29
+      },
+      {
+        "areayacimiento": "BAJADA DEL PALO",
+        "lat": -38.13414,
+        "lon": -68.33852999999999,
+        "profundidad": 2956.0,
+        "dias_perf": 50.5,
+        "dias_term": 13.0,
+        "horizontal": false,
+        "n": 2
+      },
+      {
+        "areayacimiento": "BAJADA DEL PALO ESTE",
+        "lat": -38.18776357,
+        "lon": -68.40235238,
+        "profundidad": 6152.0,
+        "dias_perf": 104.0,
+        "dias_term": 23.0,
+        "horizontal": true,
+        "n": 33
+      },
+      {
+        "areayacimiento": "BAJADA DEL PALO OESTE",
+        "lat": -38.21587567,
+        "lon": -68.59358993000001,
+        "profundidad": 6077.5,
+        "dias_perf": 77.5,
+        "dias_term": 26.0,
+        "horizontal": true,
+        "n": 162
+      },
+      {
+        "areayacimiento": "BAJO DEL CHOIQUE",
+        "lat": -37.710647,
+        "lon": -69.142539,
+        "profundidad": 6515.0,
+        "dias_perf": 71.5,
+        "dias_term": 62.0,
+        "horizontal": true,
+        "n": 45
+      },
+      {
+        "areayacimiento": "BAJO DEL TORO",
+        "lat": -37.58333658,
+        "lon": -69.04523075,
+        "profundidad": 5997.0,
+        "dias_perf": 45.0,
+        "dias_term": 15.0,
+        "horizontal": true,
+        "n": 1
+      },
+      {
+        "areayacimiento": "BAJO DEL TORO NORTE",
+        "lat": -37.5215053,
+        "lon": -69.07651863,
+        "profundidad": 5580.0,
+        "dias_perf": 85.5,
+        "dias_term": 47.0,
+        "horizontal": true,
+        "n": 26
+      },
+      {
+        "areayacimiento": "BAJO GUANACO",
+        "lat": -38.796328819075,
+        "lon": -69.75156111836,
+        "profundidad": 2190.0,
+        "dias_perf": 30.0,
+        "dias_term": 11.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "BANDURRIA CENTRO",
+        "lat": -38.190216,
+        "lon": -68.84951,
+        "profundidad": 6026.0,
+        "dias_perf": 80.5,
+        "dias_term": 32.5,
+        "horizontal": true,
+        "n": 25
+      },
+      {
+        "areayacimiento": "BANDURRIA NORTE",
+        "lat": -38.12409178,
+        "lon": -69.01410208,
+        "profundidad": 4315.0,
+        "dias_perf": 91.0,
+        "dias_term": 73.0,
+        "horizontal": true,
+        "n": 5
+      },
+      {
+        "areayacimiento": "BANDURRIA SUR",
+        "lat": -38.29166625,
+        "lon": -68.69854953,
+        "profundidad": 5900.0,
+        "dias_perf": 64.0,
+        "dias_term": 51.0,
+        "horizontal": true,
+        "n": 237
+      },
+      {
+        "areayacimiento": "BARDA GONZALEZ",
+        "lat": -38.841419725,
+        "lon": -69.123466175,
+        "profundidad": 3448.0,
+        "dias_perf": 45.0,
+        "dias_term": 41.5,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "BARREALES COLORADOS",
+        "lat": -38.44703788,
+        "lon": -68.84713934,
+        "profundidad": 4284.0,
+        "dias_perf": 116.0,
+        "dias_term": 104.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "BARROSA NORTE",
+        "lat": -38.70782456,
+        "lon": -68.876388,
+        "profundidad": 3282.0,
+        "dias_perf": 39.0,
+        "dias_term": 22.0,
+        "horizontal": false,
+        "n": 21
+      },
+      {
+        "areayacimiento": "BORDE MONTUOSO",
+        "lat": -38.21291,
+        "lon": -68.52859,
+        "profundidad": 3554.0,
+        "dias_perf": 54.0,
+        "dias_term": 25.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CENTENARIO CENTRO",
+        "lat": -38.91437989,
+        "lon": -68.226063,
+        "profundidad": 3320.0,
+        "dias_perf": 22.5,
+        "dias_term": 23.0,
+        "horizontal": false,
+        "n": 130
+      },
+      {
+        "areayacimiento": "CERRO ARENA",
+        "lat": -38.0233,
+        "lon": -69.6047,
+        "profundidad": 3153.0,
+        "dias_perf": 75.0,
+        "dias_term": 32.0,
+        "horizontal": false,
+        "n": 3
+      },
+      {
+        "areayacimiento": "CERRO AVISPA",
+        "lat": -37.7737582,
+        "lon": -68.54005585,
+        "profundidad": 2463.0,
+        "dias_perf": 41.0,
+        "dias_term": 36.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CERRO LAS MINAS",
+        "lat": -37.657,
+        "lon": -69.6089,
+        "profundidad": 3105.0,
+        "dias_perf": 70.0,
+        "dias_term": 32.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CERRO LAS NIÑAS",
+        "lat": -37.6364197,
+        "lon": -69.423840032962,
+        "profundidad": 4715.5,
+        "dias_perf": 73.5,
+        "dias_term": 17.5,
+        "horizontal": true,
+        "n": 5
+      },
+      {
+        "areayacimiento": "CERRO PARTIDO",
+        "lat": -38.64398342,
+        "lon": -69.80531259,
+        "profundidad": 2547.0,
+        "dias_perf": 35.0,
+        "dias_term": 30.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CHALLACO",
+        "lat": -38.98370477,
+        "lon": -68.9098241,
+        "profundidad": 1210.0,
+        "dias_perf": 11.0,
+        "dias_term": 8.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CHARCO BAYO",
+        "lat": -38.17434,
+        "lon": -68.09994,
+        "profundidad": 2848.0,
+        "dias_perf": 13.0,
+        "dias_term": 15.0,
+        "horizontal": false,
+        "n": 5
+      },
+      {
+        "areayacimiento": "CHIHUIDO DE LA SIERRA NEGRA",
+        "lat": -37.35094758,
+        "lon": -69.17376699,
+        "profundidad": 4845.0,
+        "dias_perf": 50.0,
+        "dias_term": 124.5,
+        "horizontal": true,
+        "n": 3
+      },
+      {
+        "areayacimiento": "CN VII A",
+        "lat": -37.08545683,
+        "lon": -69.47660985,
+        "profundidad": 3706.0,
+        "dias_perf": 213.0,
+        "dias_term": 54.0,
+        "horizontal": true,
+        "n": 1
+      },
+      {
+        "areayacimiento": "COIRON AMARGO SUR ESTE",
+        "lat": -38.311384,
+        "lon": -68.377994,
+        "profundidad": 6398.0,
+        "dias_perf": 115.5,
+        "dias_term": 52.0,
+        "horizontal": true,
+        "n": 41
+      },
+      {
+        "areayacimiento": "COIRON AMARGO SUR OESTE",
+        "lat": -38.4151719494327,
+        "lon": -68.476106,
+        "profundidad": 6479.0,
+        "dias_perf": 143.0,
+        "dias_term": 84.0,
+        "horizontal": true,
+        "n": 39
+      },
+      {
+        "areayacimiento": "CONFLUENCIA NORTE",
+        "lat": -38.44561,
+        "lon": -68.248985,
+        "profundidad": 6295.0,
+        "dias_perf": 81.0,
+        "dias_term": 35.5,
+        "horizontal": true,
+        "n": 4
+      },
+      {
+        "areayacimiento": "CONFLUENCIA SUR",
+        "lat": -38.52972,
+        "lon": -68.24837,
+        "profundidad": 6388.0,
+        "dias_perf": 118.0,
+        "dias_term": 40.0,
+        "horizontal": true,
+        "n": 3
+      },
+      {
+        "areayacimiento": "CORRALERA NORESTE",
+        "lat": -37.219584999999995,
+        "lon": -69.392385,
+        "profundidad": 2956.0,
+        "dias_perf": 60.0,
+        "dias_term": 45.0,
+        "horizontal": false,
+        "n": 2
+      },
+      {
+        "areayacimiento": "CORRALERA SUR",
+        "lat": -37.25994,
+        "lon": -69.54396,
+        "profundidad": 5976.0,
+        "dias_perf": 53.0,
+        "dias_term": 33.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CRUZ DE LORENA",
+        "lat": -38.3301813785258,
+        "lon": -68.51229111,
+        "profundidad": 6316.5,
+        "dias_perf": 104.0,
+        "dias_term": 59.0,
+        "horizontal": true,
+        "n": 71
+      },
+      {
+        "areayacimiento": "CUPEN",
+        "lat": -38.74318811,
+        "lon": -68.94990251,
+        "profundidad": 812.0,
+        "dias_perf": 12.0,
+        "dias_term": 6.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CUPEN MAHUIDA",
+        "lat": -38.75286807,
+        "lon": -68.91835628,
+        "profundidad": 3748.0,
+        "dias_perf": 48.0,
+        "dias_term": 226.0,
+        "horizontal": false,
+        "n": 181
+      },
+      {
+        "areayacimiento": "CURAMCHED",
+        "lat": -37.38617,
+        "lon": -69.54439,
+        "profundidad": 4140.0,
+        "dias_perf": 0.0,
+        "dias_term": 0.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "CURAMHUELE",
+        "lat": -37.39633967951,
+        "lon": -69.724610618979,
+        "profundidad": 3802.0,
+        "dias_perf": 54.0,
+        "dias_term": 20.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "EL CARACOL",
+        "lat": -37.95417,
+        "lon": -68.45239,
+        "profundidad": 2585.0,
+        "dias_perf": 29.0,
+        "dias_term": 21.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "EL CORDON OESTE",
+        "lat": -38.630279595000005,
+        "lon": -68.72765122999999,
+        "profundidad": 4520.0,
+        "dias_perf": 141.0,
+        "dias_term": 133.0,
+        "horizontal": false,
+        "n": 2
+      },
+      {
+        "areayacimiento": "EL MANGRULLO",
+        "lat": -38.574188,
+        "lon": -69.426361,
+        "profundidad": 1620.5,
+        "dias_perf": 11.5,
+        "dias_term": 22.5,
+        "horizontal": false,
+        "n": 103
+      },
+      {
+        "areayacimiento": "EL OREJANO",
+        "lat": -37.977562455,
+        "lon": -69.217050125,
+        "profundidad": 5045.0,
+        "dias_perf": 22.0,
+        "dias_term": 12.0,
+        "horizontal": true,
+        "n": 90
+      },
+      {
+        "areayacimiento": "EL SALITRAL",
+        "lat": -38.91722222,
+        "lon": -68.29820263,
+        "profundidad": 2016.5,
+        "dias_perf": 12.0,
+        "dias_term": 10.0,
+        "horizontal": false,
+        "n": 121
+      },
+      {
+        "areayacimiento": "EL TRAPIAL",
+        "lat": -37.47091,
+        "lon": -69.37553299999999,
+        "profundidad": 5307.0,
+        "dias_perf": 130.0,
+        "dias_term": 130.0,
+        "horizontal": false,
+        "n": 10
+      },
+      {
+        "areayacimiento": "EL TRAPIAL ESTE",
+        "lat": -37.476973,
+        "lon": -69.3882058771,
+        "profundidad": 6500.0,
+        "dias_perf": 116.0,
+        "dias_term": 73.0,
+        "horizontal": true,
+        "n": 35
+      },
+      {
+        "areayacimiento": "EL TRIANGULO",
+        "lat": -38.7205,
+        "lon": -68.8151,
+        "profundidad": 3610.0,
+        "dias_perf": 60.0,
+        "dias_term": 32.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "ESTACION FERNANDEZ ORO",
+        "lat": -39.01508387,
+        "lon": -67.83613699,
+        "profundidad": 3908.75,
+        "dias_perf": 25.0,
+        "dias_term": 38.5,
+        "horizontal": false,
+        "n": 191
+      },
+      {
+        "areayacimiento": "FILO MORADO",
+        "lat": -37.33894793499999,
+        "lon": -69.625920425,
+        "profundidad": 4309.0,
+        "dias_perf": 67.5,
+        "dias_term": 39.5,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "FORTIN DE PIEDRA",
+        "lat": -38.49551,
+        "lon": -69.046485506387,
+        "profundidad": 5629.0,
+        "dias_perf": 70.0,
+        "dias_term": 41.0,
+        "horizontal": true,
+        "n": 197
+      },
+      {
+        "areayacimiento": "GUANACO",
+        "lat": -38.86390504,
+        "lon": -69.23796812,
+        "profundidad": 2892.5,
+        "dias_perf": 37.0,
+        "dias_term": 24.5,
+        "horizontal": false,
+        "n": 38
+      },
+      {
+        "areayacimiento": "HUINCUL",
+        "lat": -38.895620425000004,
+        "lon": -69.147138575,
+        "profundidad": 1452.0,
+        "dias_perf": 47.0,
+        "dias_term": 43.0,
+        "horizontal": false,
+        "n": 2
+      },
+      {
+        "areayacimiento": "JARILLA QUEMADA",
+        "lat": -38.46075,
+        "lon": -67.96379,
+        "profundidad": 3780.0,
+        "dias_perf": 41.0,
+        "dias_term": 56.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "LA AMARGA CHICA",
+        "lat": -38.206593420000004,
+        "lon": -68.63715316,
+        "profundidad": 5816.5,
+        "dias_perf": 64.5,
+        "dias_term": 48.0,
+        "horizontal": true,
+        "n": 332
+      },
+      {
+        "areayacimiento": "LA ANGOSTURA SUR I",
+        "lat": -38.722184729999995,
+        "lon": -68.689892515,
+        "profundidad": 6381.0,
+        "dias_perf": 71.0,
+        "dias_term": 43.0,
+        "horizontal": true,
+        "n": 74
+      },
+      {
+        "areayacimiento": "LA ANGOSTURA SUR II",
+        "lat": -38.61394188,
+        "lon": -68.690113705,
+        "profundidad": 6190.0,
+        "dias_perf": 72.0,
+        "dias_term": 51.0,
+        "horizontal": true,
+        "n": 16
+      },
+      {
+        "areayacimiento": "LA CALERA",
+        "lat": -38.346844685,
+        "lon": -68.984842415,
+        "profundidad": 6030.21,
+        "dias_perf": 59.0,
+        "dias_term": 60.0,
+        "horizontal": true,
+        "n": 118
+      },
+      {
+        "areayacimiento": "LA ESCALONADA",
+        "lat": -37.70986141666665,
+        "lon": -69.191239,
+        "profundidad": 6533.0,
+        "dias_perf": 75.0,
+        "dias_term": 19.0,
+        "horizontal": true,
+        "n": 8
+      },
+      {
+        "areayacimiento": "LA ESPERANZA",
+        "lat": -39.00866388,
+        "lon": -68.85435948,
+        "profundidad": 1191.0,
+        "dias_perf": 13.0,
+        "dias_term": 4.5,
+        "horizontal": false,
+        "n": 2
+      },
+      {
+        "areayacimiento": "LA INVERNADA",
+        "lat": -37.564147,
+        "lon": -69.278317,
+        "profundidad": 3677.0,
+        "dias_perf": 173.0,
+        "dias_term": 39.0,
+        "horizontal": true,
+        "n": 1
+      },
+      {
+        "areayacimiento": "LA RIBERA BLOQUE I",
+        "lat": -38.42609956,
+        "lon": -69.019225875,
+        "profundidad": 5501.0,
+        "dias_perf": 30.0,
+        "dias_term": 44.0,
+        "horizontal": true,
+        "n": 20
+      },
+      {
+        "areayacimiento": "LA RIBERA BLOQUE II",
+        "lat": -38.61739025,
+        "lon": -69.11710565,
+        "profundidad": 2968.0,
+        "dias_perf": 67.0,
+        "dias_term": 20.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "LAS CHIVAS NC",
+        "lat": -38.85814,
+        "lon": -68.647945,
+        "profundidad": 3789.635,
+        "dias_perf": 20.0,
+        "dias_term": 9.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "LAS MANADAS",
+        "lat": -37.78201475,
+        "lon": -69.09371154,
+        "profundidad": 5005.0,
+        "dias_perf": 45.0,
+        "dias_term": 42.0,
+        "horizontal": true,
+        "n": 3
+      },
+      {
+        "areayacimiento": "LAS TACANAS I",
+        "lat": -38.6713,
+        "lon": -69.4682,
+        "profundidad": 2745.0,
+        "dias_perf": 75.0,
+        "dias_term": 26.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "LAS TACANAS II",
+        "lat": -38.71095099,
+        "lon": -69.335129365,
+        "profundidad": 4473.0,
+        "dias_perf": 150.5,
+        "dias_term": 188.0,
+        "horizontal": true,
+        "n": 4
+      },
+      {
+        "areayacimiento": "LINDERO ATRAVESADO OCCIDENTAL",
+        "lat": -38.622829,
+        "lon": -68.466108,
+        "profundidad": 6278.5,
+        "dias_perf": 83.0,
+        "dias_term": 55.0,
+        "horizontal": true,
+        "n": 77
+      },
+      {
+        "areayacimiento": "LINDERO ATRAVESADO ORIENTAL",
+        "lat": -38.73148,
+        "lon": -68.282893,
+        "profundidad": 4200.0,
+        "dias_perf": 41.0,
+        "dias_term": 15.0,
+        "horizontal": false,
+        "n": 101
+      },
+      {
+        "areayacimiento": "LOMA AMARILLA",
+        "lat": -37.793,
+        "lon": -68.7597,
+        "profundidad": 3044.0,
+        "dias_perf": 62.0,
+        "dias_term": 24.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "LOMA AMARILLA SUR",
+        "lat": -37.848,
+        "lon": -68.7437,
+        "profundidad": 5275.75,
+        "dias_perf": 43.0,
+        "dias_term": 44.5,
+        "horizontal": true,
+        "n": 5
+      },
+      {
+        "areayacimiento": "LOMA ANCHA",
+        "lat": -37.915543430037005,
+        "lon": -69.477241494957,
+        "profundidad": 4384.0,
+        "dias_perf": 39.0,
+        "dias_term": 18.0,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "LOMA CAMPANA",
+        "lat": -38.3516,
+        "lon": -68.59781738,
+        "profundidad": 5534.0,
+        "dias_perf": 76.0,
+        "dias_term": 65.0,
+        "horizontal": true,
+        "n": 193
+      },
+      {
+        "areayacimiento": "LOMA CAMPANA-LLL",
+        "lat": -38.337205479999994,
+        "lon": -68.78264681499999,
+        "profundidad": 6076.5,
+        "dias_perf": 73.0,
+        "dias_term": 66.0,
+        "horizontal": true,
+        "n": 684
+      },
+      {
+        "areayacimiento": "LOMA COLORADA",
+        "lat": -38.101786579999995,
+        "lon": -68.541017095,
+        "profundidad": 5681.5,
+        "dias_perf": 50.5,
+        "dias_term": 39.0,
+        "horizontal": true,
+        "n": 64
+      },
+      {
+        "areayacimiento": "LOMA DE MARÍA",
+        "lat": -38.84451167,
+        "lon": -67.66095972,
+        "profundidad": 3512.5,
+        "dias_perf": 34.0,
+        "dias_term": 11.5,
+        "horizontal": false,
+        "n": 15
+      },
+      {
+        "areayacimiento": "LOMA DEL MOLLE",
+        "lat": -37.566573125,
+        "lon": -69.5808787,
+        "profundidad": 3621.0,
+        "dias_perf": 96.0,
+        "dias_term": 54.5,
+        "horizontal": false,
+        "n": 2
+      },
+      {
+        "areayacimiento": "LOMA JARILLOSA ESTE",
+        "lat": -38.24427808,
+        "lon": -68.42633067,
+        "profundidad": 5852.5,
+        "dias_perf": 66.0,
+        "dias_term": 46.5,
+        "horizontal": true,
+        "n": 9
+      },
+      {
+        "areayacimiento": "LOMA LA LATA",
+        "lat": -38.55724849,
+        "lon": -68.97175096,
+        "profundidad": 4823.0,
+        "dias_perf": 61.0,
+        "dias_term": 38.0,
+        "horizontal": true,
+        "n": 5
+      },
+      {
+        "areayacimiento": "LOMA NEGRA NI",
+        "lat": -38.901588,
+        "lon": -69.38904021,
+        "profundidad": 1772.0,
+        "dias_perf": 16.0,
+        "dias_term": 16.0,
+        "horizontal": false,
+        "n": 3
+      },
+      {
+        "areayacimiento": "LOMA RANQUELES",
+        "lat": -37.7036253906955,
+        "lon": -69.69626383820949,
+        "profundidad": 3893.75,
+        "dias_perf": 30.5,
+        "dias_term": 41.5,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "LOS CALDENES",
+        "lat": -38.45580734,
+        "lon": -67.98069088,
+        "profundidad": 3775.5,
+        "dias_perf": 39.0,
+        "dias_term": 26.0,
+        "horizontal": false,
+        "n": 4
+      },
+      {
+        "areayacimiento": "LOS TOLDOS ESTE",
+        "lat": -37.4291434,
+        "lon": -69.17004158,
+        "profundidad": 5368.0,
+        "dias_perf": 45.0,
+        "dias_term": 27.0,
+        "horizontal": true,
+        "n": 13
+      },
+      {
+        "areayacimiento": "MALAL DEL MEDIO",
+        "lat": -36.206,
+        "lon": -69.6204,
+        "profundidad": 2352.0,
+        "dias_perf": 36.0,
+        "dias_term": 14.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "MATA MORA NORTE",
+        "lat": -38.49101,
+        "lon": -68.32812,
+        "profundidad": 6362.5,
+        "dias_perf": 86.0,
+        "dias_term": 40.0,
+        "horizontal": true,
+        "n": 53
+      },
+      {
+        "areayacimiento": "MEDANO DE LA MORA",
+        "lat": -38.22504722,
+        "lon": -68.66525278,
+        "profundidad": 5593.5,
+        "dias_perf": 265.5,
+        "dias_term": 17.0,
+        "horizontal": true,
+        "n": 17
+      },
+      {
+        "areayacimiento": "MESETA BUENA ESPERANZA I",
+        "lat": -38.65459156,
+        "lon": -69.140050515,
+        "profundidad": 4617.5,
+        "dias_perf": 94.5,
+        "dias_term": null,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "NARAMBUENA",
+        "lat": -37.42744091,
+        "lon": -69.06510598,
+        "profundidad": 5310.0,
+        "dias_perf": 48.5,
+        "dias_term": 77.0,
+        "horizontal": true,
+        "n": 13
+      },
+      {
+        "areayacimiento": "NORTE DEL OCTOGONO",
+        "lat": -38.888104725000005,
+        "lon": -69.164911265,
+        "profundidad": 2348.5,
+        "dias_perf": 23.0,
+        "dias_term": 25.5,
+        "horizontal": false,
+        "n": 12
+      },
+      {
+        "areayacimiento": "PAMPA DE LAS YEGUAS I",
+        "lat": -37.80013164,
+        "lon": -69.33514308,
+        "profundidad": 3088.0,
+        "dias_perf": 96.0,
+        "dias_term": 50.0,
+        "horizontal": true,
+        "n": 5
+      },
+      {
+        "areayacimiento": "PAMPA DE LAS YEGUAS II",
+        "lat": -37.93449,
+        "lon": -69.13419,
+        "profundidad": 2928.0,
+        "dias_perf": 109.0,
+        "dias_term": 100.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "PARVA NEGRA",
+        "lat": -37.95673,
+        "lon": -69.2867,
+        "profundidad": 5712.0,
+        "dias_perf": 39.0,
+        "dias_term": 6.0,
+        "horizontal": true,
+        "n": 1
+      },
+      {
+        "areayacimiento": "PARVA NEGRA ESTE",
+        "lat": -37.95425425,
+        "lon": -69.28531167,
+        "profundidad": 5572.0,
+        "dias_perf": 72.0,
+        "dias_term": 21.0,
+        "horizontal": true,
+        "n": 1
+      },
+      {
+        "areayacimiento": "PARVA NEGRA OESTE",
+        "lat": -37.807475275,
+        "lon": -69.537598885,
+        "profundidad": 4027.5,
+        "dias_perf": 49.0,
+        "dias_term": 25.5,
+        "horizontal": true,
+        "n": 2
+      },
+      {
+        "areayacimiento": "PASO DE LAS BARDAS NORTE",
+        "lat": -37.140558365000004,
+        "lon": -69.47919087,
+        "profundidad": 5569.0,
+        "dias_perf": 114.0,
+        "dias_term": 54.0,
+        "horizontal": true,
+        "n": 4
+      },
+      {
+        "areayacimiento": "PAYUN OESTE",
+        "lat": -36.8512,
+        "lon": -69.4631,
+        "profundidad": 2365.0,
+        "dias_perf": 65.0,
+        "dias_term": 37.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "POZOS SIN YACIMIENTO",
+        "lat": -37.601639722,
+        "lon": -68.980495278,
+        "profundidad": 4078.0,
+        "dias_perf": 58.0,
+        "dias_term": 32.0,
+        "horizontal": true,
+        "n": 1
+      },
+      {
+        "areayacimiento": "PUESTO PARADA",
+        "lat": -38.820457916319,
+        "lon": -68.704168293899,
+        "profundidad": 3826.99,
+        "dias_perf": 38.0,
+        "dias_term": 20.0,
+        "horizontal": true,
+        "n": 1
+      },
+      {
+        "areayacimiento": "PUESTO PARADA NC",
+        "lat": -38.843065013239,
+        "lon": -68.535013503728,
+        "profundidad": 5602.5,
+        "dias_perf": 37.0,
+        "dias_term": 34.0,
+        "horizontal": true,
+        "n": 17
+      },
+      {
+        "areayacimiento": "PUESTO ROJAS",
+        "lat": -35.25654,
+        "lon": -69.71823,
+        "profundidad": 1938.5,
+        "dias_perf": 35.0,
+        "dias_term": 74.0,
+        "horizontal": false,
+        "n": 19
+      },
+      {
+        "areayacimiento": "PUESTO SILVA OESTE",
+        "lat": -38.4236415,
+        "lon": -68.2702575,
+        "profundidad": 3113.0,
+        "dias_perf": 25.0,
+        "dias_term": 41.5,
+        "horizontal": false,
+        "n": 4
+      },
+      {
+        "areayacimiento": "PUESTO SIN NOMBRE",
+        "lat": -38.19995,
+        "lon": -68.45236,
+        "profundidad": 3447.0,
+        "dias_perf": 82.0,
+        "dias_term": 28.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "PUESTO VERA",
+        "lat": -38.834815061,
+        "lon": -68.6305057059,
+        "profundidad": 2204.0,
+        "dias_perf": 17.0,
+        "dias_term": null,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "PUNTA SENILLOSA NC",
+        "lat": -38.8785401,
+        "lon": -68.57830229999999,
+        "profundidad": 2787.25,
+        "dias_perf": 28.0,
+        "dias_term": 22.0,
+        "horizontal": false,
+        "n": 10
+      },
+      {
+        "areayacimiento": "RANQUIL CO",
+        "lat": -39.0816798,
+        "lon": -69.19374323,
+        "profundidad": 3204.0,
+        "dias_perf": 37.0,
+        "dias_term": 0.0,
+        "horizontal": false,
+        "n": 25
+      },
+      {
+        "areayacimiento": "RINCON DE ARANDA",
+        "lat": -38.00481,
+        "lon": -68.60014,
+        "profundidad": 5432.5,
+        "dias_perf": 82.5,
+        "dias_term": 24.5,
+        "horizontal": true,
+        "n": 44
+      },
+      {
+        "areayacimiento": "RINCON DE PIEDRA",
+        "lat": -38.61521714,
+        "lon": -69.36339182,
+        "profundidad": 1820.0,
+        "dias_perf": 47.0,
+        "dias_term": 31.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "RINCON DEL MANGRULLO",
+        "lat": -38.567808655,
+        "lon": -69.32777365999999,
+        "profundidad": 5920.0,
+        "dias_perf": 53.0,
+        "dias_term": 62.0,
+        "horizontal": true,
+        "n": 192
+      },
+      {
+        "areayacimiento": "RINCON LA CENIZA",
+        "lat": -37.852054429999995,
+        "lon": -69.21593419999999,
+        "profundidad": 5593.5,
+        "dias_perf": 114.0,
+        "dias_term": 21.5,
+        "horizontal": true,
+        "n": 16
+      },
+      {
+        "areayacimiento": "RIO NEUQUEN",
+        "lat": -38.71526063,
+        "lon": -68.23795973,
+        "profundidad": 3954.0,
+        "dias_perf": 48.0,
+        "dias_term": 19.0,
+        "horizontal": false,
+        "n": 111
+      },
+      {
+        "areayacimiento": "SAN ROQUE VACA MUERTA",
+        "lat": -38.004027449999995,
+        "lon": -69.02681795000001,
+        "profundidad": 4039.5,
+        "dias_perf": 88.0,
+        "dias_term": 138.5,
+        "horizontal": true,
+        "n": 8
+      },
+      {
+        "areayacimiento": "SIERRA BARROSA",
+        "lat": -38.75439083,
+        "lon": -68.936604065,
+        "profundidad": 4940.0,
+        "dias_perf": 44.0,
+        "dias_term": 28.0,
+        "horizontal": true,
+        "n": 16
+      },
+      {
+        "areayacimiento": "SIERRA BARROSA ESTE",
+        "lat": -38.70213515,
+        "lon": -68.78064256,
+        "profundidad": 3696.0,
+        "dias_perf": 42.0,
+        "dias_term": 26.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "SIERRA CHATA",
+        "lat": -38.13489,
+        "lon": -69.254556,
+        "profundidad": 5663.0,
+        "dias_perf": 69.0,
+        "dias_term": 19.0,
+        "horizontal": true,
+        "n": 53
+      },
+      {
+        "areayacimiento": "SIERRAS BLANCAS",
+        "lat": -38.4748400849272,
+        "lon": -68.4541988090865,
+        "profundidad": 6716.5,
+        "dias_perf": 115.0,
+        "dias_term": 97.5,
+        "horizontal": true,
+        "n": 47
+      },
+      {
+        "areayacimiento": "TOTORAL",
+        "lat": -39.35832,
+        "lon": -69.80366,
+        "profundidad": 1970.0,
+        "dias_perf": 24.0,
+        "dias_term": 52.0,
+        "horizontal": false,
+        "n": 1
+      },
+      {
+        "areayacimiento": "VEGA GRANDE",
+        "lat": -34.66911,
+        "lon": -69.66371,
+        "profundidad": 2758.0,
+        "dias_perf": 91.0,
+        "dias_term": 30.0,
+        "horizontal": false,
+        "n": 1
+      }
+    ],
+    "rangos": {
+      "profundidad": [
+        350.0,
+        7922.0
+      ],
+      "lat": [
+        -39.35832,
+        -34.66911
+      ],
+      "lon": [
+        -69.81712433,
+        -67.58849814
+      ],
+      "anio_inicio": [
+        2006,
+        2026
+      ],
+      "dias_perf": [
+        0.0,
+        400.0
+      ],
+      "dias_term": [
+        0.0,
+        300.0
+      ]
+    },
+    "usa_capitulo_iv": false
+  }
+}

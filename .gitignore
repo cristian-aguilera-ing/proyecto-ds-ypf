@@ -1,11 +1,13 @@
-venv/
+.venv/
 __pycache__/
-# Datasets (no se versionan: son pesados y vienen de una fuente externa)
-data/raw/*.csv
-data/processed/*.csv
-data/raw/*.bak
-# pero sí versionamos la estructura de carpetas
-!data/raw/.gitkeep
-!data/processed/.gitkeep
+*.pyc
+.ipynb_checkpoints/
 .DS_Store
-.vscode/
+data/raw/*.csv
+data/interim/*.parquet
+mlruns/
+mlflow.db
+.pytest_cache/
+curso/
+reports/entrenamiento.log
+*.egg-info/

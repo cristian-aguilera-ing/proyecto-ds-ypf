@@ -1,6 +1,6 @@
-# Proyecto Final Data Science — Predicción de Producción No Convencional (YPF / Vaca Muerta)
+# Predicción de producción de petróleo y gas no convencional — Cuenca Neuquina
 
-Proyecto final de la carrera Data Science (Ingenias+), cuyo objetivo es **predecir la producción mensual de petróleo de pozos no convencionales (shale/tight) de la cuenca Neuquina**, a partir de datos históricos de producción, profundidad, formación geológica y cuenca. Además, se agrupan los pozos según su comportamiento productivo usando clustering no supervisado (K-Means).
+Proyecto final del programa **Data Science — Energía Digital 2026 (Fundación YPF)**.
 
 ## Equipo
 
@@ -8,122 +8,205 @@ Proyecto final de la carrera Data Science (Ingenias+), cuyo objetivo es **predec
 - Abigail Roxana Vicentelo
 - Ian Lionel Tapias Díaz
 
-## Estado actual
+## Documentación
 
-✅ Pre-Entrega 1 (definición del proyecto) — cerrada
-✅ Pre-Entrega 2 (EDA + limpieza, `notebooks/01_eda_limpieza.ipynb`) — cerrada
-✅ Pre-Entrega 3 (Modelado supervisado, `notebooks/03_modelado_supervisado.ipynb`) — cerrada, con comparación XGBoost vs. LightGBM
-✅ Pre-Entrega 4 (Modelado no supervisado, `notebooks/04_modelado_no_supervisado_dl.ipynb`) — cerrada, K-Means con k = 4
-✅ Explicabilidad con SHAP (`notebooks/05_explicabilidad_shap_dl.ipynb`) — hecha sobre el modelo anterior; se repetirá sobre el modelo final
-🔜 Optimización de hiperparámetros (Optuna) — pendiente
-🔜 Entrega final (API + Dockerfile) — pendiente
+| Documento | Contenido |
+|---|---|
+| [docs/Pre_Entrega_1_YPF](docs/Pre_Entrega_1_YPF.pdf) | Definición del problema y dataset |
+| [docs/Pre_Entrega_2_YPF](docs/Pre_Entrega_2_YPF.pdf) | EDA, limpieza y transformación |
+| [docs/Pre_Entrega_3_YPF](docs/Pre_Entrega_3_YPF.pdf) | Feature engineering y modelado supervisado |
+| [docs/Pre_Entrega_4_YPF](docs/Pre_Entrega_4_YPF.pdf) | Clustering y SVD |
+| [docs/Informe_Avance_Proyecto_YPF](docs/Informe_Avance_Proyecto_YPF.pdf) | Estado del proyecto y cambios de la versión 1 a la 2 |
+| [docs/guia_del_proyecto](docs/guia_del_proyecto.pdf) | Instalación, ejecución y flujo de trabajo con Git |
+| [docs/guia_frontend.md](docs/guia_frontend.md) | Cómo leer el frontend |
 
-**Modelo supervisado actual:** LightGBM que predice la variación mensual de producción, 8 variables, RMSE 411.24, R² 0.901 (baseline de repetir el mes anterior: RMSE 458.11, R² 0.877).
+Cada documento está en `.docx` (editable) y `.pdf`.
 
-**Clustering actual:** K-Means con k = 4 sobre 4.295 pozos (silhouette 0.473).
+Predice la producción mensual de **petróleo (m³)** y **gas (Mm³ = miles de m³)** de pozos no convencionales (shale / tight) de la **Cuenca Neuquina**, en dos modos:
 
----
+| Modo | Pregunta que responde | Entrada | Salida |
+|---|---|---|---|
+| **A · Pozo existente** | ¿Cuánto va a producir este pozo los próximos 1–12 meses? | `idpozo` (búsqueda por sigla) | Curva mensual P10/P50/P90, acumulada, declinación, GOR, cluster, explicación SHAP |
+| **B · Pozo nuevo** | ¿Qué curva tipo esperar de un pozo a perforar? | formación, shale/tight, yacimiento, operadora, tipo de pozo, profundidad, ubicación, año | Curva de 24 meses P10/P50/P90, acumulada 12 y 24 meses, pico, GOR esperado, cluster |
 
-## 1. El dataset
-
-Los datos son públicos, publicados por la **Secretaría de Energía de la Nación Argentina**, dentro del dataset *"Producción de petróleo y gas por pozo (Capítulo IV)"*.
-
-- **Filas:** 421.046
-- **Columnas:** 40 (39 tras la limpieza)
-- **Rango temporal:** 2006 – 2026
-- **Granularidad:** una fila = un pozo, en un mes y año puntual
-- **Variable objetivo (lo que predecimos):** `prod_pet` (producción de petróleo del pozo, en ese mes)
-
-### Cómo descargar el dataset
-
-El archivo CSV **no está versionado en este repositorio** (ver sección de estructura de carpetas más abajo) porque es pesado y viene de una fuente externa que se actualiza periódicamente. Para conseguirlo:
-
-1. Copiá este link completo:
-
-   ```
-   http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/b5b58cdc-9e07-41f9-b392-fb9ec68b0725/download/produccin-de-pozos-de-gas-y-petrleo-no-convencional.csv
-   ```
-
-2. Pegalo directo en la barra de tu navegador (no funciona si hacés clic desde algunos lectores de Markdown — tiene que ser copiado y pegado completo).
-3. La descarga del CSV arranca automáticamente.
-4. Guardá el archivo descargado dentro de la carpeta `data/raw/` del proyecto, sin cambiarle el nombre.
+Petróleo y gas tienen **modelos separados** (la relación gas/petróleo por pozo es bimodal: son en la práctica dos poblaciones distintas).
 
 ---
 
-## 2. Hallazgos del análisis exploratorio
+## 1. Dataset
 
-El diagnóstico inicial detectó anomalías reales de calidad de datos: la profundidad tenía valores imposibles (hasta 378.939), pero los 122 registros sospechosos correspondían a un único pozo con un error de carga repetido en todos sus meses, y otros 164 pozos tenían la profundidad en 0 (dato faltante). Había solo 3 filas con producción negativa (correcciones cargadas con signo) y las columnas `vida_util` y `observaciones` tenían más de 90% de nulos. La producción tiene una distribución fuertemente sesgada a la derecha (muchos pozos chicos, pocos muy productivos) y la serie temporal muestra el crecimiento exponencial del boom de Vaca Muerta, con una caída aparente en 2026 que se debe a que ese año está incompleto.
+- Fuente: Secretaría de Energía de la Nación — *Producción de pozos de gas y petróleo no convencional* (Capítulo IV). [Descarga CSV](http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/b5b58cdc-9e07-41f9-b392-fb9ec68b0725/download/produccin-de-pozos-de-gas-y-petrleo-no-convencional.csv) → guardar en `data/raw/` sin renombrar.
+- Crudo: 421.046 filas × 40 columnas, 2006-01 → 2026-07, 4 cuencas.
+- **Cuenca Neuquina:** 404.037 filas, 4.862 pozos (96% del dataset).
+- Complemento opcional: padrón de pozos *Capítulo IV* (`capitulo-iv-pozos.csv`, mismo portal de datos.energia.gob.ar) en `data/raw/`; si no está, el pipeline funciona igual.
+- Dataset de trabajo (versionado en el repo): `data/processed/panel_neuquina.parquet` (pozo × mes) y `data/processed/pozos_neuquina.parquet` (1 fila por pozo).
 
-## 3. Modelos ajustados
+## 2. Hallazgos del EDA → decisiones de limpieza
 
-**Supervisado (regresión):** se predice `prod_pet` con LightGBM y 8 variables (antigüedad del pozo, producción de gas y de petróleo del mes anterior, declinación y ratio gas/petróleo del mes previo, profundidad, formación y cuenca), con un split temporal (entrenamiento hasta 2023, prueba 2024-2025). Se compararon XGBoost y LightGBM (empate técnico) y se detectaron y corrigieron dos fugas de datos: `declinacion_pet` (R² de 0.978, imposible de usar en producción) y `ratio_gas_petroleo`, que usaba la producción del mismo mes que se quiere predecir. Se agregó un baseline simple (repetir el mes anterior, R² 0.877) para medir el aporte real del modelo. El modelo final no predice el nivel de producción sino su **variación respecto del mes anterior**, y la predicción se obtiene sumando esa variación al mes anterior (con piso en 0): así mejora todas las métricas (RMSE 411.24, R² 0.901). Subestima los pozos con picos muy altos (más de 10.000), una limitación aceptada.
+| Hallazgo | Decisión |
+|---|---|
+| Neuquina concentra el 96% de las filas y casi todo el petróleo | Filtrar solo Neuquina (modelo especializado) |
+| Inyectores, sumideros, acuíferos y pozos de servicio | Excluidos (no son productores) |
+| `vida_util` 98% nulo, `observaciones` 94%, `iny_*` ~100% en 0 | Columnas descartadas |
+| Profundidad 0 (1,4%) y un pozo con 378.939 m | Fuera de [300, 8000] m → mediana del pozo → (formación, yacimiento) → formación |
+| `tef` > días del mes y meses con producción pero `tef = 0` | Acotado a [0, días del mes]; `tef = 0` con producción → mes completo |
+| Un pozo con lat/lon invertidas | Intercambio de coordenadas |
+| 981 pozos cambiaron de operadora | Se usa la última operadora |
+| Meses sin fila (pozos parados) | **Grilla mensual continua** por pozo (lags = meses calendario reales) |
+| Producción con sesgo extremo (p99 ≈ 700× mediana) | Modelado en escala `log1p` |
+| GOR por pozo bimodal (petróleo ~cientos, gas ~decenas de miles m³/m³) | Modelos separados; fluido = petróleo si GOR < 3.000 |
+| Pozos que ya producían en 2006 (inicio del registro) | Marcados como censurados: excluidos del modo B y del clustering |
 
-**No supervisado (clustering):** se resumió cada pozo en 4 variables (pico de producción, declinación típica, antigüedad y ratio gas/petróleo) y se agruparon con K-Means. La primera versión, con promedios, dejó dos clusters de un solo pozo por valores extremos, por lo que se corrigió usando medianas, filtrando pozos sin producción real, recortando la declinación y aplicando logaritmo. Con k = 4 (elegido por codo, silhouette e interpretabilidad) se obtuvieron cuatro grupos: pozos modernos de alta producción, pozos viejos de producción media, pozos viejos con mucho gas y casi nada de petróleo, y pozos recién puestos en producción. Los 94 pozos con pico mayor a 10.000 caen casi todos en el grupo de pozos modernos.
+La limpieza completa (`src/ypf_ds/data/clean.py`) corre en ~2 segundos con **Polars** (lectura lazy). El EDA usa además **DuckDB** para consultas SQL directas sobre los DataFrames.
 
----
+## 3. Modelos
 
-## 4. Estructura del repositorio
+**Validación temporal** (nunca se entrena con el futuro): train ≤ 2022 · validación 2023 (Optuna) · **test 2024–2025**. En el modo B el corte es por año de inicio del pozo.
+
+- **Modo A:** LightGBM sobre filas (pozo, mes de origen *t*, horizonte *h* = 1…12). Target: ratio `q[t+h] / q[t]` (la declinación relativa), ponderado por `q[t]²`. 53 features: lags 1/2/3/6/12, medias móviles, pico, fracción del pico, acumulada, caudal por día efectivo, GOR, corte de agua, tendencia, meses en producción, formación, yacimiento, operadora, ubicación, profundidad, año de inicio.
+- **Modo B:** LightGBM sobre filas (pozo, mes de vida 1…24). Target: producción del mes en volumen; Optuna elige el objetivo (L2, Poisson o Tweedie). Features conocidas antes de perforar.
+- **Incertidumbre:** modelos de **cuantiles** P10 y P90 además del modelo puntual.
+- **Hiperparámetros:** Optuna (TPE) con early stopping sobre la validación 2023.
+- **Comparación de algoritmos** (notebook 03): persistencia, Ridge, árbol de decisión, KNN, Random Forest, MLP, XGBoost, LightGBM; Optuna vs GridSearch.
+- **Baselines:** persistencia (repetir el último mes), **Arps hiperbólica** ajustada por pozo, y curva mediana por formación × tipo de pozo × mes de vida.
+- **No supervisado** (notebook 04): forma de la curva de 12 meses + pico + GOR → **SVD** → **K-Means** (k por silhouette), comparado con DBSCAN.
+- **Explicabilidad** (notebook 05): SHAP global; la API devuelve las contribuciones SHAP de cada predicción.
+- **MLflow:** cada entrenamiento registra parámetros y métricas en `mlflow.db` (`mlflow ui --backend-store-uri sqlite:///mlflow.db`).
+
+### Resultados en test (2024–2025)
+
+**Modo A · pozo existente** (713.822 filas de petróleo y 850.222 de gas; horizontes 1–12 meses):
+
+| Fluido | Modelo | MAE | RMSE | R² | WAPE |
+|---|---|---|---|---|---|
+| Petróleo (m³) | **LightGBM** | **215** | **537** | **0,730** | **0,369** |
+| | Persistencia | 364 | 898 | 0,246 | 0,625 |
+| Gas (Mm³) | **LightGBM** | **263** | **823** | **0,779** | **0,375** |
+| | Persistencia | 377 | 1.191 | 0,536 | 0,539 |
+
+Backtest: pronóstico a 12 meses desde diciembre 2023 para todos los pozos activos (WAPE, menor es mejor):
+
+| Fluido | Pozos | LightGBM | Arps hiperbólica | Persistencia |
+|---|---|---|---|---|
+| Petróleo | 2.291 | **0,357** | 0,583 | 0,665 |
+| Gas | 2.724 | **0,385** | 0,474 | 0,518 |
+
+**Modo B · pozo nuevo** (pozos que arrancaron en 2024–2025, nunca vistos en el entrenamiento; acumulada de los primeros 12 meses, 729 pozos):
+
+| Fluido | Modelo | MAE | R² | WAPE |
+|---|---|---|---|---|
+| Petróleo (m³) | **LightGBM** | **9.940** | **0,448** | **0,309** |
+| | Curva mediana por formación y tipo | 16.253 | −0,282 | 0,505 |
+| Gas (Mm³) | **LightGBM** (Tweedie) | **6.508** | **0,860** | **0,282** |
+| | Curva mediana por formación y tipo | 9.499 | 0,724 | 0,412 |
+
+**Cobertura de la banda P10–P90** en test (ideal 0,80): 0,81 petróleo A · 0,79 gas A · 0,74 petróleo B · 0,73 gas B.
+
+**Clustering:** K-Means con k = 4 sobre 4.144 pozos (silhouette 0,22): tres tipos de pozos de petróleo (pico alto / medio / bajo, con distinta declinación) y uno de gas. DBSCAN no encuentra grupos densos separados (las curvas forman un continuo).
+
+### Error según el horizonte y comparación con el proyecto anterior
+
+El R² global del modo A promedia horizontes de 1 a 12 meses. Por horizonte (test 2024–2025):
+
+| Horizonte | R² petróleo | R² persistencia petróleo | R² gas | R² persistencia gas |
+|---|---|---|---|---|
+| 1 mes | **0,889** | 0,817 | **0,882** | 0,836 |
+| 3 meses | 0,745 | 0,503 | 0,793 | 0,614 |
+| 6 meses | 0,658 | 0,085 | 0,755 | 0,458 |
+| 12 meses | 0,630 | −0,840 | 0,721 | 0,341 |
+
+El proyecto anterior (`proyecto-ds-ypf`) reportaba **R² 0,907**, pero medía otra cosa: 1 mes adelante, solo pozos con producción en los dos meses previos, solo petróleo y todas las cuencas. Con ese mismo alcance, este modelo obtiene **R² 0,906** (persistencia 0,876; el anterior tenía 0,878 de baseline): **son equivalentes**. La diferencia es que este proyecto pronostica hasta 12 meses, donde repetir el último mes falla por completo y el modelo mantiene R² de 0,63–0,72.
+
+### Complemento: padrón Capítulo IV (`capitulo-iv-pozos.csv`)
+
+El padrón de pozos se une por `idpozo` (98% de cobertura) y agrega cota, profundidad de respaldo y las fechas de perforación y terminación, de donde salen `dias_perf` y `dias_term`. Además, la sigla `(h)` marca los pozos horizontales: en Vaca Muerta petróleo producen ~10 veces más en su primer año.
+
+En el entrenamiento, Optuna compara para el modo B el set de variables base contra base + Capítulo IV y elige por **RMSE en validación 2023**:
+- **Petróleo:** 1.072,8 (base) vs 1.079,2 (con Capítulo IV).
+- **Gas:** 1.961,5 vs 1.963,0.
+
+Se mantuvo el set base: la profundidad medida (que en pozos horizontales incluye la rama lateral) y el año de inicio ya capturaban esa información. El padrón queda integrado en la limpieza (profundidad de respaldo, `es_horizontal`) y la selección se repite en cada reentrenamiento.
+
+**Decisión clave de modelado:** entrenar en `log1p` y volver con `expm1` subestimaba la producción total en ~25% (desigualdad de Jensen). El modelo puntual se entrena para minimizar el error en volumen (ratio `q[t+h]/q[t]` ponderado por `q[t]²` en el modo A; volumen directo con objetivo L2/Tweedie en el modo B) y los cuantiles P10/P90 en escala log.
+
+## Guía de uso del frontend
+
+Cómo leer cada indicador, el gráfico, las bandas P10–P90, la explicación SHAP, el cluster y los avisos: **[docs/guia_frontend.md](docs/guia_frontend.md)**.
+
+## 4. Estructura
 
 ```
-proyecto-ds-ypf/
-├── data/
-│   ├── raw/          ← CSV originales (no versionados, ver sección 1)
-│   └── processed/    ← versiones limpias, generadas por el código
-├── notebooks/        ← análisis paso a paso, con texto y gráficos
-├── src/              ← funciones reutilizables que los notebooks importan
-│   ├── data_loader.py    ← lectura y validación de datos crudos
-│   └── preprocessor.py   ← limpieza y transformación
-├── api/              ← (a futuro) API para exponer el modelo
-├── models/           ← modelos entrenados (LightGBM, XGBoost, K-Means y scaler), en .joblib
-├── reports/          ← gráficos e informes de resultados
-├── requirements.txt  ← librerías necesarias
-├── Dockerfile         ← (a futuro) para correr el proyecto empaquetado
-└── README.md
+├── data/raw/                 CSV original (no versionado)
+├── data/processed/           panel y tabla de pozos limpios (Parquet)
+├── notebooks/                01 EDA · 02 limpieza y transformación · 03 supervisado · 04 clustering y SVD · 05 SHAP
+├── src/ypf_ds/
+│   ├── config.py             rutas, umbrales y cortes temporales
+│   ├── data/                 load.py (ingesta) · clean.py (limpieza y panel)
+│   ├── features/build.py     features y targets de ambos modos
+│   └── models/               train.py · predict.py · baselines.py · evaluate.py · cluster.py
+├── models/                   artefactos .joblib + metadata.json
+├── api/                      app.py (FastAPI) · model.py (carga de modelos) · schemas.py (Pydantic)
+├── frontend/                 formulario HTML + JS + Chart.js
+├── docker/                   Dockerfiles y nginx.conf
+├── tests/                    limpieza, no-fuga de datos y API
+├── compose.yaml · Makefile · requirements.txt · requirements-api.txt
 ```
 
----
+## 5. Cómo correrlo
 
-## 5. Instalación y puesta en marcha
+### Con entorno virtual (desarrollo)
 
 ```bash
-# 1. Cloná el repositorio
-git clone https://github.com/cristian-aguilera-ing/proyecto-ds-ypf.git
-cd proyecto-ds-ypf
-
-# 2. Creá y activá el entorno virtual
-python3 -m venv venv
-source venv/bin/activate      # En Windows: venv\Scripts\activate
-
-# 3. Instalá las dependencias
-pip install -r requirements.txt
-
-# 4. Descargá el dataset (ver sección 1) y guardalo en data/raw/
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt && pip install -e .
+python -m ypf_ds.data.clean          # limpieza → data/processed/
+python -m ypf_ds.models.train        # entrenamiento → models/
+pytest -q                            # tests
+uvicorn api.app:app --reload         # API en http://localhost:8000/docs
 ```
 
-## 6. Cómo trabajar en este repositorio
+El frontend en modo desarrollo: `python -m http.server 5500 -d frontend` y abrir http://localhost:5500.
 
-- **Nunca se trabaja directo sobre `main`.** Cada cambio se hace en una rama propia:
+### Con Docker (todo el proyecto)
 
-  ```bash
-  git checkout main
-  git pull origin main
-  git checkout -b nombre-de-tu-rama
-  ```
+```bash
+docker compose up --build -d
+```
 
-- Al terminar, se sube la rama y se abre un Pull Request en GitHub para que el equipo lo revise antes de mergear a `main`.
+- Frontend: http://localhost:8080
+- API + Swagger: http://localhost:8000/docs
 
----
+Reentrenar dentro de un contenedor: `docker compose --profile train run --rm train`.
 
-## 7. Notebooks
+## 6. API
 
-| Notebook | Contenido |
-|---|---|
-| `01_eda_limpieza.ipynb` | Análisis exploratorio, detección de nulos y valores anómalos, limpieza del dataset |
-| `02_feature_engineering.ipynb` | Creación de variables derivadas (producción del mes anterior, declinación, antigüedad del pozo, etc.) |
-| `03_modelado_supervisado.ipynb` | Entrenamiento y comparación de modelos (XGBoost vs. LightGBM), corrección de fugas de datos, baseline y modelo de variación para predecir `prod_pet` |
-| `04_modelado_no_supervisado_dl.ipynb` | Clustering K-Means de pozos (4 variables por pozo, k = 4), con la corrección de la primera versión y el cruce con los pozos de pico alto |
-| `05_explicabilidad_shap_dl.ipynb` | Explicabilidad con SHAP: importancia y dirección del efecto de cada variable, y análisis de los picos subestimados |
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/health` | Estado y versión de los modelos |
+| GET | `/metadata` | Métricas de test, parámetros y clusters |
+| GET | `/opciones` | Valores válidos para el formulario (formaciones, áreas con lat/lon/profundidad típicas, rangos) |
+| GET | `/pozos?q=LCa` | Búsqueda de pozos por sigla o idpozo |
+| POST | `/predict/existente` | Pronóstico de un pozo existente |
+| POST | `/predict/nuevo` | Curva tipo de un pozo nuevo |
 
-## 8. Limitación conocida
+```bash
+curl -X POST localhost:8000/predict/existente -H "Content-Type: application/json" \
+     -d '{"idpozo": 159640, "horizonte": 12}'
 
-El modelo subestima los pozos con picos de producción muy altos (más de 10.000 barriles por mes). Se probaron varios enfoques sin resolverlo de fondo. La explicación más probable combina dos causas: el modelo casi no vio producciones tan altas al entrenar (el máximo hasta 2023 fue 15.943, contra 26.593 en el período de prueba) y los modelos de árboles no extrapolan, y es posible que además falte una variable que capture intervenciones en el pozo (reestimulaciones). En esos meses extremos, repetir el valor del mes anterior sigue siendo mejor que el modelo. Se documenta como limitación aceptada.
+curl -X POST localhost:8000/predict/nuevo -H "Content-Type: application/json" -d '{
+  "formacion": "vaca muerta", "sub_tipo_recurso": "SHALE", "areayacimiento": "LOMA CAMPANA",
+  "empresa": "YPF S.A.", "tipopozo": "Petrolífero", "profundidad": 3000,
+  "lat": -38.3, "lon": -69.0, "anio_inicio": 2026}'
+```
+
+La respuesta incluye, por fluido: curva P10/P50/P90, acumuladas, caudal diario inicial, pico, declinación a 12 meses, métricas del modelo en test y las variables que más influyeron (SHAP). Además: GOR, corte de agua, tipo de pozo (cluster) y avisos (datos viejos, valores fuera del rango de entrenamiento, pozos censurados).
+
+## 7. Sesgos, límites e IA responsable
+
+- **Sesgo de representación:** Vaca Muerta y YPF concentran la mayoría de los pozos; en formaciones u operadoras con pocos datos las predicciones son menos confiables (se agrupan las operadoras chicas en "OTRAS").
+- **Variables omitidas:** el dataset público no tiene longitud de rama lateral, número de etapas de fractura ni volumen de arena, que son los principales determinantes de la productividad de un pozo nuevo. El año de inicio funciona como *proxy* de la tecnología de completación.
+- **Drift tecnológico y de mercado:** la productividad por pozo crece año a año; los pozos futuros pueden superar la predicción. Hay que reentrenar periódicamente (el pipeline completo se reejecuta con un comando).
+- **Eventos no predecibles:** paradas por mantenimiento, restricciones de transporte o decisiones comerciales no están en los datos; la banda P10–P90 da una idea de la incertidumbre, no la elimina.
+- **Extrapolación:** la API avisa cuando una entrada está fuera del rango de entrenamiento.
+- **Uso:** herramienta orientativa y educativa; no reemplaza un estudio de reservorio ni debe ser la única base de decisiones de inversión.
+- **Uso de IA en el desarrollo:** se usaron asistentes de código como apoyo; todas las decisiones de limpieza y modelado están justificadas en los notebooks y verificadas con tests.

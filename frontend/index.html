@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pronóstico Neuquina</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Producción No Convencional · Cuenca Neuquina</h1>
+  <p class="sub">Pronóstico de petróleo y gas con LightGBM (bandas P10–P90) · <span id="estado-api">conectando…</span></p>
+</header>
+
+<main>
+  <nav class="tabs" role="tablist">
+    <button class="tab activa" data-tab="existente" role="tab">Pozo existente</button>
+    <button class="tab" data-tab="nuevo" role="tab">Pozo nuevo (curva tipo)</button>
+  </nav>
+
+  <section id="panel-existente" class="panel">
+    <form id="form-existente" class="formulario">
+      <label class="ancho">Buscar pozo (sigla o idpozo)
+        <input id="buscar" autocomplete="off" placeholder="Ej: LCa-1 o 159640" required>
+        <ul id="sugerencias" class="sugerencias"></ul>
+      </label>
+      <input type="hidden" id="idpozo">
+      <label>Horizonte (meses)
+        <input type="number" id="horizonte" min="1" max="12" value="12">
+      </label>
+      <button type="submit">Pronosticar</button>
+    </form>
+  </section>
+
+  <section id="panel-nuevo" class="panel oculto">
+    <form id="form-nuevo" class="formulario">
+      <label>Formación <select name="formacion" required></select></label>
+      <label>Recurso <select name="sub_tipo_recurso" required></select></label>
+      <label>Tipo de pozo <select name="tipopozo" required></select></label>
+      <label>Operadora <select name="empresa" required></select></label>
+      <label class="ancho">Área de yacimiento <select name="areayacimiento" required></select></label>
+      <label>Profundidad (m) <input type="number" name="profundidad" step="1" required></label>
+      <label>Latitud <input type="number" name="lat" step="0.0001" required></label>
+      <label>Longitud <input type="number" name="lon" step="0.0001" required></label>
+      <label>Año de inicio <input type="number" name="anio_inicio" min="2006" max="2035" required></label>
+      <fieldset id="campos-c4" class="opcionales oculto">
+        <legend>Perforación y terminación (opcional · se prellena con lo típico del área)</legend>
+        <label>Pozo horizontal
+          <select name="es_horizontal"><option value="">Típico del área</option><option value="true">Sí</option><option value="false">No</option></select>
+        </label>
+        <label>Días de perforación <input type="number" name="dias_perf" min="0" max="400" step="1"></label>
+        <label>Días de terminación (fractura) <input type="number" name="dias_term" min="0" max="300" step="1"></label>
+      </fieldset>
+      <button type="submit">Generar curva tipo</button>
+    </form>
+  </section>
+
+  <div id="error" class="error oculto"></div>
+  <section id="resultado" class="oculto">
+    <div id="encabezado" class="encabezado"></div>
+    <div id="avisos"></div>
+    <div class="grilla-fluidos">
+      <article class="fluido" id="res-petroleo">
+        <h2>Petróleo <span class="unidad">m³/mes</span></h2>
+        <div class="kpis"></div>
+        <canvas></canvas>
+        <details><summary>Qué explica la predicción (SHAP)</summary><table class="shap"></table></details>
+      </article>
+      <article class="fluido" id="res-gas">
+        <h2>Gas <span class="unidad">Mm³/mes</span></h2>
+        <div class="kpis"></div>
+        <canvas></canvas>
+        <details><summary>Qué explica la predicción (SHAP)</summary><table class="shap"></table></details>
+      </article>
+    </div>
+    <div class="grilla-info">
+      <article id="info-cluster" class="tarjeta"></article>
+      <article id="info-tecnica" class="tarjeta"></article>
+    </div>
+    <details class="tarjeta"><summary>Tabla mensual</summary><div id="tabla-mensual"></div></details>
+  </section>
+</main>
+<footer>Datos: Secretaría de Energía de la Nación (Capítulo IV, no convencional). Proyecto Data Science — Fundación YPF 2026. La predicción es orientativa y no reemplaza un estudio de reservorio.</footer>
+<script src="app.js"></script>
+</body>
+</html>
