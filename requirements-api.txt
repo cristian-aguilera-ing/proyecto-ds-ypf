@@ -1,0 +1,12 @@
+# Dependencias mínimas de la imagen de la API
+polars==2.0.0
+pandas==3.1.0
+pyarrow==25.0.1
+numpy==2.5.4
+scikit-learn==1.9.1
+lightgbm==4.7.0
+shap==0.54.1
+joblib==1.6.0
+fastapi==0.161.1
+uvicorn[standard]==0.54.0
+pydantic==2.14.1
