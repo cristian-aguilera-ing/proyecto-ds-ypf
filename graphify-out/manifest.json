@@ -1,0 +1,212 @@
+{
+  "api/__init__.py": {
+    "mtime": 1792878226.4215484,
+    "seen": 1793097719.5209112,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "api/app.py": {
+    "mtime": 1792878226.4218843,
+    "seen": 1793097719.5209138,
+    "ast_hash": "dca7d645acca9e7ba5691e57c1ed84f8",
+    "semantic_hash": "dca7d645acca9e7ba5691e57c1ed84f8"
+  },
+  "api/model.py": {
+    "mtime": 1792878226.4221845,
+    "seen": 1793097719.520925,
+    "ast_hash": "bba98c9810796f3f2723fc716f3a9cba",
+    "semantic_hash": "bba98c9810796f3f2723fc716f3a9cba"
+  },
+  "api/schemas.py": {
+    "mtime": 1792878226.422603,
+    "seen": 1793097719.520925,
+    "ast_hash": "ea923a44961eeed012bf147f94a38c5d",
+    "semantic_hash": "ea923a44961eeed012bf147f94a38c5d"
+  },
+  "frontend/app.js": {
+    "mtime": 1792878226.455891,
+    "seen": 1793097719.520926,
+    "ast_hash": "ebe15a6595e252f20b756345aeb2dbc6",
+    "semantic_hash": "ebe15a6595e252f20b756345aeb2dbc6"
+  },
+  "models/metadata.json": {
+    "mtime": 1792878226.4639914,
+    "seen": 1793097719.520927,
+    "ast_hash": "dcc0a115ccf0c8444673f6883a8c3ea5",
+    "semantic_hash": "dcc0a115ccf0c8444673f6883a8c3ea5"
+  },
+  "pyproject.toml": {
+    "mtime": 1792878226.4871526,
+    "seen": 1793097719.520927,
+    "ast_hash": "d6a0e36fa14eeebe560a73615c3e06ad",
+    "semantic_hash": "d6a0e36fa14eeebe560a73615c3e06ad"
+  },
+  "src/ypf_ds/__init__.py": {
+    "mtime": 1792878226.511233,
+    "seen": 1793097719.520928,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "src/ypf_ds/config.py": {
+    "mtime": 1792878226.511449,
+    "seen": 1793097719.520929,
+    "ast_hash": "3f5e72930638e87f1f6ea79f6cfafc40",
+    "semantic_hash": "3f5e72930638e87f1f6ea79f6cfafc40"
+  },
+  "src/ypf_ds/data/__init__.py": {
+    "mtime": 1792878226.5114834,
+    "seen": 1793097719.520929,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "src/ypf_ds/data/clean.py": {
+    "mtime": 1792878226.5117023,
+    "seen": 1793097719.52093,
+    "ast_hash": "b1fc8bf8cf4fad1926efb0ef79749034",
+    "semantic_hash": "b1fc8bf8cf4fad1926efb0ef79749034"
+  },
+  "src/ypf_ds/data/load.py": {
+    "mtime": 1792878226.5121295,
+    "seen": 1793097719.52093,
+    "ast_hash": "1112cd88a00496b2bfd1325d7d1a327b",
+    "semantic_hash": "1112cd88a00496b2bfd1325d7d1a327b"
+  },
+  "src/ypf_ds/features/__init__.py": {
+    "mtime": 1792878226.5122375,
+    "seen": 1793097719.520931,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "src/ypf_ds/features/build.py": {
+    "mtime": 1792878226.5124447,
+    "seen": 1793097719.520931,
+    "ast_hash": "68888544e7d9eeba0de0e425fa281339",
+    "semantic_hash": "68888544e7d9eeba0de0e425fa281339"
+  },
+  "src/ypf_ds/models/__init__.py": {
+    "mtime": 1792878226.5125093,
+    "seen": 1793097719.5209322,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "src/ypf_ds/models/baselines.py": {
+    "mtime": 1792878226.5126376,
+    "seen": 1793097719.5209332,
+    "ast_hash": "4e5191ef7a384cce646ec17d8477ad01",
+    "semantic_hash": "4e5191ef7a384cce646ec17d8477ad01"
+  },
+  "src/ypf_ds/models/cluster.py": {
+    "mtime": 1792878226.5128434,
+    "seen": 1793097719.5209332,
+    "ast_hash": "613775b69cc0448bd5202b1ab767c684",
+    "semantic_hash": "613775b69cc0448bd5202b1ab767c684"
+  },
+  "src/ypf_ds/models/evaluate.py": {
+    "mtime": 1792878226.5129626,
+    "seen": 1793097719.5209339,
+    "ast_hash": "c6f96b43747e28b84fd0f1071530eb7f",
+    "semantic_hash": "c6f96b43747e28b84fd0f1071530eb7f"
+  },
+  "src/ypf_ds/models/predict.py": {
+    "mtime": 1792878226.5132422,
+    "seen": 1793097719.5209339,
+    "ast_hash": "95e8ad61e2fe9b3aecb42dbe81c7d1ec",
+    "semantic_hash": "95e8ad61e2fe9b3aecb42dbe81c7d1ec"
+  },
+  "src/ypf_ds/models/train.py": {
+    "mtime": 1792878226.5135362,
+    "seen": 1793097719.5209348,
+    "ast_hash": "4f3232b3d78c16e12eb82536f5505209",
+    "semantic_hash": "4f3232b3d78c16e12eb82536f5505209"
+  },
+  "tests/test_api.py": {
+    "mtime": 1792878226.5137265,
+    "seen": 1793097719.5209348,
+    "ast_hash": "bd64e57ee37d2d188b3d2755b9a4598a",
+    "semantic_hash": "bd64e57ee37d2d188b3d2755b9a4598a"
+  },
+  "tests/test_datos.py": {
+    "mtime": 1792878226.5138452,
+    "seen": 1793097719.520936,
+    "ast_hash": "cefd57766165004ae2029262e9af911a",
+    "semantic_hash": "cefd57766165004ae2029262e9af911a"
+  },
+  "README.md": {
+    "mtime": 1792878226.4214907,
+    "seen": 1793097719.520936,
+    "ast_hash": "5b72df493b111fe3fd146aa072d5b627",
+    "semantic_hash": "5b72df493b111fe3fd146aa072d5b627"
+  },
+  "compose.yaml": {
+    "mtime": 1792878226.4227786,
+    "seen": 1793097719.520937,
+    "ast_hash": "9f1e5704dd9b016174742c5bb52e6444",
+    "semantic_hash": "9f1e5704dd9b016174742c5bb52e6444"
+  },
+  "docs/guia_frontend.md": {
+    "mtime": 1792878226.446402,
+    "seen": 1793097719.520937,
+    "ast_hash": "b680fdb62cfce8bf9bc2a1fe034fdc00",
+    "semantic_hash": "b680fdb62cfce8bf9bc2a1fe034fdc00"
+  },
+  "frontend/index.html": {
+    "mtime": 1792878226.4565315,
+    "seen": 1793097719.520938,
+    "ast_hash": "44e8203f7f7fd71172fb07e59bb5e058",
+    "semantic_hash": "44e8203f7f7fd71172fb07e59bb5e058"
+  },
+  "requirements-api.txt": {
+    "mtime": 1792878226.5109289,
+    "seen": 1793097719.520939,
+    "ast_hash": "6cf8925c8d3f4be055d3ad4fb54b254f",
+    "semantic_hash": "6cf8925c8d3f4be055d3ad4fb54b254f"
+  },
+  "requirements.txt": {
+    "mtime": 1792878226.5111914,
+    "seen": 1793097719.520939,
+    "ast_hash": "fba771579541bfa458a20f9d961a77b6",
+    "semantic_hash": "fba771579541bfa458a20f9d961a77b6"
+  },
+  "docs/Informe_Avance_Proyecto_YPF.pdf": {
+    "mtime": 1792878226.4352272,
+    "seen": 1793097719.52094,
+    "ast_hash": "c8103f388daff37a48ce79033034bc6f",
+    "semantic_hash": "c8103f388daff37a48ce79033034bc6f"
+  },
+  "docs/Pre_Entrega_1_YPF.pdf": {
+    "mtime": 1792878226.4366193,
+    "seen": 1793097719.52094,
+    "ast_hash": "c0955d3f7896a065a2f4ea7eb91dcec8",
+    "semantic_hash": "c0955d3f7896a065a2f4ea7eb91dcec8"
+  },
+  "docs/Pre_Entrega_2_YPF.pdf": {
+    "mtime": 1792878226.4391782,
+    "seen": 1793097719.52094,
+    "ast_hash": "4a14f4ca8c6efd8b296f9ed2215d27c2",
+    "semantic_hash": "4a14f4ca8c6efd8b296f9ed2215d27c2"
+  },
+  "docs/Pre_Entrega_3_YPF.pdf": {
+    "mtime": 1792878226.441899,
+    "seen": 1793097719.520941,
+    "ast_hash": "c36fbba1b6fa8b4671985dea0d80d300",
+    "semantic_hash": "c36fbba1b6fa8b4671985dea0d80d300"
+  },
+  "docs/Pre_Entrega_4_YPF.pdf": {
+    "mtime": 1792878226.4449978,
+    "seen": 1793097719.520942,
+    "ast_hash": "475688d3107bc25f5a192f7cd86d9119",
+    "semantic_hash": "475688d3107bc25f5a192f7cd86d9119"
+  },
+  "docs/guia_del_proyecto.pdf": {
+    "mtime": 1792878226.4461303,
+    "seen": 1793097719.520942,
+    "ast_hash": "50039d77e51276c0c5ac20c1b59f1bca",
+    "semantic_hash": "50039d77e51276c0c5ac20c1b59f1bca"
+  },
+  "docs/guia_frontend.pdf": {
+    "mtime": 1792878226.4497924,
+    "seen": 1793097719.5209432,
+    "ast_hash": "4e20c176b09aa470b2f585ad5e646117",
+    "semantic_hash": "4e20c176b09aa470b2f585ad5e646117"
+  }
+}
