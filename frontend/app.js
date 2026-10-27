@@ -14,7 +14,6 @@ function leerColores() {
 function actualizarBotonTema() {
   const claro = document.documentElement.dataset.theme === "light";
   const b = document.querySelector("#tema");
-  b.querySelector("[aria-hidden]").textContent = claro ? "☾" : "☀";
   b.querySelector(".tema-texto").textContent = claro ? "Oscuro" : "Claro";
   b.setAttribute("aria-label", claro ? "Cambiar a modo oscuro" : "Cambiar a modo claro");
 }
@@ -41,21 +40,45 @@ async function pedir(ruta, cuerpo) {
 }
 
 // ---------------------------------------------------------------- pestañas
+// El indicador del segmentado se desliza hasta la pestaña activa
+function moverIndicador() {
+  const t = $(".tab.activa"), nav = $(".tabs");
+  nav.style.setProperty("--x", `${t.offsetLeft}px`);
+  nav.style.setProperty("--w", `${t.offsetWidth}px`);
+  // La primera ubicación no se anima; desde ahí el indicador se desliza
+  requestAnimationFrame(() => nav.classList.add("listo"));
+}
 document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
-  document.querySelectorAll(".tab").forEach(x => x.classList.toggle("activa", x === b));
+  document.querySelectorAll(".tab").forEach(x => {
+    x.classList.toggle("activa", x === b); x.setAttribute("aria-selected", x === b);
+  });
   $("#panel-existente").classList.toggle("oculto", b.dataset.tab !== "existente");
   $("#panel-nuevo").classList.toggle("oculto", b.dataset.tab !== "nuevo");
+  moverIndicador();
 }));
+// Se recalcula si cambia el tamaño de las pestañas (carga de la tipografía, rotación, ancho de ventana)
+new ResizeObserver(moverIndicador).observe($(".tabs"));
+
+// ---------------------------------------------------------------- brillo del vidrio
+// Cada superficie de vidrio refleja la posición del cursor (variables --mx/--my del CSS)
+document.addEventListener("pointermove", e => {
+  const v = e.target.closest?.(".vidrio"); if (!v) return;
+  const r = v.getBoundingClientRect();
+  v.style.setProperty("--mx", `${e.clientX - r.left}px`);
+  v.style.setProperty("--my", `${e.clientY - r.top}px`);
+}, { passive: true });
 
 // ---------------------------------------------------------------- inicio
 async function iniciar() {
   try {
     const h = await pedir("/health");
-    $("#estado-api").textContent = `modelos ${h.version_modelos} · datos hasta ${h.datos_hasta}`;
+    $("#estado-api").textContent = `Modelos ${h.version_modelos}, datos hasta ${h.datos_hasta}`;
+    $("#estado-api").classList.add("ok");
     opciones = await pedir("/opciones");
     cargarOpciones();
   } catch (e) {
     $("#estado-api").textContent = "API no disponible";
+    $("#estado-api").classList.add("caido");
     mostrarError("No se pudo conectar con la API: " + e.message);
   }
 }
@@ -148,7 +171,11 @@ $("#form-nuevo").addEventListener("submit", async e => {
 
 async function ejecutar(boton, llamada, render) {
   boton.disabled = true; $("#error").classList.add("oculto");
-  try { const r = await llamada(); ultimoResultado = { r, render }; render(r); }
+  try {
+    const r = await llamada(); ultimoResultado = { r, render }; render(r);
+    // Solo un pronóstico nuevo dispara la entrada; redibujar por cambio de tema no
+    const res = $("#resultado"); res.classList.remove("entrando"); void res.offsetWidth; res.classList.add("entrando");
+  }
   catch (err) { mostrarError(err.message); }
   finally { boton.disabled = false; }
 }
@@ -253,7 +280,7 @@ function renderFluido(fl, c, hist, kpis) {
 }
 
 function renderInfo(cluster, filas, avisos) {
-  $("#avisos").innerHTML = (avisos || []).map(a => `<div class="aviso">⚠ ${a}</div>`).join("");
+  $("#avisos").innerHTML = (avisos || []).map(a => `<div class="aviso">${a}</div>`).join("");
   $("#info-cluster").innerHTML = cluster ? `<h3>Tipo de pozo (clustering K-Means)</h3>
     <p><strong>${cluster.nombre}</strong></p>
     <table><tr><td>Pozos en el grupo</td><td class="num">${cluster.pozos}</td></tr>
