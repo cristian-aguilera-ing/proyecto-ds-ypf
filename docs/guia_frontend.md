@@ -74,6 +74,8 @@ Si un fluido muestra *"Sin producción de este fluido en el último mes informad
 - **Línea punteada (P50):** el **pronóstico central**.
 - **Banda sombreada (P10–P90):** el **rango probable**. Ver la sección 5.
 
+Debajo de cada gráfico, el desplegable **"Cómo leer este gráfico"** resume esta explicación dentro de la aplicación.
+
 Al pasar el mouse sobre el gráfico se ven los valores de cada mes. Hay que fijarse:
 1. si el pronóstico **continúa la tendencia** del histórico. Un salto brusco suele indicar que el último mes fue atípico (una parada o una reparación);
 2. el **ancho de la banda**: si es angosta, el pozo es estable y el pronóstico es confiable; si es ancha, la historia es irregular y hay más incertidumbre.
@@ -184,6 +186,23 @@ Variables frecuentes:
 Todas se midieron con datos de **2024–2025, que el modelo nunca vio al entrenar**.
 
 **Por qué hay dos R² en pozo existente (mes 1 / mes 12):** predecir el mes siguiente es fácil, porque se parece mucho al último mes (R² ≈ 0,89). Predecir dentro de 12 meses es difícil (R² ≈ 0,63). El valor del modelo está justamente en el largo plazo: ahí "repetir el último mes" falla mucho más.
+
+### 7.1 Pestaña "Métricas del modelo" (dashboard)
+
+La tercera pestaña reúne estas métricas en gráficos, sin necesidad de hacer un pronóstico. Arriba hay cuatro indicadores: R² a 1 y a 12 meses, error de la acumulada a 12 meses de un pozo nuevo y cobertura de la banda P10–P90 (petróleo / gas). Cada gráfico trae una frase con su lectura clave y un desplegable **"Cómo leer este gráfico"**.
+
+| Gráfico | Qué muestra | Cómo leerlo |
+|---|---|---|
+| R² según el horizonte | R² de 1 a 12 meses adelante, del modelo (líneas gruesas) y de repetir el último mes (líneas finas punteadas) | Más arriba es mejor. A 1 mes ambos aciertan; la diferencia aparece a 6–12 meses |
+| WAPE según el horizonte | El error relativo para cada horizonte | Más abajo es mejor. El error del modelo crece más despacio que el de la persistencia |
+| Pozo existente contra métodos clásicos | Backtest desde diciembre de 2023: modelo, curva de Arps y persistencia | R² más alto y WAPE más bajo indican mejor método |
+| Pozo nuevo contra curva mediana | Acumulada de los primeros 12 meses: modelo contra "el pozo típico de la formación" | Un R² negativo es peor que predecir siempre el promedio |
+| ¿La banda P10–P90 es confiable? | Porcentaje de meses reales dentro de la banda, para los 4 modelos | Lo ideal es estar cerca de la línea del 80 % |
+| Elección de k | Silhouette y Davies-Bouldin según la cantidad de grupos del clustering | Se eligió k = 4, donde la silhouette es máxima |
+| Los 4 tipos de pozo | Cantidad de pozos por grupo (barras) y retención al mes 12 (puntos) | Retención baja = el pozo arranca alto y cae rápido |
+| Comparación con la versión anterior | R² a 1 mes de la versión 1 contra la versión 2 con el mismo alcance | 0,907 contra 0,906: mismo nivel, pero ahora con gas y hasta 12 meses |
+
+Al pie figuran los cortes temporales (entrenamiento, validación y test) y la cantidad de filas usadas.
 
 ---
 
