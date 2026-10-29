@@ -178,6 +178,21 @@ docker compose up --build -d
 
 Reentrenar dentro de un contenedor: `docker compose --profile train run --rm train`.
 
+### Consumo de memoria
+
+Medido con `docker stats` en la imagen de la API, después de 60 pedidos (existente, nuevo y búsqueda):
+
+| Configuración | RAM en reposo | RAM tras 60 pedidos |
+|---|---|---|
+| Antes: 2 workers de uvicorn, Polars con todos los hilos | 921 MB | 972 MB |
+| Ahora: 1 worker, Polars con 2 hilos | 336 MB | 344 MB |
+
+- **Los `.joblib` no son el problema:** los 5 modelos pesan 7,4 MB en disco y suman ~60 MB en memoria.
+- **Lo que pesa** son las librerías (Polars, pandas, LightGBM y scikit-learn: ~245 MB) y la lectura del panel de producción. Son 37 MB de datos, pero Polars reservaba ~195 MB al leerlo con 12 hilos; con 2 hilos reserva ~110 MB.
+- **Cada worker de uvicorn es un proceso con su propia copia** de modelos y datos. Por eso 2 workers duplicaban la RAM sin aportar nada: cada pronóstico tarda ~35 ms (existente) y ~20 ms (nuevo).
+- `compose.yaml` fija un tope de 1 GB para la API. Si el consumo se disparara, Docker reinicia ese contenedor sin afectar al resto de la máquina.
+- La imagen ya no instala `shap`: la API calcula las contribuciones con el TreeSHAP nativo de LightGBM (`pred_contrib`).
+
 ## 6. API
 
 | Método | Ruta | Descripción |

@@ -16,6 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 curl \
 COPY --from=deps /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONPATH=/app/src:/app \
     DIR_MODELOS=/app/models DIR_DATOS=/app/data/processed
+# Memoria: cada worker de uvicorn carga su propia copia de modelos y panel (~470 MB), así que se usa
+# uno solo (WEB_CONCURRENCY); y Polars con 2 hilos reserva ~85 MB menos al leer el panel que con todos.
+# Ver README, "Consumo de memoria".
+ENV WEB_CONCURRENCY=1 POLARS_MAX_THREADS=2
 WORKDIR /app
 COPY --chown=app:app src/ src/
 COPY --chown=app:app api/ api/
@@ -25,4 +29,4 @@ USER app
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \
     CMD curl -fsS http://localhost:8000/health || exit 1
-CMD ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+CMD ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000"]
