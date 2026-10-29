@@ -32,6 +32,12 @@ PROFUNDIDAD_MIN = 300.0
 PROFUNDIDAD_MAX = 8000.0
 GOR_CORTE_GAS = 3000.0  # m3 gas / m3 petróleo: por encima el pozo se considera de gas
 
+# Límites geográficos de la Cuenca Neuquina para validar pozos nuevos. Los pozos del dataset van de
+# lat -39,36 a -34,67 y lon -69,82 a -67,59 (Neuquén, Río Negro y sur de Mendoza); se deja ~0,5° de margen.
+LIMITES_CUENCA = {"lat": (-40.0, -34.0), "lon": (-70.5, -67.0)}
+# Distancia (km) al centro del área elegida a partir de la cual se avisa de un posible error de carga
+DISTANCIA_AREA_AVISO_KM = 50.0
+
 # Unidades del dataset: petróleo en m3, gas en miles de m3 (Mm3)
 FACTOR_GAS_M3 = 1000.0
 

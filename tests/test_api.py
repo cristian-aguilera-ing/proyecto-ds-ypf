@@ -101,3 +101,37 @@ def test_nuevo_con_opcionales(cliente):
     assert r.status_code == 200
     assert r.json()["entrada"]["dias_term"] == 60
     assert cliente.post("/predict/nuevo", json=base | {"dias_term": -5}).status_code == 422
+
+
+@pytest.mark.parametrize("lat, lon", [(-45.0, -69.0), (-38.3, -72.0), (-31.4, -64.2), (-38.3, -65.0)])
+def test_nuevo_fuera_de_la_cuenca(cliente, lat, lon):
+    pedido = {"formacion": "vaca muerta", "sub_tipo_recurso": "SHALE", "areayacimiento": "LOMA CAMPANA",
+              "tipopozo": "Petrolífero", "profundidad": 3000, "lat": lat, "lon": lon, "anio_inicio": 2025}
+    r = cliente.post("/predict/nuevo", json=pedido)
+    assert r.status_code == 422
+    assert "fuera de la Cuenca Neuquina" in str(r.json()["detail"])
+
+
+@pytest.mark.parametrize("lat, lon", [(config.LIMITES_CUENCA["lat"][0], config.LIMITES_CUENCA["lon"][0]),
+                                      (config.LIMITES_CUENCA["lat"][1], config.LIMITES_CUENCA["lon"][1])])
+def test_nuevo_borde_de_la_cuenca(cliente, lat, lon):
+    pedido = {"formacion": "vaca muerta", "sub_tipo_recurso": "SHALE", "areayacimiento": "LOMA CAMPANA",
+              "tipopozo": "Petrolífero", "profundidad": 3000, "lat": lat, "lon": lon, "anio_inicio": 2025}
+    assert cliente.post("/predict/nuevo", json=pedido).status_code == 200
+
+
+def test_pozos_reales_dentro_de_los_limites():
+    p = pl.read_parquet(config.POZOS).drop_nulls(["lat", "lon"])
+    (la0, la1), (lo0, lo1) = config.LIMITES_CUENCA["lat"], config.LIMITES_CUENCA["lon"]
+    assert p.filter(~pl.col("lat").is_between(la0, la1) | ~pl.col("lon").is_between(lo0, lo1)).height == 0
+
+
+def test_nuevo_lejos_del_area(cliente):
+    base = {"formacion": "vaca muerta", "sub_tipo_recurso": "SHALE", "areayacimiento": "LOMA CAMPANA",
+            "tipopozo": "Petrolífero", "profundidad": 3000, "anio_inicio": 2025}
+    o = cliente.get("/opciones").json()
+    area = next(a for a in o["areas"] if a["areayacimiento"] == "LOMA CAMPANA")
+    cerca = cliente.post("/predict/nuevo", json=base | {"lat": area["lat"], "lon": area["lon"]}).json()
+    lejos = cliente.post("/predict/nuevo", json=base | {"lat": -36.0, "lon": -69.5}).json()
+    assert not any("km del centro" in a for a in cerca["avisos"])
+    assert any("km del centro" in a for a in lejos["avisos"])
