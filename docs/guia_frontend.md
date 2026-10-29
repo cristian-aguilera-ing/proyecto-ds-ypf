@@ -7,20 +7,45 @@ Esta guía explica qué muestra cada parte de la aplicación web y cómo interpr
 
 > **En una frase:** la aplicación estima cuánto petróleo y cuánto gas va a producir un pozo de la Cuenca Neuquina mes a mes, con un rango de incertidumbre, y explica qué datos empujaron esa estimación.
 
+### Novedades de esta versión
+
+| Qué | Dónde se ve |
+|---|---|
+| Diseño nuevo con superficies translúcidas, fondo de isolíneas y **modo claro / oscuro** | Toda la página (sección 1) |
+| Pestaña **"Métricas del modelo"** con 8 gráficos de rendimiento | Sección 7.1 |
+| Desplegable **"Cómo leer este gráfico"** en cada gráfico | Secciones 3.4 y 7.1 |
+| Botón **Limpiar** junto a Pronosticar | Sección 3.1 |
+| Buscador con estado **activo / sin producción** y búsqueda por varias palabras | Sección 3.1 |
+| Corrección: los pozos sin producción en su último mes ya no rompen la pantalla; muestran un aviso | Sección 9 |
+| Validación de **coordenadas dentro de la Cuenca Neuquina** y aviso si el pozo queda lejos del área elegida | Secciones 4.1 y 9 |
+| API más liviana: de 921 MB a 336 MB de RAM, sin cambios para el usuario | README, "Consumo de memoria" |
+
 ---
 
-## 1. Los dos modos
+## 1. Las tres pestañas
 
 | Pestaña | Pregunta que responde | Qué necesita | Qué devuelve |
 |---|---|---|---|
 | **Pozo existente** | "Este pozo ya produce: ¿cuánto va a producir los próximos meses?" | Un pozo del dataset (por sigla o `idpozo`) | Pronóstico de 1 a 12 meses desde su último dato |
 | **Pozo nuevo (curva tipo)** | "Si perforo un pozo con estas características, ¿qué producción puedo esperar?" | Formación, zona, tipo de pozo, profundidad, año | Curva de los primeros 24 meses de vida |
+| **Métricas del modelo** | "¿Qué tan bien predicen los modelos?" | Nada: se abre directamente | Indicadores y gráficos de test 2024–2025 (sección 7.1) |
 
-**Cuándo usar cada uno:** el modo *existente* es más preciso, porque parte de la historia real del pozo. El modo *nuevo* no tiene historia: es una estimación de referencia ("pozos parecidos a este produjeron así") y su incertidumbre es mayor.
+**Cuándo usar cada modo:** el modo *existente* es más preciso, porque parte de la historia real del pozo. El modo *nuevo* no tiene historia: es una estimación de referencia ("pozos parecidos a este produjeron así") y su incertidumbre es mayor.
 
-![Encabezado y pestañas](img/01_inicio.jpg)
+![Encabezado, descripción y pestañas](img/01_inicio.png)
 
-En el encabezado figuran la versión de los modelos y hasta qué mes llegan los datos (`datos hasta 2026-07-01`). Si dice **"API no disponible"**, el contenedor de la API no está corriendo. Al pie de la página figuran la fuente de los datos y los integrantes del grupo.
+Elementos del encabezado:
+
+- **Estado de la API:** una pastilla con un punto verde muestra la versión de los modelos y hasta qué mes llegan los datos (`datos hasta 2026-07-01`). Si el punto es rojo y dice **"API no disponible"**, el contenedor de la API no está corriendo.
+- **Botón Claro / Oscuro** (arriba a la derecha): cambia el tema. Por defecto la página abre en modo oscuro y recuerda la última elección. Los gráficos se redibujan con los colores del tema.
+- **Descripción:** qué hace el sistema y para qué sirve.
+- **Pie de página:** fuente de los datos e integrantes del grupo.
+
+![La misma página en modo claro](img/10_modo_claro.png)
+
+La página se adapta al celular: los formularios y las tarjetas pasan a una columna y las pestañas usan nombres cortos (Existente, Nuevo, Métricas).
+
+![Vista en celular](img/11_movil.png)
 
 ---
 
@@ -46,6 +71,7 @@ Para pasar a unidades de campo: 1 m³ de petróleo ≈ 6,29 barriles; 1 Mm³ de 
   Los resultados aparecen ordenados: primero el idpozo exacto, después las siglas que empiezan con lo que escribiste, luego los pozos activos y, entre ellos, los de mayor producción reciente. **Solo los pozos activos tienen pronóstico**, porque el modelo parte del último mes producido.
 
 - **Horizonte (meses):** cuántos meses pronosticar, de 1 a 12.
+- **Pronosticar** calcula el resultado; **Limpiar** borra la búsqueda, las sugerencias y el resultado para empezar de nuevo.
 
 ![Sugerencias del buscador con pozos activos y sin producción](img/05_busqueda.png)
 
@@ -74,7 +100,9 @@ Si un fluido muestra *"Sin producción de este fluido en el último mes informad
 - **Línea punteada (P50):** el **pronóstico central**.
 - **Banda sombreada (P10–P90):** el **rango probable**. Ver la sección 5.
 
-Debajo de cada gráfico, el desplegable **"Cómo leer este gráfico"** resume esta explicación dentro de la aplicación.
+Debajo de cada gráfico, el desplegable **"Cómo leer este gráfico"** resume esta explicación dentro de la aplicación, con una muestra de cada tipo de línea:
+
+![Tarjeta de petróleo con la guía de lectura abierta](img/06_como_leer.png)
 
 Al pasar el mouse sobre el gráfico se ven los valores de cada mes. Hay que fijarse:
 1. si el pronóstico **continúa la tendencia** del histórico. Un salto brusco suele indicar que el último mes fue atípico (una parada o una reparación);
@@ -105,7 +133,7 @@ Al pasar el mouse sobre el gráfico se ven los valores de cada mes. Hay que fija
 | **Operadora** | Las operadoras con pocos pozos se agrupan en "OTRAS". |
 | **Área de yacimiento** | Al elegirla se **prellenan latitud, longitud y profundidad típicas** de los pozos recientes del área. Se pueden modificar. |
 | **Profundidad (m)** | Profundidad medida del pozo. En pozos horizontales incluye la rama: más profundidad suele significar una rama más larga y más producción. |
-| **Latitud / Longitud** | Ubicación en grados decimales (negativos: sur y oeste). |
+| **Latitud / Longitud** | Ubicación en grados decimales (negativos: sur y oeste). Tienen que estar **dentro de la Cuenca Neuquina**: latitud entre −40 y −34 y longitud entre −70,5 y −67. Fuera de ese rango el formulario y la API rechazan el pedido, porque el modelo no tiene datos de otras zonas. |
 | **Año de inicio** | Año en que empezaría a producir. Funciona como proxy de la tecnología: los pozos más recientes producen más. |
 
 > **Campos de perforación y terminación.** El proyecto incorpora el padrón *Capítulo IV* (si el pozo es horizontal, días de perforación y días de terminación). En el último entrenamiento esas variables **no mejoraron la validación**, así que el modelo no las usa y el formulario las oculta. Si un reentrenamiento futuro las selecciona, aparece automáticamente un bloque "Perforación y terminación (opcional)" prellenado con los valores típicos del área.
@@ -130,6 +158,10 @@ En la tarjeta técnica:
 - **WAPE y R² de la acumulada a 12 meses**: cómo le fue al modelo con pozos de 2024–2025 que nunca vio.
 
 El gráfico muestra solo la curva pronosticada, porque un pozo nuevo no tiene historia. El eje horizontal es el **mes de vida** (M1, M2, …).
+
+Si la ubicación ingresada queda a más de 50 km del centro del área elegida, aparece un aviso: suele ser un error al cargar la latitud, la longitud o el área.
+
+![Aviso de ubicación lejos del área elegida](img/07_aviso_ubicacion.png)
 
 ---
 
@@ -204,6 +236,12 @@ La tercera pestaña reúne estas métricas en gráficos, sin necesidad de hacer 
 
 Al pie figuran los cortes temporales (entrenamiento, validación y test) y la cantidad de filas usadas.
 
+![Indicadores y primeros gráficos del dashboard](img/08_metricas.png)
+
+![Dashboard completo](img/09_metricas_completo.png)
+
+Si se pasa a esta pestaña después de un pronóstico, el resultado no se pierde: al volver a "Pozo existente" o "Pozo nuevo" sigue ahí.
+
 ---
 
 ## 8. Tipo de pozo (cluster)
@@ -218,7 +256,7 @@ En pozos nuevos el grupo se calcula a partir de la curva predicha. Si dice *"Sin
 
 ---
 
-## 9. Avisos (recuadros amarillos ⚠)
+## 9. Avisos (recuadros amarillos) y errores (recuadros rojos)
 
 | Aviso | Qué hacer |
 |---|---|
@@ -229,6 +267,9 @@ En pozos nuevos el grupo se calcula a partir de la curva predicha. Si dice *"Sin
 | *X está fuera del rango de entrenamiento* | El dato ingresado es más extremo que todos los pozos conocidos: el modelo extrapola y el resultado es poco confiable. |
 | *Pozos futuros: el modelo asume la tecnología del último año conocido* | Para años posteriores a los datos, el modelo no puede anticipar mejoras tecnológicas. |
 | *Se usaron valores típicos del área para …* | Faltaban datos opcionales y se completaron con la mediana del área. |
+| *La ubicación está a N km del centro del área …* | Revisar la latitud, la longitud o el área: probablemente no coinciden. |
+
+Los **errores** (recuadro rojo) frenan el pronóstico y dicen qué corregir. Por ejemplo: *"La latitud -45.0 está fuera de la Cuenca Neuquina (debe estar entre -40.0 y -34.0)"*.
 
 ---
 

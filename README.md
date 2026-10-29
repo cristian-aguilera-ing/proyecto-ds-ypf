@@ -22,6 +22,23 @@ Proyecto final del programa **Data Science — Energía Digital 2026 (Fundación
 
 Cada documento está en `.docx` (editable) y `.pdf`, salvo la guía del frontend, que está en `.md` y `.pdf`.
 
+![Aplicación web: pronóstico de petróleo y gas con tres pestañas](docs/img/01_inicio.png)
+
+## Novedades y correcciones de la versión final
+
+| Área | Cambio |
+|---|---|
+| Frontend | Rediseño con superficies translúcidas, fondo de isolíneas de la cuenca y **modo claro / oscuro** (por defecto oscuro) |
+| Frontend | Nueva pestaña **"Métricas del modelo"**: 4 indicadores y 8 gráficos de test 2024–2025 (R² y WAPE por horizonte, backtest contra Arps, pozo nuevo contra curva mediana, cobertura P10–P90, elección de k, perfiles de clusters y comparación con la versión 1) |
+| Frontend | Desplegable **"Cómo leer este gráfico"** en cada gráfico, botón **Limpiar** y descripción del sistema en el encabezado |
+| Frontend | Buscador con estado **activo / sin producción**, búsqueda por varias palabras y orden por relevancia |
+| Corrección | Elegir un pozo sin producción en su último mes rompía la pantalla; ahora muestra un aviso y no pronostica |
+| API | **Validación de coordenadas** dentro de la Cuenca Neuquina (lat −40 a −34, lon −70,5 a −67) con mensaje claro, y aviso si el pozo queda a más de 50 km del área elegida |
+| API / Docker | **Memoria de 921 MB a 336 MB**: un worker, Polars con 2 hilos, tope de 1 GB y sin `shap` en la imagen (ver "Consumo de memoria") |
+| Corrección | El ejemplo de Swagger y del README usaba un `idpozo` que no existe (159640); ahora usa 166848 (PLU.Nq.LCa-3039(h)) |
+| Tests | De 15 a **28 tests** (búsqueda, pozos sin producción, campos opcionales, límites de la cuenca y aviso de distancia) |
+| Documentación | Guía del frontend con capturas nuevas, Informe de Avance y guía del proyecto actualizados |
+
 Predice la producción mensual de **petróleo (m³)** y **gas (Mm³ = miles de m³)** de pozos no convencionales (shale / tight) de la **Cuenca Neuquina**, en dos modos:
 
 | Modo | Pregunta que responde | Entrada | Salida |
@@ -131,7 +148,9 @@ Se mantuvo el set base: la profundidad medida (que en pozos horizontales incluye
 
 ## Guía de uso del frontend
 
-Cómo leer cada indicador, el gráfico, las bandas P10–P90, la explicación SHAP, el cluster y los avisos: **[docs/guia_frontend.md](docs/guia_frontend.md)**.
+Cómo leer cada indicador, el gráfico, las bandas P10–P90, la explicación SHAP, el cluster, los avisos y el dashboard de métricas: **[docs/guia_frontend.md](docs/guia_frontend.md)** (también en [PDF](docs/guia_frontend.pdf)).
+
+![Pestaña Métricas del modelo](docs/img/08_metricas.png)
 
 ## 4. Estructura
 
@@ -146,9 +165,9 @@ Cómo leer cada indicador, el gráfico, las bandas P10–P90, la explicación SH
 │   └── models/               train.py · predict.py · baselines.py · evaluate.py · cluster.py
 ├── models/                   artefactos .joblib + metadata.json
 ├── api/                      app.py (FastAPI) · model.py (carga de modelos) · schemas.py (Pydantic)
-├── frontend/                 formulario HTML + JS + Chart.js
+├── frontend/                 HTML + JS + Chart.js: pozo existente, pozo nuevo y métricas
 ├── docker/                   Dockerfiles y nginx.conf
-├── tests/                    limpieza, no-fuga de datos y API
+├── tests/                    limpieza, no-fuga de datos, API y validación (28 tests)
 ├── compose.yaml · Makefile · requirements.txt · requirements-api.txt
 ```
 
@@ -161,7 +180,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt && pip install -e .
 python -m ypf_ds.data.clean          # limpieza → data/processed/
 python -m ypf_ds.models.train        # entrenamiento → models/
-pytest -q                            # tests
+pytest -q                            # 28 tests
 uvicorn api.app:app --reload         # API en http://localhost:8000/docs
 ```
 
@@ -204,9 +223,11 @@ Medido con `docker stats` en la imagen de la API, después de 60 pedidos (existe
 | POST | `/predict/existente` | Pronóstico de un pozo existente |
 | POST | `/predict/nuevo` | Curva tipo de un pozo nuevo |
 
+Las entradas se validan con Pydantic: un pedido inválido responde **422** con el motivo. En `/predict/nuevo` la latitud tiene que estar entre −40 y −34 y la longitud entre −70,5 y −67 (`config.LIMITES_CUENCA`), y si el pozo queda a más de 50 km del centro del área elegida la respuesta incluye un aviso.
+
 ```bash
 curl -X POST localhost:8000/predict/existente -H "Content-Type: application/json" \
-     -d '{"idpozo": 159640, "horizonte": 12}'
+     -d '{"idpozo": 166848, "horizonte": 12}'
 
 curl -X POST localhost:8000/predict/nuevo -H "Content-Type: application/json" -d '{
   "formacion": "vaca muerta", "sub_tipo_recurso": "SHALE", "areayacimiento": "LOMA CAMPANA",

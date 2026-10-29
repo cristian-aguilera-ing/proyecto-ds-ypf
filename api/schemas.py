@@ -7,7 +7,7 @@ from ypf_ds.config import LIMITES_CUENCA
 
 class PedidoExistente(BaseModel):
     idpozo: int = Field(..., description="Identificador del pozo (idpozo de la Secretaría de Energía)",
-                        examples=[159640])
+                        examples=[166848])
     horizonte: int = Field(12, ge=1, le=12, description="Meses a pronosticar desde el último dato")
 
 
