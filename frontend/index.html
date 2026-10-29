@@ -66,8 +66,8 @@
       <label>Operadora <select name="empresa" required></select></label>
       <label class="ancho">Área de yacimiento <select name="areayacimiento" required></select></label>
       <label>Profundidad (m) <input type="number" name="profundidad" step="1" required></label>
-      <label>Latitud <input type="number" name="lat" step="0.0001" required></label>
-      <label>Longitud <input type="number" name="lon" step="0.0001" required></label>
+      <label>Latitud <input type="number" name="lat" step="0.0001" min="-40" max="-34" required></label>
+      <label>Longitud <input type="number" name="lon" step="0.0001" min="-70.5" max="-67" required></label>
       <label>Año de inicio <input type="number" name="anio_inicio" min="2006" max="2035" required></label>
       <fieldset id="campos-c4" class="opcionales oculto">
         <legend>Perforación y terminación (opcional · se prellena con lo típico del área)</legend>

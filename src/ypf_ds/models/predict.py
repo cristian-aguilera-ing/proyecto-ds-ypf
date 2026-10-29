@@ -1,6 +1,7 @@
 """Lógica de predicción reutilizada por la API (y por los notebooks para demos)."""
 
 import json
+import math
 from pathlib import Path
 
 import joblib
@@ -239,6 +240,16 @@ class Predictor:
             "cluster": self._perfil_cluster(k), "avisos": avisos,
         }
 
+    def _distancia_al_area(self, datos: dict) -> float | None:
+        """Distancia aproximada (km, equirectangular) entre el pozo y la mediana de los pozos del área."""
+        area = next((a for a in self.meta["opciones"]["areas"]
+                     if a["areayacimiento"] == datos.get("areayacimiento")), None)
+        if not area or datos.get("lat") is None or datos.get("lon") is None:
+            return None
+        dlat = math.radians(datos["lat"] - area["lat"])
+        dlon = math.radians(datos["lon"] - area["lon"]) * math.cos(math.radians((datos["lat"] + area["lat"]) / 2))
+        return 6371.0 * math.hypot(dlat, dlon)
+
     def _fuera_de_rango(self, datos: dict) -> list[str]:
         avisos = []
         for c, (lo, hi) in self.meta["opciones"]["rangos"].items():
@@ -246,6 +257,10 @@ class Predictor:
             if v is not None and not (lo <= v <= hi):
                 avisos.append(f"{_nombre(c)} = {v} está fuera del rango de entrenamiento [{lo}, {hi}]: "
                               "la predicción es una extrapolación.")
+        km = self._distancia_al_area(datos)
+        if km is not None and km > config.DISTANCIA_AREA_AVISO_KM:
+            avisos.append(f"La ubicación está a {km:.0f} km del centro del área {datos['areayacimiento']}: "
+                          "revisá la latitud, la longitud o el área elegida.")
         if datos.get("anio_inicio", 0) > int(self.meta["opciones"]["rangos"]["anio_inicio"][1]):
             avisos.append("Pozos futuros: el modelo asume la tecnología de completación del último año conocido.")
         return avisos

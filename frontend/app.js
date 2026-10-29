@@ -42,7 +42,12 @@ async function pedir(ruta, cuerpo) {
   const r = await fetch(API + ruta, cuerpo ? { method: "POST", headers: { "Content-Type": "application/json" },
                                               body: JSON.stringify(cuerpo) } : {});
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail || r.statusText));
+  if (!r.ok) {
+    // Errores de validación (422): se muestra el mensaje de cada campo, sin el prefijo de Pydantic
+    const d = j.detail;
+    throw new Error(typeof d === "string" ? d : Array.isArray(d)
+      ? d.map(e => String(e.msg).replace(/^Value error, /, "")).join(" ") : r.statusText);
+  }
   return j;
 }
 
