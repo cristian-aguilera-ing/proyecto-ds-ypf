@@ -115,6 +115,7 @@ main { z-index: 2; }
 #form-nuevo { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 #form-nuevo button[type=submit] { grid-column: -2 / -1; }
 @media (max-width: 900px) {
+  .kpis-metricas { grid-template-columns: repeat(2, 1fr); }
   #form-nuevo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #form-nuevo button[type=submit] { grid-column: 1 / -1; }
 }
@@ -215,6 +216,37 @@ details[open] summary { margin-bottom: 10px; }
 #resultado.entrando > :nth-child(5) { animation-delay: .22s; }
 @keyframes subir { from { opacity: 0; transform: translateY(14px); } }
 
+/* ---------------------------------------------------------------- dashboard de métricas */
+/* En la pestaña Métricas el resultado y el error del pronóstico se esconden sin perderse */
+main[data-vista="metricas"] :is(#resultado, #error) { display: none; }
+.intro-metricas { color: var(--suave); margin: 4px 0 14px; max-width: 760px; }
+.kpis-metricas { grid-template-columns: repeat(4, 1fr); margin-bottom: 16px; }
+.kpis-metricas .kpi { padding: 14px 16px; border-radius: var(--radio); background: var(--vidrio);
+                      -webkit-backdrop-filter: var(--desenfoque); backdrop-filter: var(--desenfoque); }
+.kpis-metricas .v { font-size: 1.5rem; }
+.grilla-metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; }
+.grilla-metricas .tarjeta { display: flex; flex-direction: column; }
+.grilla-metricas .grafico { margin-top: auto; }
+.lectura { margin: 0 0 12px; color: var(--suave); font-size: .9rem; min-height: 2.9em; }
+.comparacion { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: auto 0; padding: 12px 0; }
+.comparacion .kpi .v { font-size: 1.6rem; }
+.leyenda-grupos { display: none; margin: 8px 0 0; padding-left: 20px; font-size: .82rem; color: var(--suave); }
+.pie-metricas { color: var(--suave); font-size: .82rem; margin: 14px 2px 0; }
+#panel-metricas.entrando > * { animation: subir .6s var(--curva) both; }
+#panel-metricas.entrando > :nth-child(2) { animation-delay: .05s; }
+#panel-metricas.entrando > :nth-child(3) { animation-delay: .1s; }
+
+/* Guía de lectura desplegable junto a cada gráfico */
+.ayuda { font-size: .88rem; color: var(--suave); }
+.ayuda ul { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+.ayuda li { line-height: 1.5; }
+.ayuda b { color: var(--texto); font-weight: 600; }
+.muestra { display: inline-block; width: 22px; height: 10px; margin-right: 8px; vertical-align: middle; border-radius: 2px; }
+.muestra.llena { height: 0; border-top: 2.5px solid var(--suave); }
+.muestra.punteada { height: 0; border-top: 2.5px dashed var(--suave); }
+.muestra.banda { background: color-mix(in srgb, var(--suave) 30%, transparent); }
+.tab .corto { display: none; }
+
 footer { color: var(--suave); font-size: .82rem; padding: 32px 16px 40px; margin-top: 16px; }
 footer p { margin: 0 0 4px; }
 footer strong { color: var(--texto); font-weight: 600; }
@@ -226,6 +258,12 @@ footer strong { color: var(--texto); font-weight: 600; }
   .tema { width: 40px; padding: 0; justify-content: center; }
   .tabs { display: flex; }
   .tab { flex: 1; padding: 0 10px; font-size: .9rem; }
+  .tab .largo { display: none; } .tab .corto { display: inline; }
+  .grilla-metricas { grid-template-columns: 1fr; }
+  .kpis-metricas { grid-template-columns: repeat(2, 1fr); }
+  .kpis-metricas .v, .comparacion .kpi .v { font-size: 1.2rem; }
+  .comparacion { grid-template-columns: 1fr; }
+  .leyenda-grupos { display: block; }
   .grilla-fluidos, .grilla-info { grid-template-columns: 1fr; }
   .formulario .ancho { grid-column: span 1; }
   #form-existente, #form-nuevo { grid-template-columns: 1fr; }

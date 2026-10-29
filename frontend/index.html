@@ -36,8 +36,9 @@
 <main>
   <nav class="tabs vidrio" role="tablist">
     <span class="indicador" aria-hidden="true"></span>
-    <button class="tab activa" data-tab="existente" role="tab" aria-selected="true">Pozo existente</button>
-    <button class="tab" data-tab="nuevo" role="tab" aria-selected="false">Pozo nuevo (curva tipo)</button>
+    <button class="tab activa" data-tab="existente" role="tab" aria-selected="true"><span class="largo">Pozo existente</span><span class="corto">Existente</span></button>
+    <button class="tab" data-tab="nuevo" role="tab" aria-selected="false"><span class="largo">Pozo nuevo (curva tipo)</span><span class="corto">Nuevo</span></button>
+    <button class="tab" data-tab="metricas" role="tab" aria-selected="false"><span class="largo">Métricas del modelo</span><span class="corto">Métricas</span></button>
   </nav>
 
   <section id="panel-existente" class="panel vidrio">
@@ -80,6 +81,112 @@
     </form>
   </section>
 
+  <section id="panel-metricas" class="panel-metricas oculto" aria-label="Métricas del modelo">
+    <p class="intro-metricas">Así rindieron los modelos con datos de 2024–2025, que no se usaron para entrenarlos. Cada gráfico tiene su guía de lectura.</p>
+    <div class="kpis kpis-metricas" id="m-kpis"></div>
+    <div class="grilla-metricas">
+    <article class="tarjeta vidrio" id="m1">
+      <h3>R² según cuántos meses adelante se pronostica</h3>
+      <p class="lectura"></p>
+      <div class="grafico"><canvas></canvas></div>
+      <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+        <ul>
+          <li><b>R²</b> mide qué parte de la variación real explica el modelo: 1 es perfecto, 0 equivale a predecir siempre el promedio.</li>
+          <li>Cada punto es un horizonte: 1 = el mes siguiente, 12 = un año adelante. Se midió en 2024–2025, con datos que el modelo no vio al entrenar.</li>
+          <li><b>Persistencia</b> (líneas finas) es repetir el último mes. Cuanto más arriba queda el modelo respecto de ella, más aporta.</li>
+          <li>Es normal que el R² baje con el horizonte: a 1 mes cualquier método acierta bastante; la diferencia se ve a 6–12 meses.</li>
+        </ul>
+      </details>
+    </article>
+    <article class="tarjeta vidrio" id="m2">
+      <h3>Error relativo (WAPE) según el horizonte</h3>
+      <p class="lectura"></p>
+      <div class="grafico"><canvas></canvas></div>
+      <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+        <ul>
+          <li><b>WAPE</b> es el error absoluto total dividido por la producción total: 0,25 significa que, en suma, el pronóstico se desvía un 25 % de lo real.</li>
+          <li>Acá <b>más bajo es mejor</b>. Las líneas finas son la persistencia (repetir el último mes).</li>
+          <li>El error crece con el horizonte; lo importante es que el modelo crezca más despacio que la persistencia.</li>
+        </ul>
+      </details>
+    </article>
+    <article class="tarjeta vidrio" id="m3">
+      <h3>Pozo existente: modelo contra métodos clásicos</h3>
+      <p class="lectura"></p>
+      <div class="grafico"><canvas></canvas></div>
+      <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+        <ul>
+          <li>Prueba única: se toma diciembre de 2023 como punto de partida y se pronostican los 12 meses siguientes de 2.291 pozos.</li>
+          <li><b>Arps</b> es la curva de declinación hiperbólica que usa la industria; <b>persistencia</b> repite el último mes.</li>
+          <li>Barras de R²: más alto es mejor. Barras de WAPE: más bajo es mejor.</li>
+        </ul>
+      </details>
+    </article>
+    <article class="tarjeta vidrio" id="m4">
+      <h3>Pozo nuevo: modelo contra la curva mediana</h3>
+      <p class="lectura"></p>
+      <div class="grafico"><canvas></canvas></div>
+      <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+        <ul>
+          <li>Compara la producción acumulada de los primeros 12 meses de pozos que arrancaron en 2024–2025.</li>
+          <li>La <b>curva mediana</b> es el método simple: suponer que el pozo nuevo rinde como el pozo típico de su formación.</li>
+          <li>Un R² negativo significa que el método es peor que predecir siempre el promedio.</li>
+        </ul>
+      </details>
+    </article>
+    <article class="tarjeta vidrio" id="m5">
+      <h3>¿La banda P10–P90 es confiable?</h3>
+      <p class="lectura"></p>
+      <div class="grafico"><canvas></canvas></div>
+      <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+        <ul>
+          <li>Mide qué porcentaje de los meses reales cayó dentro de la banda sombreada de los gráficos de pronóstico.</li>
+          <li>Si la banda está bien calibrada, debería contener cerca del <b>80 %</b> de los casos (línea de referencia).</li>
+          <li>Por debajo de 80 % la banda es algo optimista (demasiado angosta); por encima, demasiado prudente.</li>
+        </ul>
+      </details>
+    </article>
+    <article class="tarjeta vidrio" id="m6">
+      <h3>¿Cuántos tipos de pozo hay? (elección de k)</h3>
+      <p class="lectura"></p>
+      <div class="grafico"><canvas></canvas></div>
+      <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+        <ul>
+          <li>El clustering agrupa los pozos por la forma de su curva de producción. Este gráfico ayuda a elegir cuántos grupos (k) usar.</li>
+          <li><b>Silhouette</b> (más alto es mejor) mide qué tan separados quedan los grupos; <b>Davies-Bouldin</b> (más bajo es mejor) mide cuánto se superponen.</li>
+          <li>Se eligió k = 4 porque maximiza la silhouette y da grupos interpretables.</li>
+        </ul>
+      </details>
+    </article>
+    <article class="tarjeta vidrio" id="m7">
+      <h3>Los 4 tipos de pozo</h3>
+      <p class="lectura"></p>
+      <div class="grafico"><canvas></canvas></div>
+      <ol class="leyenda-grupos"></ol>
+      <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+        <ul>
+          <li>Cada barra es un grupo del clustering, con el nombre que resume su comportamiento.</li>
+          <li>La barra muestra cuántos pozos tiene el grupo; el punto, qué fracción del pico conserva al mes 12 (retención).</li>
+          <li>Retención baja = declinación fuerte: el pozo arranca alto y cae rápido.</li>
+        </ul>
+      </details>
+    </article>
+    <article class="tarjeta vidrio" id="m8">
+      <h3>Comparación con la versión anterior del proyecto</h3>
+      <p class="lectura"></p>
+      <div class="comparacion"></div>
+      <details class="ayuda"><summary>Cómo leer esta comparación</summary>
+        <ul>
+          <li>La versión 1 pronosticaba solo petróleo, solo 1 mes adelante y solo pozos que produjeron los dos meses previos.</li>
+          <li>Para comparar en igualdad de condiciones se mide el modelo actual con ese mismo alcance.</li>
+          <li>El R² general más bajo de esta versión no es un retroceso: promedia horizontes de 1 a 12 meses, que son más difíciles.</li>
+        </ul>
+      </details>
+    </article>
+    </div>
+    <p class="pie-metricas" id="m-pie"></p>
+  </section>
+
   <div id="error" class="error oculto" role="alert"></div>
   <section id="resultado" class="oculto">
     <div id="encabezado" class="encabezado"></div>
@@ -89,12 +196,30 @@
         <h2>Petróleo <span class="unidad">m³/mes</span></h2>
         <div class="kpis"></div>
         <div class="grafico"><canvas></canvas></div>
+        <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+          <ul>
+            <li><i class="muestra llena"></i><b>Línea llena:</b> lo que el pozo produjo de verdad (solo en pozo existente).</li>
+            <li><i class="muestra punteada"></i><b>Línea punteada (P50):</b> el pronóstico central. Hay la misma chance de que la producción real quede por encima o por debajo.</li>
+            <li><i class="muestra banda"></i><b>Banda (P10–P90):</b> el rango probable. La producción real debería caer adentro unas 8 de cada 10 veces; abajo es el escenario pesimista y arriba el optimista.</li>
+            <li><b>Eje horizontal:</b> meses calendario en pozo existente; meses de vida (M1 = primer mes) en pozo nuevo.</li>
+            <li>Que la banda se ensanche hacia la derecha es normal: cuanto más lejos el mes, más incierto el pronóstico.</li>
+          </ul>
+        </details>
         <details><summary>Qué explica la predicción (SHAP)</summary><table class="shap"></table></details>
       </article>
       <article class="fluido vidrio" id="res-gas">
         <h2>Gas <span class="unidad">Mm³/mes</span></h2>
         <div class="kpis"></div>
         <div class="grafico"><canvas></canvas></div>
+        <details class="ayuda"><summary>Cómo leer este gráfico</summary>
+          <ul>
+            <li><i class="muestra llena"></i><b>Línea llena:</b> lo que el pozo produjo de verdad (solo en pozo existente).</li>
+            <li><i class="muestra punteada"></i><b>Línea punteada (P50):</b> el pronóstico central. Hay la misma chance de que la producción real quede por encima o por debajo.</li>
+            <li><i class="muestra banda"></i><b>Banda (P10–P90):</b> el rango probable. La producción real debería caer adentro unas 8 de cada 10 veces; abajo es el escenario pesimista y arriba el optimista.</li>
+            <li><b>Eje horizontal:</b> meses calendario en pozo existente; meses de vida (M1 = primer mes) en pozo nuevo.</li>
+            <li>Que la banda se ensanche hacia la derecha es normal: cuanto más lejos el mes, más incierto el pronóstico.</li>
+          </ul>
+        </details>
         <details><summary>Qué explica la predicción (SHAP)</summary><table class="shap"></table></details>
       </article>
     </div>
