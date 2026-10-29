@@ -8,6 +8,12 @@ services:
     image: prediccion-neuquina-api:1.0
     ports:
       - "8000:8000"
+    # Tope de memoria: la API usa ~470 MB con un worker; si algo se dispara, Docker la reinicia
+    # en lugar de afectar al resto de la máquina
+    deploy:
+      resources:
+        limits:
+          memory: 1g
     restart: unless-stopped
 
   frontend:
