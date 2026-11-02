@@ -1,0 +1,196 @@
+/* Tema de la presentación: misma identidad que frontend/estilos.css, escalada a 1920×1080 y a un proyector.
+   Modo claro con la tecla T para aulas luminosas. */
+@font-face { font-family: "Instrument Sans"; font-weight: 400; src: url(vendor/fonts/instrument-sans-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 500; src: url(vendor/fonts/instrument-sans-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 600; src: url(vendor/fonts/instrument-sans-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url(vendor/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 600; src: url(vendor/fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2"); }
+
+:root {
+  --fondo: #0a0f1a; --texto: #eaf0f7; --suave: #a3afc2; --acento: #8ec5ff;
+  --petroleo: #5cd39a; --gas: #ff9f5a;
+  --vidrio: rgba(255, 255, 255, .055); --borde: rgba(255, 255, 255, .12); --brillo: rgba(255, 255, 255, .16);
+  --linea: rgba(160, 190, 230, .14); --rejilla: rgba(255, 255, 255, .08);
+  --halo-1: rgba(92, 211, 154, .22); --halo-2: rgba(255, 159, 90, .18); --halo-3: rgba(142, 197, 255, .16);
+  --codigo-fondo: rgba(6, 10, 18, .72); --cod-clave: #c3a6ff; --cod-texto: #9fdcb8; --cod-comentario: #7d8aa0;
+  --curva: cubic-bezier(.2, .8, .2, 1);
+}
+:root[data-theme="light"] {
+  --fondo: #e8edf3; --texto: #142033; --suave: #4e5b70; --acento: #1f5fbf;
+  --petroleo: #1d7a4b; --gas: #c2410c;
+  --vidrio: rgba(255, 255, 255, .6); --borde: rgba(20, 32, 51, .12); --brillo: rgba(255, 255, 255, .9);
+  --linea: rgba(31, 95, 191, .14); --rejilla: rgba(20, 32, 51, .09);
+  --halo-1: rgba(29, 122, 75, .16); --halo-2: rgba(194, 65, 12, .12); --halo-3: rgba(31, 95, 191, .14);
+  --codigo-fondo: rgba(255, 255, 255, .78); --cod-clave: #6d3fc0; --cod-texto: #1d7a4b; --cod-comentario: #5b6b82;
+}
+
+html, body, .reveal-viewport { margin: 0; height: 100%; background: var(--fondo); color: var(--texto); }
+.reveal { font-family: "Instrument Sans", system-ui, sans-serif; font-size: 30px; color: var(--texto); }
+.reveal .slides { text-align: left; }
+.reveal .slides > section { padding: 0; height: 1080px; box-sizing: border-box; }
+.reveal .progress { color: var(--acento); height: 4px; }
+
+/* Fondo fijo: halos e isolíneas, detrás de todas las escenas */
+.fondo { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.halo { position: absolute; border-radius: 50%; filter: blur(90px); }
+.halo.h1 { width: 60vmax; height: 60vmax; background: var(--halo-1); top: -24vmax; right: -14vmax; }
+.halo.h2 { width: 60vmax; height: 60vmax; background: var(--halo-2); bottom: -28vmax; left: -18vmax; }
+.halo.h3 { width: 36vmax; height: 36vmax; background: var(--halo-3); top: 30%; left: 34%; }
+.contornos { position: absolute; inset: -4%; background: var(--linea);
+             -webkit-mask: url(lib/contornos.svg) center / cover no-repeat; mask: url(lib/contornos.svg) center / cover no-repeat; }
+
+/* Portada */
+.portada { display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 0 140px; }
+.portada h1 { font-size: 100px; line-height: 1.02; letter-spacing: -.03em; font-weight: 600; margin: 0; }
+.portada h1 span { display: block; color: var(--suave); font-weight: 400; font-size: 72px; margin-top: 16px; letter-spacing: -.02em; }
+.portada p { font-size: 34px; color: var(--suave); margin: 36px 0 0; }
+.portada .equipo { font-size: 28px; margin-top: 14px; }
+
+/* Escena de código vivo: gráfico arriba, código abajo */
+.vivo { display: grid; grid-template-rows: auto 1fr auto; gap: 18px; height: 100%; padding: 44px 90px 40px; box-sizing: border-box; }
+.vivo h2 { font-size: 52px; letter-spacing: -.02em; font-weight: 600; margin: 0; line-height: 1.1; }
+.vivo .lienzo { position: relative; min-height: 0; }
+.vivo svg.grafico { width: 100%; height: 100%; display: block; overflow: visible; }
+.grafico text { font-family: "Instrument Sans", sans-serif; font-size: 22px; fill: var(--suave); }
+.grafico .rejilla line { stroke: var(--rejilla); }
+.grafico .banda { fill: var(--petroleo); opacity: .2; }
+.grafico .p50 { fill: none; stroke: var(--petroleo); stroke-width: 5; stroke-linecap: round; }
+.grafico .fantasma { fill: none; stroke: var(--suave); stroke-width: 2.5; stroke-dasharray: 8 8; opacity: .55; }
+.dato { position: absolute; top: 6px; right: 0; text-align: right; }
+.dato .v { font-size: 76px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; color: var(--petroleo); }
+.dato .l { font-size: 24px; color: var(--suave); margin-top: 6px; }
+.leyenda { position: absolute; top: 4px; left: 100px; display: flex; gap: 28px; font-size: 24px; color: var(--suave); }
+.leyenda i { display: inline-block; width: 34px; margin-right: 10px; vertical-align: middle; }
+.leyenda .l-p50 { border-top: 5px solid var(--petroleo); }
+.leyenda .l-banda { height: 16px; background: var(--petroleo); opacity: .3; border-radius: 3px; }
+.leyenda .l-fantasma { border-top: 3px dashed var(--suave); }
+
+.codigo { background: var(--codigo-fondo); border: 1px solid var(--borde); border-radius: 20px; padding: 22px 30px; backdrop-filter: blur(20px) saturate(160%);
+          box-shadow: inset 0 1px 0 var(--brillo); font-family: "JetBrains Mono", monospace; font-size: 27px; line-height: 1.5; white-space: pre; color: var(--texto); }
+.codigo .c-clave { color: var(--cod-clave); }
+.codigo .c-texto { color: var(--cod-texto); }
+.codigo .c-comentario { color: var(--cod-comentario); }
+/* Valor vivo: se puede arrastrar a izquierda o derecha durante la exposición */
+.codigo .valor { position: relative; display: inline-block; font-weight: 600; color: var(--acento); padding: 0 8px; border-radius: 8px; cursor: ew-resize; touch-action: none;
+                 background: color-mix(in srgb, var(--acento) 14%, transparent); transition: background-color .25s var(--curva); user-select: none; }
+.codigo .valor.activo { background: color-mix(in srgb, var(--acento) 34%, transparent); }
+.codigo .valor.tipeando::after { content: ""; position: absolute; right: 4px; top: 12%; bottom: 12%; width: 3px; background: var(--acento); }
+.paso { display: none; }
+#portada-lineas { position: absolute; inset: 0; pointer-events: none; opacity: .22; }
+#portada-lineas svg { width: 100%; height: 100%; }
+#portada-lineas path { stroke: var(--acento); stroke-width: 1.2; }
+
+/* Escenas generales */
+.escena { display: flex; flex-direction: column; gap: 22px; height: 100%; padding: 56px 90px 48px; box-sizing: border-box; }
+.escena h2 { font-size: 56px; letter-spacing: -.022em; font-weight: 600; margin: 0; line-height: 1.1; }
+.lectura { font-size: 30px; color: var(--suave); margin: 0; max-width: 1500px; line-height: 1.35; }
+.columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; flex: 1; min-height: 0; align-items: start; }
+.vidrio-t { background: var(--vidrio); border: 1px solid var(--borde); border-radius: 22px; padding: 28px 32px; box-shadow: inset 0 1px 0 var(--brillo); backdrop-filter: blur(20px) saturate(160%); }
+.vidrio-t h3 { font-size: 34px; font-weight: 600; margin: 0 0 10px; }
+.vidrio-t p { margin: 0; font-size: 26px; color: var(--suave); line-height: 1.4; }
+.lienzo-libre { position: relative; flex: 1; min-height: 0; }
+.lienzo-libre svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.subt { font-size: 26px; color: var(--suave); margin: 0 0 8px; }
+.barras { display: flex; flex-direction: column; gap: 16px; }
+.barra { display: grid; grid-template-columns: 300px 1fr 300px; gap: 20px; align-items: center; font-size: 28px; color: var(--suave); }
+.barra.destacada { color: var(--texto); font-weight: 600; }
+.b-pista { height: 34px; }
+.b-pista i { display: block; height: 100%; border-radius: 8px; width: 0; }
+.b-texto { font-variant-numeric: tabular-nums; }
+.barras.anchas .barra { grid-template-columns: 560px 1fr 150px; }
+.columnas .barra { grid-template-columns: 220px 1fr 150px; }
+.tiras { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.tira { display: grid; grid-template-columns: 210px 1fr; gap: 18px; align-items: baseline; font-size: 26px; color: var(--suave); }
+.tira b { font-size: 34px; color: var(--gas); font-weight: 600; font-variant-numeric: tabular-nums; }
+.lados { display: flex; justify-content: space-between; gap: 40px; }
+.lados .v { font-size: 64px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.lados .l { font-size: 26px; color: var(--suave); }
+.lado-pet .v { color: var(--petroleo); } .lado-gas { text-align: right; } .lado-gas .v { color: var(--gas); }
+.medidor { position: relative; height: 56px; background: var(--vidrio); border: 1px solid var(--borde); border-radius: 12px; }
+.medidor i { display: block; height: 100%; background: var(--acento); border-radius: 12px; width: 0; }
+.medidor .ideal { position: absolute; top: -12px; bottom: -12px; width: 3px; background: var(--texto); }
+.medidor .ideal span { position: absolute; top: -38px; transform: translateX(-50%); font-size: 24px; color: var(--texto); white-space: nowrap; }
+.medir { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 44px; }
+.cifras { display: flex; gap: 70px; }
+.cifras div { font-size: 26px; color: var(--suave); }
+.cifras b { display: block; font-size: 66px; font-weight: 600; color: var(--texto); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.dato.dentro { position: static; text-align: left; }
+.kpi { background: var(--vidrio); border: 1px solid var(--borde); border-radius: 16px; padding: 18px 22px; }
+.kpi .v { font-size: 46px; font-weight: 600; line-height: 1.1; }
+.kpi .l { font-size: 23px; color: var(--suave); line-height: 1.3; margin-top: 6px; }
+.grupos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tiempo { display: grid; grid-template-columns: 17fr 1fr 2fr; gap: 6px; }
+.tiempo div { padding: 26px 22px; border-radius: 12px; font-size: 26px; color: #06121f; font-weight: 600; white-space: nowrap; }
+.t-train { background: var(--acento); } .t-valid { background: var(--gas); text-align: center; padding-inline: 0 !important; } .t-test { background: var(--petroleo); }
+.t-ejes { display: grid; grid-template-columns: 17fr 1fr 2fr; gap: 6px; font-size: 24px; color: var(--suave); margin-top: 8px; }
+.flujo { display: flex; align-items: center; gap: 14px; font-size: 27px; flex-wrap: wrap; }
+.flujo span { background: var(--vidrio); border: 1px solid var(--borde); border-radius: 12px; padding: 14px 20px; }
+.flujo i { color: var(--suave); font-style: normal; }
+.lista { font-size: 30px; line-height: 1.4; margin: 0; padding-left: 34px; display: grid; gap: 14px; }
+.lista li::marker { color: var(--acento); }
+.gran-cta { align-self: flex-start; font-size: 40px; font-weight: 600; color: #06121f !important; background: var(--acento); padding: 26px 44px; border-radius: 20px; text-decoration: none; }
+.codigo.corto { font-size: 26px; padding: 16px 26px; }
+
+/* Ajustes de escala: el contenido ocupa la pantalla y se lee desde el fondo del aula */
+.vivo .lectura { margin-top: 10px; }
+.escena > .barras { flex: 1; justify-content: space-evenly; gap: 10px; }
+.barra { font-size: 32px; }
+.b-pista { height: 48px; }
+.barras.embudo .barra { grid-template-columns: 300px 1fr 620px; }
+.barras.embudo { flex: 0 0 auto !important; gap: 34px !important; margin: 26px 0 40px; }
+.columnas .barra { font-size: 30px; }
+.columnas .barras { gap: 30px; margin-top: 14px; }
+.tiras { gap: 30px; margin-top: 14px; }
+.tira { font-size: 30px; grid-template-columns: 250px 1fr; }
+.tira b { font-size: 40px; }
+.lista { font-size: 36px; gap: 22px; }
+.vidrio-t h3 { font-size: 38px; }
+.vidrio-t p { font-size: 29px; }
+.grupos .kpi { padding: 26px 26px; }
+.grupos .kpi .v { font-size: 58px; }
+.grupos .kpi .l { font-size: 27px; }
+.flujo { font-size: 31px; }
+.subt { font-size: 28px; }
+
+/* Fases de CRISP-ML(Q): banda superior con la fase actual y el riesgo de calidad mitigado */
+section[data-fase] .vivo, section[data-fase] .escena { padding-top: 92px; }
+.fases { position: absolute; top: 22px; left: 90px; right: 90px; display: flex; justify-content: space-between; align-items: center; gap: 24px; z-index: 2; }
+.fases ol { display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.fases li { font-size: 19px; color: var(--suave); padding: 6px 13px; border-radius: 999px; border: 1px solid var(--borde); opacity: .55; white-space: nowrap; }
+.fases li em { display: none; font-style: normal; }
+.fases li.actual em { display: inline; }
+.fases li.actual { opacity: 1; color: #06121f; background: var(--acento); border-color: var(--acento); font-weight: 600; }
+.riesgo { margin: 0; font-size: 20px; color: var(--suave); background: var(--vidrio); border: 1px solid var(--borde); border-radius: 999px; padding: 6px 16px; white-space: nowrap; }
+.riesgo b { color: var(--gas); font-weight: 600; } .riesgo b + b, .riesgo i + b { color: var(--petroleo); }
+.riesgo i { font-style: normal; margin: 0 6px; }
+
+/* Controles clicables: selectores de métrica, de k y pestañas del apéndice */
+.selector { display: flex; gap: 10px; flex-wrap: wrap; }
+.selector button { font: inherit; font-size: 24px; color: var(--suave); background: var(--vidrio); border: 1px solid var(--borde); border-radius: 12px; padding: 10px 20px; cursor: pointer; }
+.selector button.activo { color: #06121f; background: var(--acento); border-color: var(--acento); font-weight: 600; }
+.barras .barra { position: relative; }
+
+/* Tablas del apéndice */
+.tabla { border-collapse: collapse; font-size: 25px; font-variant-numeric: tabular-nums; width: 100%; }
+.tabla th, .tabla td { padding: 10px 16px; text-align: right; border-bottom: 1px solid var(--borde); }
+.tabla th:first-child, .tabla td:first-child { text-align: left; }
+.tabla th { color: var(--suave); font-weight: 500; font-size: 22px; }
+.tabla tr.destacada td { color: var(--acento); font-weight: 600; }
+.panel { display: none; flex: 1; min-height: 0; flex-direction: column; gap: 22px; }
+.panel.activo { display: flex; }
+.cuadricula { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.cuadricula .kpi .v { font-size: 44px; }
+.fuente { font-size: 21px; color: var(--suave); margin: 0; }
+
+/* Límites: cada uno con su próximo paso */
+.limites { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.limites .vidrio-t p + p { margin-top: 12px; color: var(--texto); }
+.limites .vidrio-t p + p::before { content: "Próximo paso: "; color: var(--petroleo); font-weight: 600; }
+
+/* Cobertura de la banda P10–P90 contra el 80 % esperado */
+.coberturas { display: grid; gap: 34px; margin-top: 20px; }
+.cobertura { display: grid; grid-template-columns: 330px 1fr 150px; gap: 24px; align-items: center; font-size: 30px; }
+.cobertura b { font-variant-numeric: tabular-nums; text-align: right; }
+#escena-clusters .cifras { gap: 44px; }
+#escena-clusters .cifras b { font-size: 52px; }
+#escena-clusters .cifras div { font-size: 23px; }

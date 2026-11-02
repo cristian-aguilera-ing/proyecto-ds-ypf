@@ -28,6 +28,16 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # Presentación del proyecto: http://localhost:8090 (no depende de la API)
+  presentacion:
+    build:
+      context: .
+      dockerfile: docker/presentacion.Dockerfile
+    image: prediccion-neuquina-presentacion:1.0
+    ports:
+      - "8090:80"
+    restart: unless-stopped
+
   # Reentrenamiento dentro de un contenedor: docker compose --profile train run --rm train
   train:
     profiles: ["train"]

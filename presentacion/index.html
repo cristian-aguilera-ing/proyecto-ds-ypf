@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pronóstico Neuquina · Grupo 10</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="vendor/reveal.css">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="fondo" aria-hidden="true"><div class="halo h1"></div><div class="halo h2"></div><div class="halo h3"></div><div class="contornos"></div></div>
+<div class="reveal"><div class="slides">
+
+  <section id="escena-portada">
+    <div id="portada-lineas" aria-hidden="true"></div>
+    <div class="portada">
+      <h1>¿Cuánto va a producir un pozo? <span>Petróleo y gas en la Cuenca Neuquina</span></h1>
+      <p>Proyecto final Data Science · Fundación YPF 2026 · Grupo 10, Comisión 3</p>
+      <p class="equipo">Cristian Alejandro Aguilera, Abigail Roxana Vicentelo e Ian Lionel Tapias Díaz</p>
+    </div>
+  </section>
+
+
+
+  <section id="escena-problema" data-fase="1">
+    <div class="vivo" style="grid-template-rows:auto 1fr">
+      <div><h2>Un pozo de Vaca Muerta pierde más de la mitad en un año</h2><p class="lectura"></p></div>
+      <div class="lienzo"><svg role="img" aria-label="Producción mensual real de un pozo"></svg>
+        <div class="dato"><div class="v"></div><div class="l">en los 12 meses después del pico</div></div></div>
+    </div>
+  </section>
+
+  <section id="escena-dataset" data-fase="1" data-riesgo="Mezclar cuencas con otra geología|Modelo solo para Neuquina">
+    <div class="escena">
+      <h2>Empezamos por los datos públicos de la Secretaría de Energía</h2>
+      <p class="lectura"></p>
+      <div class="columnas">
+        <div><p class="subt">Filas por cuenca: Neuquina es el 96 %</p><div class="barras"></div>
+          <p class="subt" style="margin-top:36px">Las otras cuencas tienen pocos pozos y otra geología. Decisión: solo Neuquina.</p></div>
+        <div class="lienzo-libre"><p class="subt">Petróleo por año, en millones de m³: el salto de Vaca Muerta</p><svg role="img" aria-label="Producción anual de petróleo"></svg></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="escena-hallazgos" data-fase="1" data-riesgo="Errores de carga en el dato crudo|Reglas de limpieza con tests">
+    <div class="escena">
+      <h2>Al abrirlo, los datos reales venían con errores reales</h2>
+      <div class="columnas">
+        <div class="lienzo-libre"><p class="subt">Profundidad informada por pozo (escala log): en naranja, lo imposible</p><svg role="img" aria-label="Histograma de profundidades"></svg></div>
+        <div class="tiras">
+          <div class="tira"><b>378.939 m</b>Un pozo con una profundidad imposible</div>
+          <div class="tira"><b>1,4 %</b>Filas con profundidad 0</div>
+          <div class="tira"><b>399</b>Filas con días de producción mal cargados</div>
+          <div class="tira"><b>2</b>Filas con producción negativa</div>
+          <div class="tira"><b>1 pozo</b>Con latitud y longitud invertidas</div>
+          <div class="tira"><b>566</b>Meses sin registro: pozos parados</div>
+          <div class="tira"><b>981</b>Pozos que cambiaron de operadora</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="escena-gor" data-fase="1" data-riesgo="Un solo modelo para dos fluidos|Petróleo y gas por separado">
+    <div class="escena" style="gap:14px">
+      <h2>Petróleo y gas no son el mismo problema</h2>
+      <p class="lectura">Gas por cada m³ de petróleo (GOR): aparecen dos poblaciones de pozos.</p>
+      <div class="lienzo-libre"><svg role="img" aria-label="Histograma del GOR por pozo"></svg></div>
+      <div class="lados"><div class="lado-pet"><div class="v">0</div><div class="l">pozos de petróleo</div></div><div class="lado-gas"><div class="v">0</div><div class="l">pozos de gas</div></div></div>
+      <div class="codigo corto"><span class="c-clave">GOR_CORTE_GAS</span> = <span class="valor" data-valor="GOR_CORTE_GAS"></span>  <span class="c-comentario"># por encima, el pozo se considera de gas</span></div>
+      <span class="fragment paso" data-paso="0"></span><span class="fragment paso" data-paso="1"></span>
+    </div>
+  </section>
+
+  <section id="escena-limpieza" data-fase="2" data-riesgo="Meses faltantes rompen los rezagos|Grilla mensual continua">
+    <div class="escena">
+      <h2>De un CSV con errores a un dataset confiable</h2>
+      <div class="barras embudo"></div>
+      <div class="columnas" style="flex:0 0 auto">
+        <div class="vidrio-t"><h3>Grilla mensual continua</h3><p>Cada pozo tiene todos sus meses. Así, "el mes anterior" siempre es el mes anterior real.</p></div>
+        <div class="vidrio-t"><h3>Verificado con tests</h3><p>0 negativos, 0 duplicados, 0 saltos y 0 coordenadas invertidas. La limpieza corre en 2 segundos.</p></div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="escena-variables" data-fase="2" data-riesgo="Fuga de datos en las variables|Solo historia hasta t, con test">
+    <div class="vivo" style="grid-template-rows:auto 1fr auto">
+      <div><h2>Qué ve el modelo: 53 variables, ninguna del futuro</h2><p class="lectura"></p></div>
+      <div class="barras"></div>
+      <div class="codigo corto"><span class="c-clave">X</span> = variables(historia_hasta_t, modo=<span class="valor" data-valor="modo"></span>)  <span class="c-comentario"># test_features_sin_fuga lo verifica</span></div>
+      <span class="fragment paso" data-paso="0"></span>
+    </div>
+  </section>
+
+  <section id="escena-modos" data-fase="3">
+    <div class="escena">
+      <h2>Dos preguntas distintas, por eso dos modos</h2>
+      <div class="columnas">
+        <div class="vidrio-t"><h3>Modo A · Pozo existente</h3><p>Ya tiene historia: se proyecta de 1 a 12 meses.</p><div style="height:500px;margin-top:14px"><svg id="modo-a" style="width:100%;height:100%" role="img" aria-label="Historia y pronóstico"></svg></div></div>
+        <div class="vidrio-t"><h3>Modo B · Pozo nuevo</h3><p>No tiene historia: solo lo que se sabe antes de perforar.</p><div style="height:500px;margin-top:14px"><svg id="modo-b" style="width:100%;height:100%" role="img" aria-label="Curva tipo con banda"></svg></div></div>
+      </div>
+      <p class="lectura">Datos disponibles distintos exigen modelos distintos. Con petróleo y gas separados: 4 modelos.</p>
+    </div>
+  </section>
+
+  <section id="escena-validacion" data-fase="3" data-riesgo="Métricas infladas por ver el futuro|Corte y validación cruzada temporal">
+    <div class="escena">
+      <h2>Nunca entrenar con el futuro</h2>
+      <p class="lectura">Mezclar meses al azar da métricas lindas y falsas: el modelo vería lo que tiene que predecir.</p>
+      <div style="margin-top:50px">
+        <div class="tiempo"><div class="t-train">Entrenamiento</div><div class="t-valid"></div><div class="t-test">Test</div></div>
+        <div class="t-ejes"><span>2006 a 2022</span><span>2023</span><span>2024–2025</span></div>
+      </div>
+      <ul class="lista" style="margin-top:44px">
+        <li>2023 se usa solo para ajustar con Optuna (ver naranja en la línea).</li>
+        <li>2024–2025 se usa una sola vez, al final.</li>
+        <li>En el modo B se corta por año de inicio: los pozos de test nunca se vieron.</li>
+        <li>Un test automático comprueba que no haya fuga de datos.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="escena-algoritmos" data-fase="3">
+    <div class="escena">
+      <h2>Probamos 7 algoritmos contra una regla simple</h2>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:30px">
+        <p class="lectura">Misma muestra de petróleo. Elegí la métrica: el mejor queda arriba.</p>
+        <div class="selector"></div>
+      </div>
+      <div class="barras"></div>
+      <p class="lectura">LightGBM no ganó en R². Lo elegimos porque entrena 7 veces más rápido que Random Forest, usa categorías y nulos, y admite pesos y cuantiles. Optuna ajustó sus hiperparámetros.</p>
+      <span class="fragment paso" data-paso="0"></span>
+    </div>
+  </section>
+
+  <section id="escena-target" data-fase="3" data-riesgo="Sesgo del target en log (0,812)|Ratio ponderado (1,005)">
+    <div class="vivo" style="grid-template-rows:auto 1fr auto">
+      <div><h2>Primer tropiezo: el modelo subestimaba la producción</h2><p class="lectura">Pronóstico total dividido por producción real. Lo ideal es 1.</p></div>
+      <div class="medir">
+        <div class="medidor"><i></i><div class="ideal" style="left:83.33%"><span>Ideal: 1,0</span></div></div>
+        <div class="cifras"><div class="dato dentro"><b class="v">0</b>pronosticado / real</div><div><b id="t-r2"></b>R²</div><div><b id="t-wape"></b>WAPE (error)</div></div>
+      </div>
+      <div class="codigo corto"><span class="c-clave">modelo</span>.fit(X, target=<span class="valor" data-valor="target"></span>)  <span class="c-comentario"># log1p estima la mediana, no el volumen total</span></div>
+      <span class="fragment paso" data-paso="0"></span>
+    </div>
+  </section>
+
+  <section id="escena-horizonte" data-fase="4" data-riesgo="Comparar métricas de distinto alcance|Mismo alcance: 0,906">
+    <div class="vivo">
+      <h2>Segundo tropiezo: el R² bajó de 0,907 a 0,73</h2>
+      <div class="lienzo"><svg role="img" aria-label="R² por horizonte"></svg>
+        <div class="dato" style="display:flex;gap:56px;text-align:right"><div><div class="v" id="h-modelo"></div><div class="l">Modelo</div></div><div><div class="v" id="h-pers" style="color:var(--suave)"></div><div class="l">Repetir el último mes</div></div></div></div>
+      <div class="codigo corto"><span class="c-clave">r2</span> = evaluar(modelo, horizonte=<span class="valor" data-valor="horizonte"></span>)  <span class="c-comentario"># R² en test 2024–2025, petróleo</span></div>
+      <span class="fragment paso" data-paso="0"></span><span class="fragment paso" data-paso="1"></span><span class="fragment paso" data-paso="2"></span>
+    </div>
+  </section>
+
+  <section id="escena-arps" data-fase="4">
+    <div class="vivo">
+      <h2>Contra el método clásico de la industria: Arps</h2>
+      <div class="lienzo"><svg role="img" aria-label="Producción real y curva de Arps"></svg>
+        <div class="dato" style="display:flex;gap:56px;text-align:right"><div><div class="v" id="a-modelo"></div><div class="l">Error del modelo</div></div><div><div class="v" id="a-arps" style="color:var(--gas)"></div><div class="l">Error de Arps</div></div></div></div>
+      <div class="codigo corto"><span class="c-clave">q(t)</span> = qi / (1 + <span class="valor" data-valor="b"></span> · <span class="valor" data-valor="Di"></span> · t) ^ (1 / b)  <span class="c-comentario"># b y Di: forma de la declinación</span></div>
+      <span class="fragment paso" data-paso="0"></span><span class="fragment paso" data-paso="1"></span>
+    </div>
+  </section>
+
+  <section id="escena-pozo-nuevo" data-fase="4">
+    <div class="vivo">
+      <h2>Modo B: un pozo que todavía no existe</h2>
+      <div class="lienzo">
+        <svg role="img" aria-label="Curva pronosticada de producción de petróleo con banda P10 a P90"></svg>
+        <div class="leyenda"><span><i class="l-p50"></i>P50</span><span><i class="l-banda"></i>P10–P90</span><span><i class="l-fantasma"></i>Antes del cambio</span></div>
+        <div class="dato"><div class="v">0</div><div class="l">m³ de petróleo en 12 meses (P50)</div></div>
+      </div>
+<div class="codigo"><span class="c-clave">pozo</span> = predictor.nuevo({
+    <span class="c-texto">"formacion"</span>: <span class="c-texto">"vaca muerta"</span>,  <span class="c-texto">"areayacimiento"</span>: <span class="c-texto">"LOMA CAMPANA-LLL"</span>,
+    <span class="c-texto">"profundidad"</span>: <span class="valor" data-valor="profundidad"></span>,  <span class="c-texto">"anio_inicio"</span>: <span class="valor" data-valor="anio_inicio"></span>,
+})
+<span class="c-comentario"># Cada curva sale del modelo LightGBM entrenado</span></div>
+      <span class="fragment paso" data-paso="0"></span>
+      <span class="fragment paso" data-paso="1"></span>
+      <span class="fragment paso" data-paso="2"></span>
+    </div>
+  </section>
+
+  <section id="escena-incertidumbre" data-fase="4" data-riesgo="Intervalos demasiado seguros|Cobertura medida y reportada">
+    <div class="escena">
+      <h2>¿La banda P10–P90 dice la verdad?</h2>
+      <p class="lectura">Si está bien calibrada, el valor real cae adentro 8 de cada 10 veces. Medido en test 2024–2025:</p>
+      <div class="coberturas"></div>
+      <p class="lectura" style="margin-top:auto">Pozos existentes: calibrados. Pozos nuevos: la banda es algo angosta, de 73 a 74 %. Lo informamos como límite.</p>
+    </div>
+  </section>
+
+  <section id="escena-clusters" data-fase="4" data-riesgo="Grupos forzados en curvas continuas|Silhouette baja, reportada">
+    <div class="escena">
+      <h2>¿Qué tipos de pozo existen?</h2>
+      <div class="columnas">
+        <div><p class="subt">Silhouette según la cantidad de grupos: más alto, mejor separados</p><div style="height:400px"><svg style="width:100%;height:100%" role="img" aria-label="Silhouette por k"></svg></div>
+          <div class="cifras" style="margin-top:18px"><div><b id="c-sil" style="color:var(--acento)">0</b>Silhouette</div><div><b id="c-db">0</b>Davies-Bouldin (menor, mejor)</div><div><b id="c-ch">0</b>Calinski-Harabasz</div></div></div>
+        <div><p class="subt" id="c-nota"></p><div class="grupos"></div></div>
+      </div>
+      <div class="codigo corto"><span class="c-clave">KMeans</span>(n_clusters=<span class="valor" data-valor="k"></span>)  <span class="c-comentario"># sobre 6 componentes SVD (85,5 % de la varianza)</span></div>
+      <span class="fragment paso" data-paso="0"></span><span class="fragment paso" data-paso="1"></span>
+    </div>
+  </section>
+
+  <section id="escena-shap" data-fase="4" data-riesgo="Modelo de caja negra|SHAP en cada predicción">
+    <div class="escena">
+      <h2>No es una caja negra: cada predicción se explica</h2>
+      <p class="lectura"></p>
+      <div class="barras anchas"></div>
+      <p class="lectura">Verde sube el pronóstico, naranja lo baja. El modelo aprendió la física: un pozo cerca de su pico solo puede declinar.</p>
+    </div>
+  </section>
+
+  <section id="escena-producto" data-fase="5" data-riesgo="Memoria de la API (921 MB)|1 worker (336 MB)">
+    <div class="escena">
+      <h2>Del notebook a un sistema que cualquiera puede usar</h2>
+      <div class="flujo"><span>CSV público</span><i>→</i><span>Limpieza con Polars</span><i>→</i><span>4 modelos LightGBM</span><i>→</i><span>API FastAPI</span><i>→</i><span>Web</span><i>·</i><span>Todo en Docker</span></div>
+      <p class="lectura">Devolución del profesor: cuidar la memoria y validar las coordenadas.</p>
+      <div class="medir" style="gap:30px">
+        <div class="medidor"><i></i></div>
+        <div class="cifras"><div class="dato dentro"><b class="v">0</b>RAM de la API en Docker</div><div><b>7,4 MB</b>los modelos no eran la causa</div><div><b>lat −40 a −34</b>coordenadas validadas</div></div>
+      </div>
+      <div class="codigo corto"><span class="c-clave">uvicorn</span> api.app:app --workers <span class="valor" data-valor="workers"></span>  <span class="c-comentario"># cada worker duplicaba modelos y datos</span></div>
+      <span class="fragment paso" data-paso="0"></span>
+    </div>
+  </section>
+
+  <section id="escena-demo" data-fase="5">
+    <div class="escena" style="justify-content:center;gap:36px">
+      <h2 style="font-size:88px">Ahora, el sistema funcionando</h2>
+      <p class="lectura">Un ejemplo de cada modo: un pozo existente y un pozo nuevo.</p>
+      <a class="gran-cta" href="http://localhost:8080" target="_blank" rel="noopener">Abrir localhost:8080</a>
+    </div>
+  </section>
+
+  <section id="escena-limites" data-fase="6" data-riesgo="El modelo envejece con los datos|Reentrenar y monitorear">
+    <div class="escena">
+      <h2>Lo que todavía no resuelve: la fase de monitoreo</h2>
+      <div class="limites">
+        <div class="vidrio-t"><h3>Faltan datos de fractura</h3><p>Etapas, arena y largo de rama no son públicos. Limitan el modo B de petróleo (R² 0,45).</p><p>sumar el padrón de fractura si se publica.</p></div>
+        <div class="vidrio-t"><h3>Banda angosta en pozos nuevos</h3><p>La cobertura P10–P90 es 74 % y 73 %, contra el 80 % esperado.</p><p>recalibrar los cuantiles con validación conformal.</p></div>
+        <div class="vidrio-t"><h3>Deriva de los datos</h3><p>La tecnología cambia cada año: un modelo de 2025 envejece.</p><p>reentrenar con cada publicación y vigilar el error mes a mes.</p></div>
+        <div class="vidrio-t"><h3>Formaciones con peor ajuste</h3><p>Precuyo y Mulichinco tienen R² 0,24 y 0,26, contra 0,69 en Vaca Muerta.</p><p>avisar en la web cuando el pronóstico es menos confiable.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <section id="escena-cierre" data-fase="6">
+      <div class="escena" style="justify-content:center">
+        <h2 style="font-size:68px">Lo que nos llevamos</h2>
+        <ul class="lista">
+          <li>El modelo mantiene R² 0,63 a 12 meses, donde repetir el último mes da −0,84.</li>
+          <li>Pozo nuevo: el error de la acumulada baja de 50,5 % a 30,9 % contra la curva mediana.</li>
+          <li>Cada problema de los datos y del modelo quedó documentado, medido y probado con 28 tests.</li>
+          <li>Límite honesto: faltan datos públicos de rama lateral y fractura, y hay que reentrenar periódicamente.</li>
+        </ul>
+        <p class="lectura" style="margin-top:30px">Muchas gracias. Grupo 10, Comisión 3: Cristian Alejandro Aguilera, Abigail Roxana Vicentelo e Ian Lionel Tapias Díaz.</p>
+      </div>
+    </section>
+      <section id="escena-apendice">
+      <div class="escena" style="gap:18px">
+        <h2>Apéndice · métricas de los notebooks</h2>
+        <div class="selector" id="ap-pestanas"></div>
+        <div id="ap-paneles" style="display:flex;flex:1;min-height:0"></div>
+      </div>
+    </section>
+  </section>
+
+</div></div>
+<script src="vendor/reveal.js"></script>
+<script src="vendor/notes.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/d3.min.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

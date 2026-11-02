@@ -19,6 +19,7 @@ Proyecto final del programa **Data Science — Energía Digital 2026 (Fundación
 | [docs/Informe_Avance_Proyecto_YPF](docs/Informe_Avance_Proyecto_YPF.pdf) | Estado del proyecto y cambios de la versión 1 a la 2 |
 | [docs/guia_del_proyecto](docs/guia_del_proyecto.pdf) | Instalación, ejecución y flujo de trabajo con Git |
 | [docs/guia_frontend](docs/guia_frontend.pdf) | Cómo leer el frontend (también en [Markdown](docs/guia_frontend.md)) |
+| [docs/crisp_ml_q](docs/crisp_ml_q.md) | El proyecto ordenado por fases CRISP-ML(Q): métricas de los notebooks y riesgos de calidad (también en [Word](docs/crisp_ml_q.docx)) |
 
 Cada documento está en `.docx` (editable) y `.pdf`, salvo la guía del frontend, que está en `.md` y `.pdf`.
 
@@ -211,6 +212,10 @@ Medido con `docker stats` en la imagen de la API, después de 60 pedidos (existe
 - **Cada worker de uvicorn es un proceso con su propia copia** de modelos y datos. Por eso 2 workers duplicaban la RAM sin aportar nada: cada pronóstico tarda ~35 ms (existente) y ~20 ms (nuevo).
 - `compose.yaml` fija un tope de 1 GB para la API. Si el consumo se disparara, Docker reinicia ese contenedor sin afectar al resto de la máquina.
 - La imagen ya no instala `shap`: la API calcula las contribuciones con el TreeSHAP nativo de LightGBM (`pred_contrib`).
+
+### Presentación
+
+`docker compose up --build -d` también levanta la presentación en http://localhost:8090. Funciona sin internet. El guion con los diálogos está en [presentacion/guion.md](presentacion/guion.md) y sus datos se regeneran con `python presentacion/generar_datos.py`.
 
 ## 6. API
 
