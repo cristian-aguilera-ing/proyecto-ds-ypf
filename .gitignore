@@ -12,6 +12,14 @@ curso/
 reports/entrenamiento.log
 *.egg-info/
 
+# Claves y configuración local (docker compose lee .env solo)
+.env
+
+# Claude Code y navegador automatizado
+.claude/
+.playwright-mcp/
+CLAUDE.md
+
 # graphify: caché y rutas locales
 graphify-out/cache/
 graphify-out/.graphify_python

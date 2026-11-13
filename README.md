@@ -19,6 +19,7 @@ Proyecto final del programa **Data Science — Energía Digital 2026 (Fundación
 | [docs/Informe_Avance_Proyecto_YPF](docs/Informe_Avance_Proyecto_YPF.pdf) | Estado del proyecto y cambios de la versión 1 a la 2 |
 | [docs/guia_del_proyecto](docs/guia_del_proyecto.pdf) | Instalación, ejecución y flujo de trabajo con Git |
 | [docs/guia_frontend](docs/guia_frontend.pdf) | Cómo leer el frontend (también en [Markdown](docs/guia_frontend.md)) |
+| [docs/crisp_ml_q](docs/crisp_ml_q.md) | El proyecto ordenado por fases CRISP-ML(Q): métricas de los notebooks y riesgos de calidad (también en [Word](docs/crisp_ml_q.docx)) |
 
 Cada documento está en `.docx` (editable) y `.pdf`, salvo la guía del frontend, que está en `.md` y `.pdf`.
 
@@ -211,6 +212,29 @@ Medido con `docker stats` en la imagen de la API, después de 60 pedidos (existe
 - **Cada worker de uvicorn es un proceso con su propia copia** de modelos y datos. Por eso 2 workers duplicaban la RAM sin aportar nada: cada pronóstico tarda ~35 ms (existente) y ~20 ms (nuevo).
 - `compose.yaml` fija un tope de 1 GB para la API. Si el consumo se disparara, Docker reinicia ese contenedor sin afectar al resto de la máquina.
 - La imagen ya no instala `shap`: la API calcula las contribuciones con el TreeSHAP nativo de LightGBM (`pred_contrib`).
+
+### Presentación
+
+`docker compose up --build -d` también levanta la presentación en http://localhost:8090. Funciona sin internet. El guion con los diálogos está en [presentacion/guion.md](presentacion/guion.md) y sus datos se regeneran con `python presentacion/generar_datos.py`.
+
+**Control remoto (notas + siguiente/anterior desde otro dispositivo):**
+
+1. **Clave:** se define en `CONTROL_CLAVE`, en un archivo `.env` en la raíz (ignorado por git), por ejemplo `CONTROL_CLAVE=grupo10`. Con eso alcanza `docker compose up --build -d`. Sin `.env` se puede pasar en el comando (`CONTROL_CLAVE=grupo10 docker compose up --build -d`) o, si no se define, se genera una al azar y se ve con `docker compose logs control`.
+2. **Quien presenta** abre `http://localhost:8090/?control=grupo10` y deja esa pestaña abierta.
+3. **Los compañeros** abren `/control.html`, ingresan la clave y ven una miniatura de la diapositiva actual (sincronizada paso a paso), las notas del guion y cuántos dispositivos hay conectados (👥). En el celular va todo en una columna; en un monitor, el guion queda a la derecha, con botones **Atrás / Siguiente** (también funcionan las flechas del teclado). Solo necesitan un navegador: Docker corre únicamente en la máquina que presenta.
+4. **Por internet (túnel):**
+
+   ```bash
+   docker compose up --build -d
+   docker compose --profile tunel up -d tunel
+   sleep 10
+   docker compose logs tunel 2>&1 | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1
+   ```
+
+   La última línea es la URL pública; se comparte `https://<esa-url>/control.html` y la clave. La URL cambia cada vez que se recrea el túnel. Quien no tenga la clave no puede controlar nada, pero la presentación en sí sí queda visible para quien tenga el enlace.
+5. **Apagar todo, túnel incluido:** `docker compose --profile tunel down`. Un `docker compose down` común **no** elimina el túnel (está en un profile), y al reiniciarlo los logs conservan la URL vieja, que ya no funciona (error 1033/530): por eso se toma la **última** URL con `tail -1`.
+
+Sin `?control=` en la URL la presentación funciona igual que antes, sin conexión a nada. El relé (`control_remoto/servidor.py`) usa solo la biblioteca estándar y la presentación se comunica con él por *long polling* (peticiones HTTP que el servidor retiene unos segundos) a través de nginx (`/control-api/`). No se usa SSE porque los túneles rápidos de Cloudflare (`trycloudflare.com`) no lo entregan: el control quedaba "Conectado" pero sin recibir notas.
 
 ## 6. API
 

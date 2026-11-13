@@ -28,6 +28,43 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # Presentación del proyecto: http://localhost:8090 (no depende de la API)
+  presentacion:
+    build:
+      context: .
+      dockerfile: docker/presentacion.Dockerfile
+    image: prediccion-neuquina-presentacion:1.0
+    ports:
+      - "8090:80"
+    restart: unless-stopped
+
+  # Control remoto de la presentación (notas + siguiente/anterior): se accede por el puerto 8090
+  # (nginx reenvía /control-api/). La clave sale de CONTROL_CLAVE; si no se define, se genera una
+  # y queda en el log: docker compose logs control
+  control:
+    build:
+      context: .
+      dockerfile: docker/control.Dockerfile
+    image: prediccion-neuquina-control:1.0
+    environment:
+      CONTROL_CLAVE: ${CONTROL_CLAVE:-}
+    deploy:
+      resources:
+        limits:
+          memory: 64m
+    restart: unless-stopped
+
+  # Túnel a internet para que los compañeros se conecten desde afuera de la red:
+  #   docker compose --profile tunel up -d tunel
+  #   docker compose logs tunel 2>&1 | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1
+  # Para apagarlo hay que usar --profile tunel (un "down" común no lo elimina): docker compose --profile tunel down
+  tunel:
+    profiles: ["tunel"]
+    image: cloudflare/cloudflared:2025.9.1
+    command: tunnel --no-autoupdate --url http://presentacion:80
+    depends_on: [presentacion]
+    restart: unless-stopped
+
   # Reentrenamiento dentro de un contenedor: docker compose --profile train run --rm train
   train:
     profiles: ["train"]

@@ -1,0 +1,100 @@
+{
+  "_fuente": "Salidas ya ejecutadas de notebooks/01…05. generar_datos.py verifica que cada número siga apareciendo en su notebook.",
+  "eda": {
+    "nb": "01_eda.ipynb",
+    "filas": 421046, "columnas": 40, "neuquina_filas": 404037, "neuquina_pozos": 4862,
+    "profundidad_max": 378939, "profundidad_ceros": 5738, "tef_mayor_dias": 15, "negativos_gas": 2,
+    "coord_invertidas_filas": 68, "iqr_limites": [204, 7540], "outliers_iqr": 1324, "pozos_meses_faltantes": 703
+  },
+  "limpieza": {
+    "nb": "02_limpieza_transformacion.ipynb",
+    "filas": 382992, "pozos": 4682, "meses_reconstruidos": 566, "censurados": 57, "horizontales": 2847,
+    "pozos_petroleo": 2708, "pozos_gas": 1974,
+    "cap4_cobertura": { "cota": 0.98334, "dias_perf": 0.983127, "dias_term": 0.963691 },
+    "cap4_correlacion_acum12": { "profundidad": 0.734, "anio_inicio": 0.599, "dias_perf": 0.386, "dias_term": 0.370, "cota": -0.155 }
+  },
+  "algoritmos": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "columnas": ["mae", "rmse", "r2", "wape", "seg"],
+    "filas": [
+      ["Random Forest", 242.327, 584.411, 0.731, 0.381, 49.3],
+      ["KNN (k=25)", 249.259, 588.201, 0.728, 0.392, 1.8],
+      ["Árbol de decisión", 253.279, 634.774, 0.683, 0.399, 2.5],
+      ["LightGBM", 254.624, 610.289, 0.707, 0.401, 7.2],
+      ["MLP", 262.143, 617.015, 0.700, 0.413, 3.1],
+      ["XGBoost", 262.272, 625.783, 0.692, 0.413, 4.0],
+      ["Ridge", 267.311, 650.466, 0.667, 0.421, 0.1],
+      ["Persistencia", 335.807, 844.264, 0.439, 0.528, 0.0]
+    ]
+  },
+  "target": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "log1p": { "mae": 254.624, "rmse": 610.289, "r2": 0.707, "wape": 0.401, "sesgo": 0.812 },
+    "ratio_ponderado": { "mae": 218.109, "rmse": 544.038, "r2": 0.767, "wape": 0.343, "sesgo": 1.005 }
+  },
+  "cv_temporal": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "r2_medio": 0.788, "r2_desvio": 0.024, "wape_medio": 0.344, "wape_desvio": 0.016,
+    "folds": [
+      { "desde": "2016-11", "hasta": "2019-02", "train": 29996, "r2": 0.777, "wape": 0.349 },
+      { "desde": "2019-02", "hasta": "2020-11", "train": 59988, "r2": 0.763, "wape": 0.370 },
+      { "desde": "2020-11", "hasta": "2022-05", "train": 89980, "r2": 0.813, "wape": 0.331 },
+      { "desde": "2022-05", "hasta": "2023-08", "train": 119972, "r2": 0.816, "wape": 0.333 },
+      { "desde": "2023-08", "hasta": "2026-07", "train": 149964, "r2": 0.773, "wape": 0.338 }
+    ]
+  },
+  "optuna": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "grid": { "rmse": 1.188992, "seg": 83.844218, "params": "lr 0,03 · hojas 31 · mcs 100" },
+    "optuna": { "rmse": 1.186983, "seg": 78.546183, "params": "lr 0,023 · hojas 38" }
+  },
+  "diagnostico": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "filas": [
+      ["Petróleo · modelo", 216.045, 540.064, 0.728, 0.371],
+      ["Petróleo · persistencia", 364.012, 898.485, 0.246, 0.625],
+      ["Gas · modelo", 266.590, 837.912, 0.770, 0.380],
+      ["Gas · persistencia", 377.498, 1191.287, 0.536, 0.539]
+    ],
+    "residuo_medio": -8.8, "residuo_mediana": -0.2
+  },
+  "categorias": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "petroleo": { "accuracy": 0.844, "clases": [["Baja", 0.933, 0.810, 0.867], ["Media", 0.766, 0.814, 0.789], ["Alta", 0.847, 0.907, 0.876]] },
+    "gas": { "accuracy": 0.792, "clases": [["Baja", 0.848, 0.727, 0.783], ["Media", 0.704, 0.788, 0.743], ["Alta", 0.842, 0.863, 0.852]] }
+  },
+  "formaciones": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "filas": [
+      ["Agrio", 13239, 0.375, 0.842], ["Punta Rosada", 23064, 0.330, 0.793], ["Lajas", 90997, 0.306, 0.778],
+      ["Quintuco", 8591, 0.323, 0.772], ["Vaca Muerta", 494347, 0.371, 0.687], ["Los Molles", 33705, 0.563, 0.572],
+      ["Basamento", 3481, 0.467, 0.369], ["Mulichinco", 37314, 0.774, 0.257], ["Precuyo", 8012, 0.601, 0.236]
+    ]
+  },
+  "modo_b": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "pozos_test": 729,
+    "petroleo": { "modelo": { "mae": 9940.471, "r2": 0.448, "wape": 0.309 }, "mediana": { "mae": 16253.342, "r2": -0.282, "wape": 0.505 } },
+    "gas": { "modelo": { "mae": 6507.925, "r2": 0.860, "wape": 0.282 }, "mediana": { "mae": 9499.409, "r2": 0.724, "wape": 0.411 } },
+    "fluido_accuracy": 0.996
+  },
+  "cobertura": {
+    "nb": "03_modelado_supervisado.ipynb",
+    "esperada": 0.8,
+    "modelos": [["Petróleo existente", 0.8075], ["Gas existente", 0.7897], ["Petróleo nuevo", 0.7418], ["Gas nuevo", 0.7324]]
+  },
+  "clustering": {
+    "nb": "04_clustering_svd.ipynb",
+    "svd_componentes": 6, "svd_varianza": 0.855, "silhouette_negativa": 7.1,
+    "kmeans": [
+      [2, 0.246, 1.510, 1546.602], [3, 0.214, 1.528, 1315.684], [4, 0.221, 1.426, 1206.570],
+      [5, 0.198, 1.471, 1106.651], [6, 0.199, 1.395, 1047.041], [7, 0.201, 1.366, 981.951],
+      [8, 0.187, 1.387, 931.400], [9, 0.178, 1.402, 884.620], [10, 0.179, 1.398, 843.896]
+    ],
+    "dbscan": [[0.6, 3, 84.4, 0.251], [0.9, 3, 48.0, 0.180], [1.2, 3, 23.4, 0.304]]
+  },
+  "shap": {
+    "nb": "05_explicabilidad_shap.ipynb",
+    "idpozo": 158365, "ultimo_mes": 384, "real_12m": 408, "ratio": 0.693, "predicho": 266
+  }
+}
