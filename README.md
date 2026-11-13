@@ -217,6 +217,25 @@ Medido con `docker stats` en la imagen de la API, después de 60 pedidos (existe
 
 `docker compose up --build -d` también levanta la presentación en http://localhost:8090. Funciona sin internet. El guion con los diálogos está en [presentacion/guion.md](presentacion/guion.md) y sus datos se regeneran con `python presentacion/generar_datos.py`.
 
+**Control remoto (notas + siguiente/anterior desde otro dispositivo):**
+
+1. **Clave:** se define en `CONTROL_CLAVE`, en un archivo `.env` en la raíz (ignorado por git), por ejemplo `CONTROL_CLAVE=grupo10`. Con eso alcanza `docker compose up --build -d`. Sin `.env` se puede pasar en el comando (`CONTROL_CLAVE=grupo10 docker compose up --build -d`) o, si no se define, se genera una al azar y se ve con `docker compose logs control`.
+2. **Quien presenta** abre `http://localhost:8090/?control=grupo10` y deja esa pestaña abierta.
+3. **Los compañeros** abren `/control.html`, ingresan la clave y ven una miniatura de la diapositiva actual (sincronizada paso a paso), las notas del guion y cuántos dispositivos hay conectados (👥). En el celular va todo en una columna; en un monitor, el guion queda a la derecha, con botones **Atrás / Siguiente** (también funcionan las flechas del teclado). Solo necesitan un navegador: Docker corre únicamente en la máquina que presenta.
+4. **Por internet (túnel):**
+
+   ```bash
+   docker compose up --build -d
+   docker compose --profile tunel up -d tunel
+   sleep 10
+   docker compose logs tunel 2>&1 | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1
+   ```
+
+   La última línea es la URL pública; se comparte `https://<esa-url>/control.html` y la clave. La URL cambia cada vez que se recrea el túnel. Quien no tenga la clave no puede controlar nada, pero la presentación en sí sí queda visible para quien tenga el enlace.
+5. **Apagar todo, túnel incluido:** `docker compose --profile tunel down`. Un `docker compose down` común **no** elimina el túnel (está en un profile), y al reiniciarlo los logs conservan la URL vieja, que ya no funciona (error 1033/530): por eso se toma la **última** URL con `tail -1`.
+
+Sin `?control=` en la URL la presentación funciona igual que antes, sin conexión a nada. El relé (`control_remoto/servidor.py`) usa solo la biblioteca estándar y la presentación se comunica con él por *long polling* (peticiones HTTP que el servidor retiene unos segundos) a través de nginx (`/control-api/`). No se usa SSE porque los túneles rápidos de Cloudflare (`trycloudflare.com`) no lo entregan: el control quedaba "Conectado" pero sin recibir notas.
+
 ## 6. API
 
 | Método | Ruta | Descripción |

@@ -47,8 +47,10 @@ function algoritmos({ nb: { algoritmos: t } }) {
   sel.addEventListener("click", e => { const b = e.target.closest("button"); if (b) elegir(b.dataset.m); });
   const entrar = pintar("r2", false);
   alEntrar(sec, () => { if (actual === "r2") entrar(); });
-  Reveal.on("fragmentshown", e => { if (sec.contains(e.fragment)) elegir("seg"); });
-  Reveal.on("fragmenthidden", e => { if (sec.contains(e.fragment)) elegir("r2"); });
+  // Un paso por métrica: R² (al entrar) → MAE → RMSE → WAPE → tiempo
+  const PASOS = ["mae", "rmse", "wape", "seg"];
+  Reveal.on("fragmentshown", e => { if (sec.contains(e.fragment)) elegir(PASOS[e.fragment.dataset.paso]); });
+  Reveal.on("fragmenthidden", e => { if (sec.contains(e.fragment)) elegir(PASOS[e.fragment.dataset.paso - 1] ?? "r2"); });
 }
 
 function target({ nb }) {

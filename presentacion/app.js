@@ -4,6 +4,7 @@ import { iniciar as bloque2 } from "./escenas/bloque2.js";
 import { iniciar as bloque3 } from "./escenas/bloque3.js";
 import { iniciar as pozoNuevo } from "./escenas/pozo-nuevo.js";
 import { iniciar as apendice } from "./escenas/apendice.js";
+import { avanceAutomatico } from "./lib/avance-auto.js";
 
 const [datos, nb, guion] = await Promise.all(["datos/presentacion.json", "datos/notebooks.json", "guion.md"]
   .map((u, i) => fetch(u).then(r => i < 2 ? r.json() : r.text())));
@@ -36,6 +37,17 @@ for (const b of guion.split(/^## /m).slice(1)) {
 await Reveal.initialize({ hash: true, width: 1920, height: 1080, margin: 0, minScale: .2, maxScale: 2, center: false,
                           controls: false, progress: true, transition: "fade", transitionSpeed: "fast", plugins: [RevealNotes] });
 for (const iniciar of [bloque1, bloque2, pozoNuevo, bloque3, apendice]) iniciar(datos);
+// La miniatura del control remoto (index.html?vista) no avanza sola: copia la posición de la presentación
+if (!new URLSearchParams(location.search).has("vista")) avanceAutomatico(Reveal);
+
+// Portada: mientras se muestra, se apaga el fondo fijo de isolíneas para que no se superponga con el que se dibuja
+const marcarPortada = () => document.documentElement.classList.toggle("en-portada", Reveal.getCurrentSlide()?.id === "escena-portada");
+Reveal.on("slidechanged", marcarPortada);
+marcarPortada();
+
+// Control remoto: abrir la presentación con ?control=CLAVE; las notas y los botones están en /control.html
+const claveControl = new URLSearchParams(location.search).get("control");
+if (claveControl) import("./lib/control-remoto.js").then(m => m.conectarControl(claveControl, Reveal));
 
 addEventListener("keydown", e => {
   if (e.key.toLowerCase() !== "t") return;

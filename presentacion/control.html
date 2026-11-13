@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Control remoto · Grupo 10</title>
+  <link rel="icon" href="data:,">
+  <style>
+    @font-face { font-family: "Instrument Sans"; font-weight: 400; src: url(vendor/fonts/instrument-sans-latin-400-normal.woff2) format("woff2"); }
+    @font-face { font-family: "Instrument Sans"; font-weight: 600; src: url(vendor/fonts/instrument-sans-latin-600-normal.woff2) format("woff2"); }
+    :root { --fondo: #0a0f1a; --texto: #eaf0f7; --suave: #a3afc2; --acento: #8ec5ff; --vidrio: rgba(255,255,255,.06); --borde: rgba(255,255,255,.14); --ok: #5cd39a; --mal: #ff9f5a; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--fondo); color: var(--texto); font-family: "Instrument Sans", system-ui, sans-serif; }
+    body { display: flex; flex-direction: column; padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom); max-width: 760px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; color: var(--suave); font-size: 15px; }
+    .estado::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: var(--mal); }
+    .estado.vivo::before { background: var(--ok); }
+    .conectados { color: var(--texto); font-weight: 600; white-space: nowrap; }
+    .tarjeta { background: var(--vidrio); border: 1px solid var(--borde); border-radius: 16px; padding: 16px 18px; }
+    .contador { color: var(--acento); font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+    h1 { font-size: 21px; line-height: 1.25; margin: 4px 0 0; font-weight: 600; }
+    #notas { flex: 1; overflow-y: auto; margin: 12px 0; font-size: var(--tam, 20px); line-height: 1.5; white-space: pre-wrap; }
+    #notas:empty::before { content: "Sin notas para esta diapositiva."; color: var(--suave); }
+    .siguiente { font-size: 15px; color: var(--suave); }
+    .siguiente b { color: var(--texto); font-weight: 600; }
+    .contador { white-space: nowrap; }
+    .vista { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--borde); background: #000; }
+    /* El iframe se dibuja siempre a 1280×720 y se achica con transform: así Reveal no entra en su vista de scroll
+       (se activa bajo 435 px de ancho y rompe los fragmentos) y la miniatura es idéntica a la proyección */
+    .vista iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 720px; border: 0; pointer-events: none;
+                    transform-origin: 0 0; transform: scale(var(--escala, .28)); }
+    .botones { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; padding: 8px 0 12px; }
+    .botones button { font-size: 16px; padding: 10px 0; border-radius: 12px; }
+    button { font: inherit; font-weight: 600; font-size: 22px; padding: 22px 0; border-radius: 16px; border: 1px solid var(--borde); background: var(--vidrio); color: var(--texto); touch-action: manipulation; }
+    button.principal { background: var(--acento); color: #08111f; border-color: transparent; }
+    button:active { transform: scale(.98); }
+    .tam { display: flex; gap: 8px; }
+    .tam button { font-size: 15px; padding: 6px 12px; border-radius: 10px; }
+    #entrada { margin: auto 0; text-align: center; }
+    #entrada input { font: inherit; font-size: 20px; padding: 14px; width: 100%; border-radius: 12px; border: 1px solid var(--borde); background: var(--vidrio); color: var(--texto); margin: 14px 0; text-align: center; }
+    #entrada p { color: var(--suave); }
+    #error { color: var(--mal); min-height: 1.3em; }
+    /* Celulares angostos (320–360 px): el encabezado entra en una sola línea sin scroll horizontal */
+    @media (max-width: 360px) {
+      header { gap: 6px; font-size: 13px; }
+      .contador { font-size: 13px; }
+      .estado::before { margin-right: 5px; }
+      .tam { gap: 4px; }
+      .tam button { padding: 6px 8px; }
+    }
+    #panel { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+    /* Monitor (≥ 900 px): miniatura y botones a la izquierda, guion a la derecha a toda la altura.
+       En el celular no cambia nada: sigue en una sola columna */
+    @media (min-width: 900px) {
+      body { max-width: 1600px; padding: 0 24px; }
+      #panel { display: grid; gap: 0 28px; grid-template-columns: minmax(320px, 40%) 1fr;
+               grid-template-rows: auto auto auto 1fr;
+               grid-template-areas: "cabecera cabecera" "vista notas" "botones notas" ". notas"; }
+      header { grid-area: cabecera; }
+      .vista { grid-area: vista; align-self: start; }
+      .botones { grid-area: botones; padding-top: 12px; }
+      #notas { grid-area: notas; margin: 0 0 16px; padding: 4px 8px 0 28px; border-left: 1px solid var(--borde); }
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div id="entrada" class="tarjeta" hidden>
+    <h1>Control remoto</h1>
+    <p>Ingresá la clave que te pasó quien presenta.</p>
+    <input id="clave" type="password" autocomplete="off" placeholder="Clave" aria-label="Clave">
+    <button class="principal" id="entrar" style="width:100%">Conectar</button>
+    <p id="error" role="alert"></p>
+  </div>
+
+  <main id="panel" hidden>
+    <header>
+      <span class="estado" id="estado">Conectando…</span>
+      <span class="contador" id="contador">—</span>
+      <span class="conectados" id="conectados" aria-live="polite"></span>
+      <span class="tam"><button id="menos" aria-label="Letra más chica">A−</button><button id="mas" aria-label="Letra más grande">A+</button></span>
+    </header>
+    <div class="vista"><iframe id="vista" title="Presentación en vivo" tabindex="-1" aria-hidden="true"></iframe></div>
+    <div id="notas"></div>
+    <div class="botones">
+      <button id="atras" aria-label="Diapositiva anterior">◀ Atrás</button>
+      <button id="adelante" class="principal" aria-label="Diapositiva siguiente">Siguiente ▶</button>
+    </div>
+  </main>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const guardar = (k, v) => { try { sessionStorage.setItem(k, v); } catch {} };
+  const leer = k => { try { return sessionStorage.getItem(k); } catch { return null; } };
+  const dormir = ms => new Promise(r => setTimeout(r, ms));
+  let clave = new URLSearchParams(location.search).get("clave") || leer("clave");
+  let tam = Number(leer("tam")) || 20;
+  const id = (crypto.randomUUID?.() ?? String(Math.random()).slice(2)) + "-control";
+  let sesion = 0;  // se incrementa al cerrar sesión para frenar el sondeo anterior
+
+  const enLinea = si => {
+    $("estado").textContent = si ? "Conectado" : "Reconectando…";
+    $("estado").classList.toggle("vivo", si);
+  };
+
+  async function orden(accion, indice) {
+    try {
+      const r = await fetch("control-api/orden", { method: "POST", headers: { "Content-Type": "application/json", "X-Clave": clave },
+                                                   body: JSON.stringify({ accion, indice }) });
+      if (r.status === 401) return pedirClave("Clave incorrecta");
+    } catch { enLinea(false); }
+    if (navigator.vibrate) navigator.vibrate(15);
+  }
+
+  // Vista previa: una copia de la presentación (?vista, sin ?control= ni avance automático) que se mueve a la diapositiva actual.
+  // Es del mismo origen, así que se maneja directo con su Reveal; se carga recién al llegar el primer estado.
+  let ultimo = null, vistaIniciada = false;
+  function moverVista() {
+    const R = $("vista").contentWindow?.Reveal;
+    if (!ultimo || !R || !R.isReady()) return false;
+    const { indice, fragmento } = ultimo;
+    R.slide(indice, 0, fragmento);  // con -1 también oculta los pasos si se retrocedió dentro de la misma escena
+    return true;
+  }
+  new ResizeObserver(([e]) => $("vista").style.setProperty("--escala", e.contentRect.width / 1280))
+    .observe(document.querySelector(".vista"));
+  function iniciarVista() {
+    if (vistaIniciada) return;
+    vistaIniciada = true;
+    $("vista").src = "index.html?vista";
+    // La presentación se inicia de forma asíncrona tras el evento load: se espera a que esté lista
+    const espera = setInterval(() => { if (moverVista()) clearInterval(espera); }, 300);
+  }
+
+  function dibujar(e) {
+    const d = e?.diapositivas?.[e.indice];
+    if (!d) return;
+    ultimo = e; iniciarVista(); moverVista();
+    $("contador").textContent = `Diap. ${e.indice + 1} de ${e.diapositivas.length}`;
+    if ($("notas").textContent !== d.notas) { $("notas").textContent = d.notas; $("notas").scrollTop = 0; }
+  }
+
+  function resumen(d) {
+    $("conectados").textContent = `👥 ${d.conectados}`;
+    $("conectados").title = `${d.conectados} ${d.conectados === 1 ? "dispositivo conectado" : "dispositivos conectados"} al control`;
+    if (!d.estado) {
+      $("contador").textContent = "—";
+      $("notas").textContent = d.presentador ? "Esperando a la presentación…" : "La presentación no está conectada.";
+    }
+  }
+
+  // Long polling (no SSE: los túneles rápidos de Cloudflare no entregan eventos): el servidor retiene
+  // cada pedido hasta que cambia el estado o el número de conectados, o pasan ~20 s
+  async function sondear() {
+    const mia = ++sesion;
+    let version = -1, firma = "";
+    while (mia === sesion) {
+      try {
+        const r = await fetch(`control-api/estado?id=${id}&v=${version}&f=${firma}`, { headers: { "X-Clave": clave } });
+        if (mia !== sesion) return;
+        if (r.status === 401) return pedirClave("Clave incorrecta");
+        const d = await r.json();
+        enLinea(true); guardar("clave", clave);
+        version = d.version; firma = d.firma;
+        resumen(d); dibujar(d.estado);
+      } catch { if (mia !== sesion) return; enLinea(false); await dormir(2000); }
+    }
+  }
+
+  function conectar() {
+    $("entrada").hidden = true; $("panel").hidden = false;
+    sondear();
+  }
+
+  function pedirClave(msg = "") {
+    sesion++;
+    try { sessionStorage.removeItem("clave"); } catch {}
+    $("panel").hidden = true; $("entrada").hidden = false; $("error").textContent = msg;
+  }
+
+  $("entrar").onclick = () => { clave = $("clave").value.trim(); if (clave) conectar(); };
+  $("clave").onkeydown = e => { if (e.key === "Enter") $("entrar").click(); };
+  $("adelante").onclick = () => orden("siguiente");
+  $("atras").onclick = () => orden("anterior");
+  const ajustar = d => { tam = Math.min(36, Math.max(14, tam + d)); document.documentElement.style.setProperty("--tam", tam + "px"); guardar("tam", tam); };
+  $("mas").onclick = () => ajustar(2); $("menos").onclick = () => ajustar(-2); ajustar(0);
+  addEventListener("keydown", e => {
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); orden("siguiente"); }
+    if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); orden("anterior"); }
+  });
+  // Mantiene la pantalla encendida mientras se usa de control
+  if ("wakeLock" in navigator) navigator.wakeLock.request("screen").catch(() => {});
+
+  clave ? conectar() : pedirClave();
+</script>
+</body>
+</html>

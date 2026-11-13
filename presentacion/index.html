@@ -61,7 +61,7 @@
     </div>
   </section>
 
-  <section id="escena-gor" data-fase="1" data-riesgo="Un solo modelo para dos fluidos|Petróleo y gas por separado">
+  <section id="escena-gor" data-avance="10,19" data-fase="1" data-riesgo="Un solo modelo para dos fluidos|Petróleo y gas por separado">
     <div class="escena" style="gap:14px">
       <h2>Petróleo y gas no son el mismo problema</h2>
       <p class="lectura">Gas por cada m³ de petróleo (GOR): aparecen dos poblaciones de pozos.</p>
@@ -84,7 +84,7 @@
   </section>
 
 
-  <section id="escena-variables" data-fase="2" data-riesgo="Fuga de datos en las variables|Solo historia hasta t, con test">
+  <section id="escena-variables" data-avance="19" data-fase="2" data-riesgo="Fuga de datos en las variables|Solo historia hasta t, con test">
     <div class="vivo" style="grid-template-rows:auto 1fr auto">
       <div><h2>Qué ve el modelo: 53 variables, ninguna del futuro</h2><p class="lectura"></p></div>
       <div class="barras"></div>
@@ -121,20 +121,20 @@
     </div>
   </section>
 
-  <section id="escena-algoritmos" data-fase="3">
+  <section id="escena-algoritmos" data-avance="16,21,26,31" data-fase="3">
     <div class="escena">
       <h2>Probamos 7 algoritmos contra una regla simple</h2>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:30px">
-        <p class="lectura">Misma muestra de petróleo. Elegí la métrica: el mejor queda arriba.</p>
+        <p class="lectura">Misma muestra de petróleo. La métrica cambia sola: en cada una, el mejor queda arriba.</p>
         <div class="selector"></div>
       </div>
       <div class="barras"></div>
       <p class="lectura">LightGBM no ganó en R². Lo elegimos porque entrena 7 veces más rápido que Random Forest, usa categorías y nulos, y admite pesos y cuantiles. Optuna ajustó sus hiperparámetros.</p>
-      <span class="fragment paso" data-paso="0"></span>
+      <span class="fragment paso" data-paso="0"></span><span class="fragment paso" data-paso="1"></span><span class="fragment paso" data-paso="2"></span><span class="fragment paso" data-paso="3"></span>
     </div>
   </section>
 
-  <section id="escena-target" data-fase="3" data-riesgo="Sesgo del target en log (0,812)|Ratio ponderado (1,005)">
+  <section id="escena-target" data-avance="20" data-fase="3" data-riesgo="Sesgo del target en log (0,812)|Ratio ponderado (1,005)">
     <div class="vivo" style="grid-template-rows:auto 1fr auto">
       <div><h2>Primer tropiezo: el modelo subestimaba la producción</h2><p class="lectura">Pronóstico total dividido por producción real. Lo ideal es 1.</p></div>
       <div class="medir">
@@ -146,7 +146,7 @@
     </div>
   </section>
 
-  <section id="escena-horizonte" data-fase="4" data-riesgo="Comparar métricas de distinto alcance|Mismo alcance: 0,906">
+  <section id="escena-horizonte" data-avance="12,20,28" data-fase="4" data-riesgo="Comparar métricas de distinto alcance|Mismo alcance: 0,906">
     <div class="vivo">
       <h2>Segundo tropiezo: el R² bajó de 0,907 a 0,73</h2>
       <div class="lienzo"><svg role="img" aria-label="R² por horizonte"></svg>
@@ -156,7 +156,7 @@
     </div>
   </section>
 
-  <section id="escena-arps" data-fase="4">
+  <section id="escena-arps" data-avance="9,16" data-fase="4">
     <div class="vivo">
       <h2>Contra el método clásico de la industria: Arps</h2>
       <div class="lienzo"><svg role="img" aria-label="Producción real y curva de Arps"></svg>
@@ -166,7 +166,7 @@
     </div>
   </section>
 
-  <section id="escena-pozo-nuevo" data-fase="4">
+  <section id="escena-pozo-nuevo" data-avance="8,14,20" data-fase="4">
     <div class="vivo">
       <h2>Modo B: un pozo que todavía no existe</h2>
       <div class="lienzo">
@@ -194,7 +194,7 @@
     </div>
   </section>
 
-  <section id="escena-clusters" data-fase="4" data-riesgo="Grupos forzados en curvas continuas|Silhouette baja, reportada">
+  <section id="escena-clusters" data-avance="13,22" data-fase="4" data-riesgo="Grupos forzados en curvas continuas|Silhouette baja, reportada">
     <div class="escena">
       <h2>¿Qué tipos de pozo existen?</h2>
       <div class="columnas">
@@ -216,7 +216,7 @@
     </div>
   </section>
 
-  <section id="escena-producto" data-fase="5" data-riesgo="Memoria de la API (921 MB)|1 worker (336 MB)">
+  <section id="escena-producto" data-avance="22" data-fase="5" data-riesgo="Memoria de la API (921 MB)|1 worker (336 MB)">
     <div class="escena">
       <h2>Del notebook a un sistema que cualquiera puede usar</h2>
       <div class="flujo"><span>CSV público</span><i>→</i><span>Limpieza con Polars</span><i>→</i><span>4 modelos LightGBM</span><i>→</i><span>API FastAPI</span><i>→</i><span>Web</span><i>·</i><span>Todo en Docker</span></div>
