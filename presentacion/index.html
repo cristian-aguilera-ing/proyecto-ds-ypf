@@ -194,7 +194,7 @@
     </div>
   </section>
 
-  <section id="escena-clusters" data-avance="13,17" data-fase="4" data-riesgo="Grupos forzados en curvas continuas|Silhouette baja, reportada">
+  <section id="escena-clusters" data-avance="24,28" data-fase="4" data-riesgo="Grupos forzados en curvas continuas|Silhouette baja, reportada">
     <div class="escena">
       <h2>¿Qué tipos de pozo existen?</h2>
       <div class="columnas">
@@ -216,14 +216,14 @@
     </div>
   </section>
 
-  <section id="escena-producto" data-avance="16" data-fase="5" data-riesgo="Memoria de la API (921 MB)|1 worker (336 MB)">
+  <section id="escena-producto" data-avance="17" data-fase="5" data-riesgo="Memoria de la API (921 MB)|1 worker (336 MB)">
     <div class="escena">
       <h2>Del notebook a un sistema que cualquiera puede usar</h2>
       <div class="flujo"><span>CSV público</span><i>→</i><span>Limpieza con Polars</span><i>→</i><span>4 modelos LightGBM</span><i>→</i><span>API FastAPI</span><i>→</i><span>Web</span><i>·</i><span>Todo en Docker</span></div>
-      <p class="lectura">Devolución del profesor: cuidar la memoria y validar las coordenadas.</p>
+      <p class="lectura">Dos puntos débiles revisados: la memoria y las coordenadas.</p>
       <div class="medir" style="gap:30px">
         <div class="medidor"><i></i></div>
-        <div class="cifras"><div class="dato dentro"><b class="v">0</b>RAM de la API en Docker</div><div><b>7,4 MB</b>los modelos no eran la causa</div><div><b>lat −40 a −34</b>coordenadas validadas</div></div>
+        <div class="cifras"><div class="dato dentro"><b class="v">0</b>RAM de la API en Docker</div><div><b>lat −40 a −34</b>coordenadas validadas</div></div>
       </div>
       <div class="codigo corto"><span class="c-clave">uvicorn</span> api.app:app --workers <span class="valor" data-valor="workers"></span>  <span class="c-comentario"># cada worker duplicaba modelos y datos</span></div>
       <span class="fragment paso" data-paso="0"></span>
