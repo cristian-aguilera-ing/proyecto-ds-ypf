@@ -196,6 +196,17 @@ docker compose up --build -d
 - Frontend: http://localhost:8080
 - API + Swagger: http://localhost:8000/docs
 
+**Detener el sistema completo:**
+
+| Comando | Qué hace |
+|---|---|
+| `docker compose --profile tunel down` | Apaga y elimina **todo**: API, frontend, presentación, control remoto y túnel. Es el recomendado al terminar. |
+| `docker compose down` (o `make down`) | Apaga todo **menos el túnel**, que está en un profile y sigue corriendo. |
+| `docker compose --profile tunel stop` | Solo pausa los contenedores, sin eliminarlos; se reanudan con `docker compose --profile tunel start`. |
+| `docker compose ps -a` | Muestra qué sigue corriendo, para comprobar que no quedó nada. |
+
+Ninguno borra las imágenes ni los datos del repositorio: para volver a levantar todo alcanza con `docker compose up --build -d`.
+
 Reentrenar dentro de un contenedor: `docker compose --profile train run --rm train`.
 
 ### Consumo de memoria
