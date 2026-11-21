@@ -12,7 +12,7 @@
     * { box-sizing: border-box; }
     html, body { margin: 0; height: 100%; background: var(--fondo); color: var(--texto); font-family: "Instrument Sans", system-ui, sans-serif; }
     body { display: flex; flex-direction: column; padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom); max-width: 760px; margin: 0 auto; }
-    header { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; color: var(--suave); font-size: 15px; }
+    header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; color: var(--suave); font-size: 15px; }
     .estado::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: var(--mal); }
     .estado.vivo::before { background: var(--ok); }
     .conectados { color: var(--texto); font-weight: 600; white-space: nowrap; }
@@ -34,6 +34,7 @@
     button { font: inherit; font-weight: 600; font-size: 22px; padding: 22px 0; border-radius: 16px; border: 1px solid var(--borde); background: var(--vidrio); color: var(--texto); touch-action: manipulation; }
     button.principal { background: var(--acento); color: #08111f; border-color: transparent; }
     button:active { transform: scale(.98); }
+    button:disabled { opacity: .55; }
     .tam { display: flex; gap: 8px; }
     .tam button { font-size: 15px; padding: 6px 12px; border-radius: 10px; }
     #entrada { margin: auto 0; text-align: center; }
@@ -103,10 +104,19 @@
     $("estado").classList.toggle("vivo", si);
   };
 
+  // Tras un toque los botones esperan a que llegue la nueva posición (o 1,5 s): con la demora del túnel
+  // es fácil tocar dos veces. Igual, cada orden lleva la posición que se veía y la presentación descarta
+  // las que llegan desfasadas, así que un doble toque o dos controles a la vez avanzan una sola vez.
+  let esperando = null;
+  const liberar = () => { clearTimeout(esperando); esperando = null; $("adelante").disabled = $("atras").disabled = false; };
   async function orden(accion, indice) {
+    if (esperando || !ultimo) return;
+    $("adelante").disabled = $("atras").disabled = true;
+    esperando = setTimeout(liberar, 1500);
+    const base = { indice: ultimo.indice, fragmento: ultimo.fragmento };
     try {
       const r = await fetch("control-api/orden", { method: "POST", headers: { "Content-Type": "application/json", "X-Clave": clave },
-                                                   body: JSON.stringify({ accion, indice }) });
+                                                   body: JSON.stringify({ accion, indice, base }) });
       if (r.status === 401) return pedirClave("Clave incorrecta");
     } catch { enLinea(false); }
     if (navigator.vibrate) navigator.vibrate(15);
@@ -135,8 +145,11 @@
   function dibujar(e) {
     const d = e?.diapositivas?.[e.indice];
     if (!d) return;
+    const cambio = !ultimo || ultimo.indice !== e.indice || ultimo.fragmento !== e.fragmento;
     ultimo = e; iniciarVista(); moverVista();
-    $("contador").textContent = `Diap. ${e.indice + 1} de ${e.diapositivas.length}`;
+    if (cambio) liberar();
+    const paso = d.pasos ? ` · paso ${e.fragmento + 1}/${d.pasos}${d.sola ? " · avanza sola" : ""}` : "";
+    $("contador").textContent = `Diap. ${e.indice + 1} de ${e.diapositivas.length}${paso}`;
     if ($("notas").textContent !== d.notas) { $("notas").textContent = d.notas; $("notas").scrollTop = 0; }
   }
 
@@ -185,6 +198,7 @@
   const ajustar = d => { tam = Math.min(36, Math.max(14, tam + d)); document.documentElement.style.setProperty("--tam", tam + "px"); guardar("tam", tam); };
   $("mas").onclick = () => ajustar(2); $("menos").onclick = () => ajustar(-2); ajustar(0);
   addEventListener("keydown", e => {
+    if (e.repeat) return;
     if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); orden("siguiente"); }
     if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); orden("anterior"); }
   });

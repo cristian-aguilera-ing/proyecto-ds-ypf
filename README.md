@@ -236,6 +236,8 @@ Medido con `docker stats` en la imagen de la API, después de 60 pedidos (existe
 
 Sin `?control=` en la URL la presentación funciona igual que antes, sin conexión a nada. El relé (`control_remoto/servidor.py`) usa solo la biblioteca estándar y la presentación se comunica con él por *long polling* (peticiones HTTP que el servidor retiene unos segundos) a través de nginx (`/control-api/`). No se usa SSE porque los túneles rápidos de Cloudflare (`trycloudflare.com`) no lo entregan: el control quedaba "Conectado" pero sin recibir notas.
 
+Sincronización: solo la pestaña principal obedece al control. La miniatura (`?vista`) y las dos vistas previas de la vista del orador (tecla S, `?receiver`) son copias: no se conectan al relé ni avanzan solas (antes cada una ejecutaba la orden otra vez y "Siguiente" avanzaba dos veces). Cada orden lleva la posición que veía el control, y la presentación descarta las que llegan desfasadas: un doble toque o dos compañeros tocando a la vez avanzan un solo paso. El control muestra `paso x/y` en las escenas con pasos y marca las que avanzan solas.
+
 ## 6. API
 
 | Método | Ruta | Descripción |

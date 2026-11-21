@@ -16,21 +16,36 @@ export function conectarControl(clave, Reveal) {
     return copia.textContent.trim();
   };
 
-  const diapositivas = () => Reveal.getHorizontalSlides().map(s => ({
-    titulo: (s.querySelector("h1, h2")?.textContent ?? s.id).replace(/\s+/g, " ").trim(),
-    notas: textoNota(s.querySelector("aside.notes")),
-  }));
+  // Pasos: fragmentos de la escena (sin contar los de las subdiapositivas). "Sola": avanza con data-avance
+  const diapositivas = () => Reveal.getHorizontalSlides().map(s => {
+    const sec = s.querySelector(":scope > section") ?? s;
+    return {
+      titulo: (sec.querySelector("h1, h2")?.textContent ?? sec.id).replace(/\s+/g, " ").trim(),
+      notas: textoNota(sec.querySelector("aside.notes")),
+      pasos: sec.querySelectorAll(".fragment").length,
+      sola: Boolean(sec.dataset.avance),
+    };
+  });
+
+  const posicion = () => { const { h, f } = Reveal.getIndices(); return { indice: h, fragmento: f ?? -1 }; };
 
   const publicar = () => {
-    const { h, f } = Reveal.getIndices();
     fetch(`${base}/estado`, { method: "POST", headers: cabeceras,
-      body: JSON.stringify({ id, indice: h, fragmento: f ?? -1, diapositivas: diapositivas() }) }).catch(() => {});
+      body: JSON.stringify({ id, ...posicion(), diapositivas: diapositivas() }) }).catch(() => {});
   };
 
+  // "Siguiente" y "anterior" son relativas: solo se cumplen si el control las mandó viendo la misma posición
+  // que tiene la presentación. Así un doble toque, dos controles a la vez o una orden atrasada por el túnel
+  // no avanzan dos veces: la segunda llega con una posición vieja y se descarta.
+  const alDia = o => {
+    if (!o.base) return true;  // control viejo sin posición: se obedece como antes
+    const p = posicion();
+    return o.base.indice === p.indice && o.base.fragmento === p.fragmento;
+  };
   const ordenes = {
-    siguiente: () => Reveal.next(),
-    anterior: () => Reveal.prev(),
-    ir: o => Number.isInteger(o.indice) && Reveal.slide(o.indice),
+    siguiente: o => alDia(o) && (Reveal.next(), true),
+    anterior: o => alDia(o) && (Reveal.prev(), true),
+    ir: o => Number.isInteger(o.indice) && (Reveal.slide(o.indice), true),
   };
 
   async function escuchar() {
@@ -40,10 +55,14 @@ export function conectarControl(clave, Reveal) {
         const r = await fetch(`${base}/ordenes?id=${id}&desde=${desde}`, { headers: cabeceras });
         if (r.status === 401) return console.warn("Control remoto: clave incorrecta");
         const d = await r.json();
-        // Primera conexión o relé reiniciado: hay que volver a publicar el estado
-        if (d.instancia !== instancia) { instancia = d.instancia; publicar(); }
+        const nueva = d.instancia !== instancia;  // primera conexión o relé reiniciado
+        instancia = d.instancia;
         desde = d.ultimo;
-        for (const o of d.ordenes) ordenes[o.accion]?.(o);
+        let descartada = false;
+        for (const o of d.ordenes) if (!ordenes[o.accion]?.(o)) descartada = true;
+        // Se republica al conectarse, si se descartó una orden (el control estaba atrasado) y, como latido,
+        // en cada vuelta sin órdenes (~20 s): si el relé ignoró un estado, el control se corrige solo
+        if (nueva || descartada || !d.ordenes.length) publicar();
       } catch { await new Promise(r => setTimeout(r, 2000)); }
     }
   }
