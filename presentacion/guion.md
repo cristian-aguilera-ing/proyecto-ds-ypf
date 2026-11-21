@@ -9,22 +9,22 @@ Teclas: flecha derecha avanza (también los pasos), flecha izquierda vuelve, T c
 
 ## portada | Abigail | 0:15
 
-Buenas, somos Abigail, Ian y Cristian, del Grupo 10. Queremos responder una pregunta: ¿cuánto va a producir un pozo de petróleo o de gas en la Cuenca Neuquina?
+Buenas tardes, mi nombre es Abigail y somos el Grupo 10 de la comision 3. En nuestro proyecto final elegimos responder una pregunta de negocio: ¿cuánto va a producir un pozo de petróleo o de gas en la Cuenca Neuquina?
 
 ## problema | Abigail | 0:35
 
-Este es un pozo real de YPF en Loma Campana. Llega rápido a su pico y en un año pierde casi el 60 % de su producción.
-Eso es normal en shale, y es el problema: si no se anticipa esa caída, se planifica mal la perforación, el transporte y las reservas. Nuestra meta fue predecir esta curva.
+Este es un pozo real de YPF en Loma Campana. En el grafico podemos ver como llega rápido a su pico mas alto y en el transcurso de un año pierde casi el 60 % de su producción.
+Eso es normal en shale, y es el problema, si no se anticipa esa caída, se planifica mal la perforación, el transporte y las reservas. Nuestra meta fue predecir esta curva.
 
 ## dataset | Abigail | 0:25
 
-Usamos los datos públicos de la Secretaría de Energía: más de 421 mil filas, un registro por pozo y por mes desde 2006.
-El 96 % es de la Cuenca Neuquina. Las otras cuencas tienen pocos pozos y otra geología, y solo agregaban ruido: por eso trabajamos solo con Neuquina.
+Usamos los datos públicos de la Secretaría de Energía con más de 421 mil filas, tiene un registro por pozo cada mes desde el 2006.
+El 96 % es de la Cuenca Neuquina. Las otras cuencas tienen pocos pozos y otra geología, y solo agregaban ruido, por eso trabajamos solo con la cuenca Neuquina.
 
 ## hallazgos | Abigail | 0:25
 
-Los datos traían errores reales: un pozo con 378.939 metros de profundidad, producción negativa, coordenadas invertidas y meses sin registro.
-Por separado parecen detalles; juntos arruinan un modelo. Por eso cada error tiene su regla de limpieza y su test.
+Los datos traían errores reales, un pozo con 378.939 metros de profundidad, producción negativa, coordenadas invertidas y meses sin registro.
+Por separado parecen detalles, pero juntos arruinan un modelo. Por eso cada error tiene su regla de limpieza y su test.
 
 ## gor | Abigail | 0:25
 
@@ -35,12 +35,12 @@ Con el corte en 3.000 quedan 2.708 pozos de petróleo y 1.974 de gas. Por eso ha
 ## limpieza | Abigail | 0:25
 
 Después de limpiar quedan 382.992 filas y 4.682 pozos.
-La decisión clave fue la grilla mensual: cada pozo tiene todos sus meses, aunque haya estado parado. Si no, "el mes anterior" podía ser de hace medio año y el modelo aprendía mal.
+La decisión clave fue la grilla mensual, cada pozo tiene todos sus meses, aunque haya estado parado. Si no, "el mes anterior" podía ser de hace medio año y el modelo aprendía mal.
 
 ## variables | Abigail | 0:25
 
 El modelo ve 53 variables, casi todas de la historia del pozo: rezagos, medias móviles, el pico y la acumulada. El riesgo es usar el futuro sin querer, así que se calculan solo hasta el mes t y un test lo verifica.
-Para un pozo nuevo quedan 10, porque todavía no hay historia. Probamos sumar el padrón Capítulo IV y no mejoró, así que quedó afuera. Sigue Ian.
+Para un pozo nuevo quedan 10, porque todavía no hay historia. Probamos sumar un dataset complementario que es el padrón Capítulo IV y no mejoró, así que quedó afuera. Sigue Ian.
 
 ## modos | Ian | 0:25
 
