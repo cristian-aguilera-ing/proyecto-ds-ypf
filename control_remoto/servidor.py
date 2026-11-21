@@ -8,7 +8,7 @@ túneles rápidos de Cloudflare (trycloudflare.com) retienen los eventos y nunca
   GET  /estado?id=I&v=V&f=F   (controles) responde cuando cambia la versión (V) o la firma de conectados (F)
   GET  /ordenes?id=I&desde=N  (presentación) responde cuando hay órdenes con id > N
   POST /estado                la presentación publica su estado
-  POST /orden                 un control manda una orden
+  POST /orden                 un control manda una orden; "base" es la posición que veía, para descartar duplicados
 
 Todas las peticiones llevan la cabecera X-Clave. La clave sale de CONTROL_CLAVE; si no está definida
 se genera una al azar y se imprime en el log. "Conectado" = preguntó en los últimos 35 s.
@@ -126,7 +126,8 @@ class Manejador(BaseHTTPRequestHandler):
             while desde >= 0 and _sig_orden <= desde and time.time() < fin:
                 _cond.wait(timeout=2)
                 _vistos["presentador"][ident] = time.time()
-            nuevas = [o for o in _ordenes if o["id"] > desde] if desde >= 0 else []
+            # Solo el presentador activo obedece: si hubiera otra pestaña con ?control= abierta, no repite las órdenes
+            nuevas = [o for o in _ordenes if o["id"] > desde] if desde >= 0 and ident == _activo else []
             cuerpo = {"instancia": INSTANCIA, "ultimo": _sig_orden, "ordenes": nuevas}
         self._responder(200, cuerpo)
 
@@ -144,9 +145,13 @@ class Manejador(BaseHTTPRequestHandler):
 
         if self.path == "/estado":
             with _cond:
-                if _activo is None:
-                    _activo = cuerpo.get("id")  # relé recién reiniciado: manda quien publique primero
-                elif cuerpo.get("id") != _activo:
+                ident = cuerpo.get("id")
+                _contar("presentador")  # descarta a los presentadores que no preguntan hace más de 35 s
+                # Manda quien publique primero tras reiniciar el relé, o cualquiera si el activo dejó de preguntar
+                # (pestaña cerrada): así el control no queda congelado en el último estado de una pestaña muerta
+                if _activo is None or (ident != _activo and _activo not in _vistos["presentador"]):
+                    _activo = ident
+                elif ident != _activo:
                     return self._responder(200, {"ok": True, "ignorado": True})
                 _estado = cuerpo
                 _version += 1
@@ -157,7 +162,7 @@ class Manejador(BaseHTTPRequestHandler):
             with _cond:
                 _sig_orden += 1
                 _ordenes = (_ordenes + [{"id": _sig_orden, "accion": cuerpo["accion"],
-                                         "indice": cuerpo.get("indice")}])[-50:]
+                                         "indice": cuerpo.get("indice"), "base": cuerpo.get("base")}])[-50:]
                 _cond.notify_all()
         else:
             return self._responder(404, {"error": "no existe"})
