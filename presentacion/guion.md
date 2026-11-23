@@ -66,8 +66,8 @@ La razón es matemática: en log el modelo estima la mediana, no el total. Cambi
 ## horizonte | Ian | 0:35
 
 Segundo tropiezo: el proyecto anterior daba R² 0,907 y este, 0,73. Pero medían cosas distintas.
-A un mes, repetir el último mes ya acierta mucho.
-A medida que nos alejamos, esa regla se derrumba hasta menos 0,84, y el modelo se sostiene en 0,63.
+El modelo anterior repetia el último mes y el acierto era muy alto.
+A medida que nos alejamos del primer mes, esa regla se derrumba hasta menos 0,84, y el modelo actual que tenemos, se sostiene en 0,63.
 Medido con el mismo alcance que antes da 0,906: no empeoró, ahora predice hasta 12 meses.
 
 ## arps | Ian | 0:20
@@ -92,14 +92,15 @@ En pozos existentes se cumple, 81 y 79 %. En pozos nuevos cae a 74 y 73 %: la ba
 ## clusters | Cristian | 0:35
 
 Además del pronóstico, quisimos saber qué tipos de pozo hay. Para eso agrupamos los pozos según la forma de su curva de producción, sin decirle al modelo qué buscar.
-El gráfico muestra qué tan bien separados quedan los grupos. Con dos grupos el puntaje es el más alto, pero dos grupos son demasiado generales para describir tipos de pozo.
-Buscando entre 3 y 10 grupos, el mejor resultado es con cuatro: tres tipos de pozo de petróleo y uno de gas.
-Igual, el puntaje es bajo, 0,22: los pozos no forman grupos bien separados, sino que pasan de a poco de un tipo a otro. Por eso lo informamos así.
+El gráfico muestra qué tan bien separados quedan los grupos. Con dos grupos el puntaje es el más alto, pero son demasiado generales para describir los tipos de pozo.
+Por eso Buscando entre 3 y 10 grupos, el mejor resultado es con un k=4: son tres tipos de pozo de petróleo y uno de gas.
+Igual, el puntaje es bajo, 0,22: pero, a diferencia de usar DBSCAN que nos generaba ruido entre el 23% y el 84%, K-Means agrupa el 100 %, por eso es el elegido.
+Al usar la reduccion de dimensionalidad con SVD nos da que 6 componentes explican el 85.5% de la varianza. 
 
 ## shap | Cristian | 0:20
 
-Para que un pronóstico sirva en una decisión, tiene que poder explicarse. Con SHAP vemos cuánto sube o baja cada variable una predicción.
-Volvamos al pozo del inicio: lo que más baja su pronóstico es la relación entre lo que produce hoy y lo que produjo en su pico. El modelo aprendió solo algo físico: un pozo que ya pasó su pico sigue declinando.
+Para que un pronóstico sirva en una decisión, tiene que poder explicarse. Con SHAP vemos cuánto sube o baja cada variable a una predicción.
+Este analisis que vemos en pantalla, es del pozo que mostramos al inicio: lo que más baja su pronóstico es la relación entre lo que produce hoy y lo que produjo en su pico. Esto nos lleva a decir que el modelo aprendió la física: un pozo cerca de su pico solo puede declinar.
 
 ## producto | Cristian | 0:30
 
@@ -119,7 +120,7 @@ POZO EXISTENTE (0:55)
 → Dejar el horizonte en 12 y tocar Pronosticar.
 "Le pedimos el pronóstico de los próximos 12 meses, a partir del último dato publicado, julio de 2026."
 → Señalar el gráfico.
-"La línea llena es lo que produjo de verdad y la punteada es el pronóstico. La banda es el rango probable: la producción real debería caer adentro 8 de cada 10 veces."
+"La línea llena es lo que produjo de verdad y la punteada es el pronóstico. La banda es el rango probable"
 → Señalar los recuadros.
 "En el último mes produjo 1.631 m³. Para los próximos 12 meses esperamos 12.612 m³, en un rango de 4.928 a 20.106."
 → Abrir "Qué explica la predicción".
@@ -139,13 +140,13 @@ MÉTRICAS DEL MODELO (0:10)
 
 ## limites | Cristian | 0:25
 
-Esto es lo que todavía no resolvemos, y cada punto tiene su próximo paso en pantalla.
-Faltan datos públicos de fractura, la banda de pozos nuevos es algo angosta, el modelo envejece a medida que cambia la tecnología, y hay formaciones donde ajusta peor, como Precuyo y Mulichinco.
+Esto es lo que todavía no resolvemos:
+Faltan datos públicos de fractura, la banda de pozos nuevos es algo angosta y hay formaciones donde ajusta peor, como Precuyo y Mulichinco.
 
 ## cierre | Cristian | 0:15
 
-Para cerrar: logramos un pronóstico que se sostiene a 12 meses donde la regla simple falla, una estimación útil para pozos que todavía no existen y un sistema que cualquiera puede usar.
-Muchas gracias. ¿Tienen alguna pregunta?
+Para ir finalizando: logramos un pronóstico que se sostiene a 12 meses con un R^2 de 0.63%, una estimación útil para pozos que todavía no existen y un sistema que cualquiera puede usar.
+Muchas gracias.
 [Si preguntan por un número: flecha abajo abre el apéndice. Elegir la pestaña del notebook 01 a 05.]
 
 ## apendice | Cristian | fuera del tiempo
