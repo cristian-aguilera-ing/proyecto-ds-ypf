@@ -121,7 +121,7 @@
     </div>
   </section>
 
-  <section id="escena-algoritmos" data-avance="9" data-fase="3">
+  <section id="escena-algoritmos" data-avance="13,20" data-fase="3">
     <div class="escena">
       <h2>Probamos 7 algoritmos contra una regla simple</h2>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:30px">
@@ -130,11 +130,11 @@
       </div>
       <div class="barras"></div>
       <p class="lectura">LightGBM no ganó en R². Lo elegimos porque entrena 7 veces más rápido que Random Forest, usa categorías y nulos, y admite pesos y cuantiles. Optuna ajustó sus hiperparámetros.</p>
-      <span class="fragment paso" data-paso="3"></span>
+      <span class="fragment paso" data-paso="2"></span><span class="fragment paso" data-paso="3"></span>
     </div>
   </section>
 
-  <section id="escena-target" data-avance="10" data-fase="3" data-riesgo="Sesgo del target en log (0,812)|Ratio ponderado (1,005)">
+  <section id="escena-target" data-avance="13" data-fase="3" data-riesgo="Sesgo del target en log (0,812)|Ratio ponderado (1,005)">
     <div class="vivo" style="grid-template-rows:auto 1fr auto">
       <div><h2>Primer tropiezo: el modelo subestimaba la producción</h2><p class="lectura">Pronóstico total dividido por producción real. Lo ideal es 1.</p></div>
       <div class="medir">
@@ -207,7 +207,7 @@
     </div>
   </section>
 
-  <section id="escena-shap" data-fase="4" data-riesgo="Modelo de caja negra|SHAP en cada predicción">
+  <section id="escena-shap" data-fase="5" data-riesgo="Modelo de caja negra|SHAP en cada predicción">
     <div class="escena">
       <h2>No es una caja negra: cada predicción se explica</h2>
       <p class="lectura"></p>
@@ -216,7 +216,7 @@
     </div>
   </section>
 
-  <section id="escena-producto" data-avance="17" data-fase="5" data-riesgo="Memoria de la API (921 MB)|1 worker (336 MB)">
+  <section id="escena-producto" data-avance="24" data-fase="5" data-riesgo="Memoria de la API (921 MB)|1 worker (336 MB)">
     <div class="escena">
       <h2>Del notebook a un sistema que cualquiera puede usar</h2>
       <div class="flujo"><span>CSV público</span><i>→</i><span>Limpieza con Polars</span><i>→</i><span>4 modelos LightGBM</span><i>→</i><span>API FastAPI</span><i>→</i><span>Web</span><i>·</i><span>Todo en Docker</span></div>
