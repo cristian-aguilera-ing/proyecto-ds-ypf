@@ -71,8 +71,8 @@ Ojo: los modelos de scikit-learn solo vieron variables numéricas; formación y 
 
 ## target | Ian | 0:30
 
-Antes de entrenar, preparamos las variables según el algoritmo. Los que miden distancias o usan gradientes, como Ridge, KNN o la red neuronal, necesitan escalarse con StandardScaler; los árboles no, porque cortan por umbrales. La producción va en logaritmo, porque es muy desigual, y las categorías, como formación u operadora, LightGBM las usa directamente.
-Con el objetivo tuvimos el primer tropiezo: en logaritmo, el total pronosticado era el 81 % de lo real, porque el modelo estima la mediana y no el promedio. Al predecir el ratio, ponderado por volumen, el sesgo quedó en 1,005.
+Acá tuvimos el primer tropiezo. Como la producción es muy desigual, entrenamos en escala logarítmica, que es lo habitual. Pero al sumar los pronósticos daba 0,81 de la producción real: subestimaba casi un 20 %.
+[Avanza solo] La razón es matemática: en log el modelo estima la mediana, no el total. Cambiamos a un ratio ponderado por volumen y el sesgo quedó en 1,005, con mejor R² y menos error.
 
 ## horizonte | Ian | 0:35
 
