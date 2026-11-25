@@ -13,41 +13,36 @@ Buenas tardes. Mi nombre es Abigail y, junto con Ian y Cristian, somos el Grupo 
 
 ## problema | Abigail | 0:35
 
-Es un pozo de YPF ubicado en Loma Campana lo elegimos porque es el que más produjo en Vaca Muerta, con más de cuatro años de historia. En el gráfico se ve cómo llega rápido a su pico y, en el transcurso de un año, pierde casi el 60 % de su producción.
-Eso es normal en shale, la roca de Vaca Muerta, y ese es el problema: si no se anticipa esa caída, se planifica mal la perforación, el transporte y las reservas. Nuestra meta fue predecir esta curva.
+Es un pozo de YPF ubicado en Loma Campana lo elegimos porque es el que más produjo en Vaca Muerta, con más de cuatro años de historia. En el gráfico se ve cómo llega rápido a su pico y, en el transcurso de un año, pierde casi el 60 % de su producción. Eso es normal en shale(shell), la roca de Vaca Muerta, y ese es el problema: si no se anticipa esa caída, se planifica mal la perforación, el transporte y las reservas. Nuestra meta fue predecir esta curva.
 
 ## dataset | Abigail | 0:25
 
-Para eso usamos los datos públicos de la Secretaría de Energía: que nos da un registro por pozo y por mes desde 2006.
-El 96 % es de la Cuenca Neuquina. Las otras cuencas tienen pocos pozos y otra geología, y solo agregaban ruido: por eso trabajamos únicamente con Neuquina.
+Para eso usamos los datos públicos de la Secretaría de Energía: que nos da un registro por pozo y por mes desde 2006. El 96 % es de la Cuenca Neuquina. Las demás cuencas tienen pocos pozos y otra geología: por eso elegimos trabajar solo con Neuquina.
 
 ## hallazgos | Abigail | 0:25
 
-Los datos traían errores reales: los casos más llamativo fueron una profundidad imposible para cualquier pozo de petróleo o gas (378.939 metros de profundidad), producción negativa, coordenadas invertidas y meses sin registro.
-Por separado parecen detalles, pero juntos arruinan un modelo. Por eso cada error tiene su regla de limpieza por ej las profundidades imposibles o en cero se borraron y se completaron con la de pozos parecidos, porque eliminar la fila hacía perder meses de producción reales.
+Los datos traían errores reales: los casos más llamativos fueron una profundidad imposible para cualquier pozo de petróleo o gas (378.939 metros de profundidad), filas con producción negativa, coordenadas invertidas y meses sin registro. Por separado parecen detalles, pero juntos arruinan un modelo. Por eso cada error tiene su regla de limpieza por ej las profundidades imposibles o en cero se borraron y se completaron con la de pozos parecidos.
 
 ## gor | Abigail | 0:25
 
-Este hallazgo definió el proyecto. El GOR es el gas que sale por cada metro cúbico de petróleo, y muestra dos poblaciones de pozos.
-Si el corte queda muy alto, muchos pozos de gas pasan por petróleo.
-Con el corte en 3.000 quedan 2.708 pozos de petróleo y 1.974 de gas. Por eso hay un modelo para cada fluido, uno para petróleo y otro para gas.
+Pero en los datos no solo había errores sino que también había dos tipos de pozo mezclados. El GOR, que es cuánto gas sale por cada metro cúbico de petróleo, separa los pozos en dos montañas: a la izquierda los de petróleo, a la derecha los de gas. Para separarlos hay que elegir un corte. Si el corte queda muy alto, muchos pozos de gas quedan contados como petróleo. Con el corte en 3.000 quedan 2.708 pozos de petróleo y 1.974 de gas. Por eso hay un modelo para cada fluido, uno para petróleo y otro para gas.
 
 ## limpieza | Abigail | 0:25
 
-Después de limpiar quedan 382.992 filas y 4.682 pozos.
-La decisión clave fue la grilla mensual: cada pozo tiene todos sus meses, aunque haya estado parado por eso completamos todos los meses de cada pozo: el mes que falta entra con producción cero y una marca de "faltante". Si no, "el mes anterior" podía ser de hace medio año y el modelo aprendía mal. 
+Como el modelo compara cada mes con los anteriores, necesitábamos que "el mes anterior" fuera de verdad el mes anterior. Pero había meses sin registro, y si lo dejábamos así, el modelo podía comparar contra medio año atrás sin saberlo. Por eso completamos todos los meses de cada pozo: el mes que falta entra con producción cero y una marca de "faltante".
+
+En las barras se ve el recorrido: del CSV original al dataset limpio, con 4.682 pozos productores de petróleo o gas, cada uno con todos sus meses.
 
 ## variables | Abigail | 0:25
 
-Con los datos limpios armamos lo que ve el modelo: 53 variables, agrupadas en estas barras. La más larga es la historia de producción: que es cuánto produjo el pozo en los meses anteriores, su pico y lo que lleva acumulado. El riesgo era usar el futuro sin querer,  asi que cada variable mira solo los meses anteriores al que pronosticamos.
-Para un pozo nuevo quedan 10 variables, porque todavía no hay historia, estas reflejan como es el pozo, dónde está, su profundidad y su año. Ahora Ian les cuenta qué hicimos con eso
+Con los datos limpios armamos lo que ve el modelo: 53 variables, agrupadas en estas barras. La más larga es la historia de producción: que es cuánto produjo el pozo en los meses anteriores, su pico y lo que lleva acumulado. El riesgo era la fuga de datos, es decir, usar sin querer algo del futuro. Por eso cada variable mira solo los meses anteriores a lo que pronosticamos.
+
+Ahora Para un pozo nuevo no existen datos historioco, y quedan solo 10 variables, que dicen cómo es el pozo, dónde está, su profundidad y su año. Ian les va a contar qué hicimos con eso.
 
 ## modos | Ian | 0:25
 
-Con los datos limpios, la pregunta es qué queremos predecir. Nuestra variable objetivo es la producción
-de un pozo en un mes: petróleo en metros cúbicos y gas en miles de metros cúbicos. Es un número, así que es un problema de regresión.
-Hay dos situaciones: un pozo que ya produce, el modo A, y uno que todavía no se perforó, el modo B. 
-Y petróleo y gas van por separado, porque son dos poblaciones de pozos, como mostró Abigail con el GOR. Dos por dos: cuatro modelos.
+Con los datos limpios, la pregunta es qué queremos predecir. Nuestra variable objetivo es la producción de un pozo en un mes: petróleo en metros cúbicos y gas en miles de metros cúbicos. Es un número, así que es un problema de regresión. 
+Hay dos situaciones: un pozo que ya produce, el modo A, y uno que todavía no se perforó, el modo B. Y petróleo y gas van por separado, porque son dos poblaciones de pozos, como mostró Abigail con el GOR. Dos por dos: cuatro modelos.
 
 Clave: variable objetivo = producción mensual · regresión · modo A / modo B · 4 modelos.
 
@@ -56,7 +51,8 @@ Si preguntan "¿por qué no un solo modelo para los dos fluidos?": tienen escala
 ## validacion | Ian | 0:25
 
 Para medir sin engañarnos, cortamos en el tiempo.
-Entrenamos hasta 2022; 2023 se usa solo para elegir hiperparámetros con Optuna, y 2024 y 2025 se miran una sola vez, al final. Mezclar meses al azar dejaría que el modelo vea el futuro.
+Entrenamos hasta 2022; 
+2023 se usa solo para elegir hiperparámetros con Optuna, y 2024 y 2025 se miran una sola vez, al final. Mezclar meses al azar dejaría que el modelo vea el futuro.
 
 Clave: fuga de datos · corte temporal · validación 2023 · test una sola vez (clase 15).
 
@@ -112,22 +108,22 @@ Pronunciación: P10 / P90 = "pe diez, pe noventa".
 
 ## clusters | Cristian | 0:35
 
-Además del pronóstico, quisimos saber qué tipos de pozo hay. Para eso agrupamos los pozos según la forma de su curva de producción, sin decirle al modelo qué buscar.
+Para realizar una buena Prediccion, necesitabamos saber qué tipos de pozo hay. Para eso agrupamos los pozos según la forma de su curva de producción, sin decirle al modelo qué buscar.
 El gráfico muestra qué tan bien separados quedan los grupos. Con dos grupos el puntaje es muy alto, pero son demasiado generales para describir los tipos de pozo.
-Por eso Buscando entre 3 y 10 grupos, el mejor resultado es con un k=4: que son tres tipos de pozo de petróleo y uno de gas.
+Por eso Buscamos entre 3 y 10 grupos, el mejor resultado es con un k=4: que son tres tipos de pozo de petróleo y uno de gas.
 El puntaje es bajo, de 0,22: pero, a diferencia de usar DBSCAN que nos generaba ruido entre el 23% y el 84%, K-Means agrupa el 100% de los datos.
 Al usar la Reduccion de dimensionalidad con SVD nos dice que con 6 de 10 componentes explica el 85.5% de la varianza. 
 
 ## shap | Cristian | 0:20
 
 Para que un pronóstico sirva en una decisión, tiene que poder explicarse. Con SHAP vemos cuánto sube o baja cada variable a una predicción.
-Este analisis que vemos en pantalla, es del pozo que mostramos al inicio: lo que más baja su pronóstico es la relación entre lo que produce hoy y lo que produjo en su pico. Esto nos lleva a decir que el modelo aprendió de la física: un pozo cerca de su pico solo puede declinar.
+Este analisis que vemos en pantalla, es del pozo que mostramos al inicio con Abi: lo que más baja su pronóstico es la relación entre lo que produce hoy y lo que produjo en su pico. Esto nos lleva a decir que el modelo aprendió de la física: un pozo cerca de su pico solo puede declinar.
 
 ## producto | Cristian | 0:30
 
 Para que esto sirva más allá del los notebook, lo llevamos a un sistema real: con FastAPI, una página web y todo empaquetado en Docker, que se levanta con un solo comando.
 Revisamos dos puntos débiles. El primero era la memoria.
-Dos procesos de la API cargaban todo por duplicado, por lo tanto utilizamos solo uno, y el consumo bajó de 921 a 336 MB. 
+Encontramos que dos procesos de la API cargaban todo por duplicado, por lo tanto utilizamos solo uno, y el consumo bajó de 921 a 336 MB. 
 El segundo problema eran las coordenadas: ahora la API rechaza ubicaciones fuera de la cuenca Neuqina. Veamos funciona.
 
 ## demo | Cristian | 1:45
@@ -167,8 +163,8 @@ POZO NUEVO (0:40)
 
 ## limites | Cristian | 0:25
 
-Esto es lo que todavía no resolvemos:
-Faltan datos públicos de fractura, la banda de pozos nuevos es algo angosta y hay formaciones donde ajusta peor, como Precuyo y Mulichinco.
+Lo que todavía no resolvemos:
+Es que Faltan datos públicos de fractura, la banda de pozos nuevos es algo angosta y hay formaciones donde se ajusta peor, como Precuyo y Mulichinco.
 
 ## cierre | Cristian | 0:15
 
